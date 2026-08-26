@@ -102,6 +102,12 @@ tar -xzf dist\lume-index-2026-08-26.tar.gz    # unpacks .lume-index/ at repo roo
 Then go straight to step 5 (verify). Rebuild from scratch (step 4) whenever
 `docs/` changes; the snapshot is frozen at the 2026-08-26 corpus state.
 
+Scope: the snapshot restores **lexical (BM25) + entity-graph** search — the
+configuration the benchmark numbers were scored on — with no dependencies.
+Dense vectors live in Shivvr's own store, not in this tarball: hybrid semantic
+search (`alpha > 0`) on a fresh machine needs a local Shivvr plus a re-run of
+the `-s` ingest (~11 min).
+
 ## 7. Container vs host
 
 The n8 container mounts the repo at `/workspace/navy` (host:
