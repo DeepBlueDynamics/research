@@ -3,3 +3,8 @@ lume/target/
 .lume-index*/
 tools/*.log
 __pycache__/
+
+# local MCP/n8 dumps — may contain host API keys; never commit
+.mcp.json
+.mcp.json.bak
+
