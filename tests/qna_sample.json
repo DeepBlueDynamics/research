@@ -1,0 +1,62 @@
+[
+  {
+    "question": "What does a GPS satellite transmit when it cannot locate a valid control or data element in its on-board memory?",
+    "answer": "default LNAV data, a sequence of alternating ones and zeros in bits 61 through 298, beginning with a one",
+    "source": "docs/A/A7_IS-GPS-200N.md (20.3.2)"
+  },
+  {
+    "question": "How long can GPS satellites support operation without contact from the control segment?",
+    "answer": "All SVs have the capability to support operation for at least 60 days without contact from the CS",
+    "source": "docs/A/A7_IS-GPS-200N.md (20.3.2)"
+  },
+  {
+    "question": "How many bits does the af2 SV clock correction parameter use, and what are its scale factor and units?",
+    "answer": "af2 has 8 bits, scale factor 2-55, units sec/sec2",
+    "source": "docs/A/A7_IS-GPS-200N.md (Table 20-I Subframe 1 Parameters)"
+  },
+  {
+    "question": "What is the 8-bit preamble at the start of each CNAV message?",
+    "answer": "Each message starts with an 8-bit preamble 10001011, followed by a 6-bit PRN number of the transmitting SV",
+    "source": "docs/A/A7_IS-GPS-200N.md (CNAV message structure)"
+  },
+  {
+    "question": "What does the CNAV alert flag at bit 38 indicate to users?",
+    "answer": "the signal URA components may be worse than indicated and users may use at their own risk",
+    "source": "docs/A/A7_IS-GPS-200N.md (CNAV message structure)"
+  },
+  {
+    "question": "What is the 95th percentile SPS SIS-only URE accuracy value in the SPS Performance Standard?",
+    "answer": "4.0 m 1-sigma, 7.8 m 95% SPS SIS-only URE",
+    "source": "docs/A/A8_GPS_SPS_Performance_Standard_5th_ed_2020.md"
+  },
+  {
+    "question": "What is the NTP frequency tolerance PHI?",
+    "answer": "frequency tolerance PHI is 15e-6, 15 ppm",
+    "source": "docs/A/A10_RFC5905_NTP.txt"
+  },
+  {
+    "question": "What is the GPS System Time epoch in the ASPN data model and which clock_id identifies it?",
+    "answer": "clock_id = 3, epoch 00:00:00 UTC on 6 Jan 1980, or equivalently 00:00:19 TAI",
+    "source": "docs/A/A1_ASPN-ICD_2023/docs/clock_identifiers.md"
+  },
+  {
+    "question": "How soon must the audible signal restart when a category A or B bridge alarm is not acknowledged?",
+    "answer": "if an alarm which can be acknowledged on the bridge is not acknowledged within 30 s the audible signal should start again",
+    "source": "docs/B/B5_MSC.302(87)_Bridge_Alert_Management.md (7.3.5)"
+  },
+  {
+    "question": "What is a central alert management human machine interface (CAM-HMI)?",
+    "answer": "a central alert management human machine interface for presenting alerts as individual alerts or as aggregated alerts supports the bridge team",
+    "source": "docs/B/B5_MSC.302(87)_Bridge_Alert_Management.md (preamble)"
+  },
+  {
+    "question": "What does the Bridge Navigational Watch and Alarm System do?",
+    "answer": "a monitoring and alarm system which notifies other watch officers or the master of the ship if the officer on watch does not respond or becomes incapacitated while on duty",
+    "source": "docs/B/B12_Bowditch_2024_Vol1_LoRes.md (2818 BNWAS)"
+  },
+  {
+    "question": "How does degradation allowance differ between DHS Resilience Level 2 and Level 3?",
+    "answer": "Level 2 allows for an unbounded degradation in performance while the threat is present, while Level 3 reduces the allowance to a bounded degradation",
+    "source": "docs/C/C3_DHS_Resilient_PNT_Conformance_Framework_v2.0.md (5.4)"
+  }
+]
