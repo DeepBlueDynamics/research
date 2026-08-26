@@ -1,0 +1,144 @@
+---
+
+name: measurement_image
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  2D Raster Image
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: height
+  type: uint32
+  units: pixels
+  description: >
+    The number of pixel rows in this image.
+
+- name: width
+  type: uint32
+  units: pixels
+  description: >
+    The number of pixel columns in this image.
+
+- name: is_bigendian
+  type: bool
+  description: >
+    True if the image_data byte order is big endian, false if it is little
+    endian. For raw image_types, this is only applicable for image_types with
+    multi-byte pixels.
+
+- name: image_type
+  enum:
+  - BMP: Windows Bitmaps
+  - PNG: Portable Network Graphics
+  - JPG: Joint Photographic Experts Group
+  - TIFF: Tag Image File Format
+  - RAW_GRAY8: Single channel raw gray scale image. One byte per pixel.
+  - RAW_RGB8: Three channel raw RGB image. One byte per pixel per channel.
+  - RAW_BGR8: Three channel raw BGR image. One byte per pixel per channel.
+  - RAW_RGBA8: Four channel raw RGBA image. One byte per pixel per channel.
+  - RAW_BGRA8: Four channel raw BGRA image. One byte per pixel per channel.
+  - RAW_GRAY16: Single channel raw gray scale image. Two bytes per pixel.
+  - RAW_GRAYFLOAT64: Single channel raw gray scale image. Eight bytes per pixel.
+  length: 32
+  description: >
+    Enumerated field which specifies the datatype of the pixels represented in
+    this image.
+
+    Raw images are stored in row-major order.  In multi-channel raw images, the
+    first element contains the first pixel of the first channel, the second
+    element contains the first pixel of the second channel, and so on.
+    The data of each multi-byte pixel should be contiguous within the data array
+    with the endianness defined by the is_bigendian field.
+
+    Example - 2x2 RAW_RGB8
+    image_data[0]   row1  col1  chanR
+    image_data[1]   row1  col1  chanG
+    image_data[2]   row1  col1  chanB
+    image_data[3]   row1  col2  chanR
+    image_data[4]   row1  col2  chanG
+    image_data[5]   row1  col2  chanB
+    image_data[6]   row2  col1  chanR
+    image_data[7]   row2  col1  chanG
+    image_data[8]   row2  col1  chanB
+    image_data[9]   row2  col2  chanR
+    image_data[10]  row2  col2  chanG
+    image_data[11]  row2  col2  chanB
+
+    Example - 2x2 RAW_GRAY16, is_bigendian = 1
+    Where byte 1 is the most significant byte (byte1 << 8 | byte2):
+    image_data[0]  row1  col1  byte1
+    image_data[1]  row1  col1  byte2
+    image_data[2]  row1  col2  byte1
+    image_data[3]  row1  col2  byte2
+    image_data[4]  row2  col1  byte1
+    image_data[5]  row2  col1  byte2
+    image_data[6]  row2  col2  byte1
+    image_data[7]  row2  col2  byte2
+
+- name: image_data_length
+  type: uint64
+  units: byte
+  description: >
+    Length of the byte array holding the encoded image. For raw image types,
+    this should be equal to height * width * num_channels * bytes_per_pixel.
+
+- name: image_data
+  type: uint8[image_data_length]
+  description: >
+    Stores the encoded image. Interpretation varies based on the image_type.
+
+- name: camera_model
+  enum:
+  - ASPN_PINHOLE_PLUMB_BOB: >
+      A 10 parameter model, 4 parameters composing the 2D focal length
+      fc = (fx, fy) and camera principal point cc = (cx, cy) in pixels, a model
+      of radial and tangential distortion specified using the 5 parameters
+      (kc1, kc2, kc3, kc4, kc5). And the skew parameter, alpha_c. Mapping from
+      3D points in the world to 2D points in the image is described at
+      http://www.vision.caltech.edu/bouguetj/calib_doc/htmls/parameters.html
+  - ASPN_LINEAR_MODEL: >
+      A 4 parameter model, modeling only the the 2D focal length fc = (fx, fy)
+      and camera principal point cc = (cx, cy). Effectively  using the same
+      model as described in described at
+      http://www.vision.caltech.edu/bouguetj/calib_doc/htmls/parameters.html,
+      with all distortion and  skew parameters zeroed out
+  length: 8
+  description: >
+    The model used to map 3D points in the world to 2D points on the image plane
+
+- name: num_model_coefficients
+  type: uint8
+  description: >
+    The number of coefficients used in camera model.
+
+- name: model_coefficients
+  type: float64[num_model_coefficients]
+  description: >
+    The camera model parameters, size depending on the distortion model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity
+    value (which is to be interpreted based upon the integrity method).  The
+    intent of allowing num_integrity > 1 is to report multiple integrity values
+    based on multiple integrity methods.

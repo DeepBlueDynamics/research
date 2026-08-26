@@ -1,0 +1,72 @@
+name: Validate
+
+on: [push, pull_request]
+
+jobs:
+    format:
+        runs-on: ubuntu-24.04
+        steps:
+        - uses: actions/checkout@v4
+        - name: Set up Python 3.13
+          uses: actions/setup-python@v3
+          with:
+              python-version: 3.13
+        - name: Install dependencies
+          run: |
+                set -xe
+                python -m pip install --upgrade pip
+                pip install meson
+        - name: Configure build directory
+          run: meson setup build
+        - name: Check formatting
+          run: ninja -C build clang-format-check
+
+    documentation:
+        runs-on: ubuntu-24.04
+        steps:
+        - uses: actions/checkout@v4
+        - name: Set up Python 3.12
+          uses: actions/setup-python@v3
+          with:
+              python-version: 3.12
+        - name: Install dependencies
+          run: |
+                set -xe
+                python -m pip install --upgrade pip
+                pip install -r requirements_docs.txt
+                sudo apt update
+                sudo apt install doxygen -y
+        - name: Configure build directory
+          run: meson setup build
+        - name: Build docs
+          run: ninja -C build docs
+
+        # On non-main pushes, archive the docs.
+        - name: Archive Docs
+          if: github.ref != 'refs/heads/main'
+          uses: actions/upload-artifact@v4
+          with:
+            name: documentation
+            path: docs/_build/html
+
+        # On main pushes, upload for deployment
+        - name: Upload Pages Artifact
+          if: github.ref == 'refs/heads/main'
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: docs/_build/html
+
+    deploy-docs:
+        if: github.ref == 'refs/heads/main'
+        needs: documentation
+        runs-on: ubuntu-24.04
+        permissions:
+          pages: write
+          id-token: write
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+        - name: Deploy Documentation
+          id: deployment
+          uses: actions/deploy-pages@v4

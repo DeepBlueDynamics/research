@@ -1,0 +1,84 @@
+---
+
+name: measurement_direction_of_motion_2d
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Direction of motion represented in a two-dimensional reference frame as defined by the enum.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: reference
+  enum:
+  - NE: Direction of motion expressed in the two-dimensional North-East
+      plane of the locally level NED frame as the angle between the N-axis and the
+      direction of motion.  Positive angle is defined as a rotation towards the
+      E-axis.  See also NED coordinate frame definition for N, E, and D definitions.
+  - ND: Direction of motion expressed in the two-dimensional North-Down
+      plane of the locally level NED frame as the angle between the N-axis and the
+      direction of motion.  Positive angle is defined as a rotation towards the
+      D-axis.  See also NED coordinate frame definition for N, E, and D definitions.
+  - ED: Direction of motion expressed in the two-dimensional East-Down plane of
+      the locally level NED frame as the angle between the E-axis and the direction of motion.
+      Positive angle is defined as a rotation towards the D-axis.  See also NED coordinate frame
+      definition for N, E, and D definitions.
+  - SENSOR: Direction of motion expressed in the sensor frame as the angle
+      between the sensor frame x-axis and the direction of motion.  Positive angle is defined as a
+      rotation towards the sensor frame y-axis. (Sensor frame is two dimensional, x and y, as
+      defined in mounting.)
+  length: 8
+  description: >
+    Specifies measurement reference.
+
+- name: obs
+  type: float64
+  units: rad
+  description: >
+    Observations as specified in the reference enum.
+
+- name: variance
+  type: float64
+  units: rad^2
+  description: >
+    Measurement error variance.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

@@ -1,0 +1,20 @@
+[project]
+name = "aspn"
+version = "2023"
+authors = [
+  { name="IS4S", email="info@aspn.us" },
+]
+description = "All Source Navigation and Positioning ICDs"
+readme = "README.md"
+license = "CC-BY-4.0"
+license-files = ["LICEN[CS]E*"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["measurements", "metadata", "types"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["measurements", "metadata", "types"]

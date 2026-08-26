@@ -1,0 +1,109 @@
+---
+
+name: type_direction_2d_to_point
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  2D direction to or from a point as defined by the reference enum. Information about the remote
+  point (its position and/or correspondence with previous or future appearances
+  of this same point) may be determined using remote_point.
+
+fields:
+- name: remote_point
+  type: type_remote_point
+  units: various
+  description: >
+    Position and/or correspondence information about the remote point.
+
+- name: reference
+  enum:
+  - NE_TO: >
+      Angle between the sensor's local level N-axis and the vector from the sensor to the point
+      projected onto the sensor's local level North-East plane. Positive angle is defined as a
+      rotation towards the E-axis.
+
+      See also NED coordinate frame definition for N, E, and D definitions. A figure depicting the
+      angle definition is included in the conventions documentation.
+  - NE_FROM: >
+      Angle between the point's local level N-axis and the vector from the point to the sensor
+      projected onto the point's local level North-East plane. Positive angle is defined as a
+      rotation towards the E-axis.
+
+      The significant difference between NE_TO and NE_FROM is where the NED frame originates
+      (NE_FROM has its origin located at the point's location).
+
+      See also NED coordinate frame definition for N, E, and D definitions. A figure depicting the
+      angle definition is included in the conventions documentation.
+  - ELEVATION: >
+      Angle between the sensor's local level North-East plane and the vector from the sensor to the
+      point. Positive angle is defined as a rotation towards the negative D-axis of the NED frame.
+
+      See also NED coordinate frame definition for N, E, and D definitions. A figure depicting the
+      angle definition is included in the conventions documentation.
+  - SENSOR: >
+      Angle between the sensor's x-axis and the vector from the sensor to the point projected onto
+      the sensor frame x-y plane. Positive angle is defined as a rotation towards the y-axis.
+
+      Sensor frame is defined in mounting. A figure depicting the angle definition is included in
+      the conventions documentation.
+  length: 8
+  description: >
+    Specifies measurement reference.
+
+- name: obs
+  type: float64
+  units: rad
+  description: >
+    Observations as specified in the reference enum.
+
+- name: variance
+  type: float64
+  units: rad^2
+  description: >
+    Measurement error variance.
+
+- name: has_observation_characteristics
+  type: bool
+  description: >
+    Switch for whether observation_characteristics is valid or not.
+
+- name: observation_characteristics
+  type: type_image_feature
+  units: various
+  description: >
+    Image feature characteristics.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white
+    Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

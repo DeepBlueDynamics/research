@@ -1,0 +1,103 @@
+---
+
+name: metadata_GPS_iono_utc_parameters
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Broadcasted GPS navigation data for estimation of single frequency ionospheric correction and
+  determination of UTC.  Definitions and usage are covered in ICD-GPS-200L, Section 20.3.3.5.1.6
+  and 20.3.3.5.1.7.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: A_0
+  type: float64
+  units: s
+  description: >
+    Bias coefficient of GPS time scale relative to UTC time scale.
+- name: A_1
+  type: float64
+  units: s/s
+  description: >
+    Drift coefficient of GPS time scale relative to UTC time scale.
+- name: delta_t_ls
+  type: int8
+  units: s
+  description: >
+    Leap second count.
+- name: tot
+  type: uint32
+  units: s
+  description: >
+    Reference GPS time of week for UTC parameters
+- name: wn_t
+  type: uint8
+  units: weeks
+  description: >
+    Reference Modulo 256 GPS Week number for UTC parameters
+- name: wn_lsf
+  type: uint8
+  units: weeks
+  description: >
+    Modulo 256 GPS Week number at the end of which delta_t_lsf becomes effective.
+- name: dn
+  type: uint8
+  units: days
+  description: >
+    Day number at the end of which delta_t_lsf becomes effective (1 to 7).
+- name: delta_t_lsf
+  type: int8
+  units: s
+  description: >
+    Future leap second count.
+- name: alpha_0
+  type: float64
+  units: s
+  description: >
+    Zeroth-order coefficient of amplitude of vertical ionospheric delay.
+- name: alpha_1
+  type: float64
+  units: s/rad
+  description: >
+    First-order coefficient of amplitude of vertical ionospheric delay.
+- name: alpha_2
+  type: float64
+  units: s/rad^2
+  description: >
+    Second-order coefficient of amplitude of vertical ionospheric delay.
+- name: alpha_3
+  type: float64
+  units: s/rads^3
+  description: >
+    Third-order coefficient of amplitude of vertical ionospheric delay.
+- name: beta_0
+  type: float64
+  units: s
+  description: >
+    Zeroth-order coefficient of period of ionospheric delay model.
+- name: beta_1
+  type: float64
+  units: s/rad
+  description: >
+    First-order coefficient of period of ionospheric delay model.
+- name: beta_2
+  type: float64
+  units: s/rad^2
+  description: >
+    Second-order coefficient of period of ionospheric delay model.
+- name: beta_3
+  type: float64
+  units: s/rad^3
+  description: >
+    Third-order coefficient of period of ionospheric delay model.

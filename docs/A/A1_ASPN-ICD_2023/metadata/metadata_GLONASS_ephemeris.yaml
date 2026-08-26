@@ -1,0 +1,100 @@
+---
+
+name: metadata_GLONASS_ephemeris
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: |
+  GLONASS Ephemeris describing GLONASS satellite locations.  Definitions and usage are covered in
+  GLONASS ICD L1,L2 - Edition 5.1 2008, Section 4.4.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: slot_number
+  type: int32
+  description: >
+    GLONASS satellite slot number.
+- name: freq_o
+  type: int32
+  description: >
+    Frequency channel offset number in range from 0 to 20.
+- name: n_t
+  type: int32
+  units: days
+  description: >
+    Calender number of day within 4 year interval starting at Jan 1 of a leap year
+- name: t_k
+  type: float64
+  units: s
+  description: >
+    Time referenced to the beginning of the frame within the current day.
+- name: t_b
+  type: float64
+  units: minutes
+  description: >
+    Index of time interval within current day according to UTC(SU) + 03 hrs.
+- name: gamma_n
+  type: float64
+  units: s/s
+  description: >
+    Relative Satellite frequency bias
+- name: tau_n
+  type: float64
+  units: s
+  description: >
+    Satellite clock bias.
+- name: SV_pos_x
+  type: float64
+  units: km
+  description: >
+    Satellite X position in PZ-90 coordinate system at time t_b.
+- name: SV_vel_x
+  type: float64
+  units: km/s
+  description: >
+    Satellite X velocity in PZ-90 coordinate system at time t_b.
+- name: SV_accel_x
+  type: float64
+  units: km/s^2
+  description: >
+    Satellite X acceleration in PZ-90 coordinate system at time t_b.
+- name: SV_pos_y
+  type: float64
+  units: km
+  description: >
+    Satellite Y position in PZ-90 coordinate system at time t_b.
+- name: SV_vel_y
+  type: float64
+  units: km/s
+  description: >
+    Satellite Y velocity in PZ-90 coordinate system at time t_b.
+- name: SV_accel_y
+  type: float64
+  units: km/s^2
+  description: >
+    Satellite Y acceleration in PZ-90 coordinate system at time t_b.
+- name: SV_pos_Z
+  type: float64
+  units: km
+  description: >
+    Satellite Z position in PZ-90 coordinate system at time t_b.
+- name: SV_vel_Z
+  type: float64
+  units: km/s
+  description: >
+    Satellite Z velocity in PZ-90 coordinate system at time t_b.
+- name: SV_accel_z
+  type: float64
+  units: km/s^2
+  description: >
+    Satellite Z acceleration in PZ-90 coordinate system at time t_b.

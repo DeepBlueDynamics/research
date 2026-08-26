@@ -1,0 +1,38 @@
+---
+
+name: type_satnav_time
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Satellite system time
+
+fields:
+- name: week_number
+  type: uint16
+  units: weeks
+  description: >
+    Full Week number since zero epoch at which the data provided in this message
+    is valid, expressed in time system defined by time_reference enum (below).
+- name: seconds_of_week
+  type: float64
+  units: seconds
+  description: >
+    Seconds since start of current week at which the data provided in this message is valid,
+    expressed in time system defined by time_reference enum (below).
+- name: time_reference
+  enum:
+  - TIME_GPS: GPS system time.
+  - TIME_GALILEO: Galileo system time.
+  - TIME_BEIDOU: BeiDou system time.
+  - TIME_GLONASS: GLONASS system time.
+  length: 8
+  description: >
+    Reference time system used to express the data in this message. In a multi-GNSS receiver
+    (GPS/GLONASS/Galileo/QZSS/BeiDou) all pseudorange observations must refer to one receiver clock
+    only. The receiver clock time of the measurement is the receiver clock time of the received
+    signals. It is identical for the phase and range measurements and is identical for all
+    satellites observed in a given epoch.

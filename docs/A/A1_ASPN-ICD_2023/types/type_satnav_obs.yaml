@@ -1,0 +1,124 @@
+---
+
+name: type_satnav_obs
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Defines measurements that come from a satnav receiver tracking a single signal from a single
+  satellite.
+
+fields:
+- name: satellite_system
+  type: type_satnav_satellite_system
+  description: >
+    Enumerated field which describes the Satellite System that generated the observations.
+- name: signal_descriptor
+  type: type_satnav_signal_descriptor
+  description: >
+    Satellite signal descriptor as defined in RINEX 3.05
+- name: prn
+  type: int16
+  description: >
+    PRN code which identifies satellite (or slot number, in the case of GLONASS) for the
+    observables.
+- name: frequency
+  type: float64
+  units: Hz
+  description: >
+    Center frequency of signal.  For GLONASS, this should be the center frequency of the
+    frequency-shifted signal with the k value taken into account.
+- name: pseudorange
+  type: float64?
+  units: m
+  description: >
+    Pseudorange measurement
+- name: pseudorange_variance
+  type: float32?
+  units: m^2
+  description: >
+    Variance of pseudorange measurement noise/multipath.  This value must be provided if the
+    pseudorange measurement is provided.  Note: This is not intended to  represent clock,
+    atmospheric, or satellite position errors.
+- name: pseudorange_rate_type
+  enum:
+  - PSR_RATE_DOPPLER: Instantaneous Doppler at measurement time. Units = Hz Cov. Units = Hz^2
+  - PSR_RATE_DELTA_RANGE: >
+      Change in pseudorange (integrated Doppler) over a specified time interval.  The interval is
+      provided in metadata_satnav_obs. Units = m Cov. Units = m^2
+  length: 4
+  description: >
+    Indicates the type of measurement contained in pseudorange_rate.
+- name: pseudorange_rate
+  type: float64?
+  units: Hz or m
+  description: >
+    Measurement of the change in the pseudorange.  See pseudorange_rate_type for details.
+- name: pseudorange_rate_variance
+  type: float32?
+  units: Hz^2 or m^2
+  description: >
+      Variance of pseudorange_rate noise.  This value must be provided if the pseudorange_rate
+      measurement is provided.
+- name: carrier_phase
+  type: float64?
+  units: cycles (1 cycle = wavelength of carrier frequency)
+  description: >
+    Carrier-phase (integrated Doppler) measurement.  This measurement has an N cycle ambiguity
+    (where N is unknown and arbitrary integer).
+- name: carrier_phase_variance
+  type: float32?
+  units: cycles^2
+  description: >
+    Variance of carrier-phase noise/multipath.  This value must be provided if the carrier-phase
+    measurement is provided.  Note: This is not intended to represent clock, atmospheric, or
+    satellite position errors or the integer N ambiguity.
+- name: c_n0
+  type: float32?
+  units: db-Hz
+  description: Carrier to noise density ratio.  C/N0 = 10[log10(S/N0)]
+- name: lock_count
+  type: int32
+  description: >
+    Number of observations with continuous tracking (no cycle slips).  Value of -1 means that there
+    is no loss of lock information available.  First lock_count after cycle slip has occurred will
+    have a value of 0.  The lock_count only applies to the carrier-phase measurement.
+- name: iono_correction_source
+  enum:
+    - UNKNOWN: unknown source
+    - MODELED: modeled using the ionospheric models in IS-GPS-200, IS-GPS-700, or IS-GPS-800
+    - MEASURED: measured using dual frequencies
+  length: 8
+  description: >
+    Enumerated field which describes the source of the ionospheric delay correction.
+- name: iono_correction_applied
+  type: bool
+  description: >
+    Identifies if the ionospheric correction has been applied to the measurement. 1 = Applied.
+- name: tropo_correction_applied
+  type: bool
+  description: >
+    Identifies if the tropospheric correction has been applied to the measurement. 1 = Applied.
+- name: signal_bias_correction_applied
+  type: bool
+  description: >
+    Represents biases within the transmitting signal that are identified in the downlink data,
+    Group Delay for LNAV, and Interchannel Signal Correction (ISC) message for MNAV. This term
+    indicates whether the correction is known, being applied to Pseudorange Correction, and its
+    associated estimated error applied to the ERE. When invalid the correction and estimated error
+    are not known and therefore not applied. 1 = Valid.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

@@ -1,0 +1,79 @@
+---
+
+name: measurement_altitude
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Height above a user-specified reference frame.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: reference
+  enum:
+  - AGL: >
+      height above ground level (AGL). Generally, position and terrain elevation data are required
+      to convert between AGL and (MSL or HAE).
+  - MSL: >
+      height above mean sea level (MSL). Generally, position is required to convert between MSL and
+      HAE.
+  - HAE: height above the WGS-84 ellipsoid (HAE), also known as geodetic altitude.
+  length: 8
+  description: >
+    Specifies altitude reference.
+- name: altitude
+  type: float64
+  units: m
+  description: >
+    Altitude in meters, with altitude defined by the enum, altitude_type.
+- name: variance
+  type: float64
+  units: m^2
+  description: >
+    Altitude variance.
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  - FOGM: |
+      First-order Gauss-Markov (FOGM) process, defined by the following parameters
+      (num_error_model_params = 3):
+        1) standard_deviation, units: m, description: standard deviation of a scalar, first order
+        Gauss-Markov measurement noise model.
+        2) time_constant, units: seconds, description: time constant of a scalar, first order
+        Gauss-Markov measurement noise model.
+        3) initial_standard_deviation, units: m, description: initial standard deviation of a
+        scalar, first order Gauss-Markov measurement noise model.
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white
+    Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

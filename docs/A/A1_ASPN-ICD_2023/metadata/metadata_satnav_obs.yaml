@@ -1,0 +1,34 @@
+---
+
+name: metadata_satnav_obs
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Metadata for satnav_obs
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: deltarange_interval_start
+  type: float32?
+  units: seconds
+  description: >
+    Start time of the interval over which the deltarange is measured with respect to the measurement
+    time.  This value must be provided if the deltarange measurement is provided.
+- name: deltarange_interval_stop
+  type: float32?
+  units: seconds
+  description: >
+    Stop time of the interval over which the deltarange is measured with respect to the measurement
+    time.  This value must be provided if the deltarange measurement is provided.  If the deltarange
+    integration period is the same as the measurement time, this value should be 0.

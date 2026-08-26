@@ -1,0 +1,86 @@
+---
+
+name: type_satnav_sv_data
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Satellite position, velocity and clock error at a particular time epoch
+
+fields:
+- name: prn
+  type: int16
+  description: >
+    PRN code which identifies satellite (or slot number, in the case of GLONASS) of this ephemeris.
+- name: satellite_system
+  type: type_satnav_satellite_system
+  description: >
+    Describes the Satellite System which was used to generate the satellite information provided in
+    this message.
+- name: ephemeris_type
+  enum:
+  - SET_BY_SYSTEM: >
+      To be used when a system only uses one ephemeris representation, so knowing the
+      satellite_system fully defines what ephemeris is being used.
+  - GPS_LNAV: Calculated using legacy GPS (LNAV) messages
+  - GPS_CNAV: Calculated using GPS CNAV messages
+  - GPS_MNAV: Calculated using GPS MNAV messages
+  length: 8
+  description: >
+    Provides further clarification of which ephemeris was used to generate the satellite information
+    provided in this message for systems which  have more than one ephemeris representation.
+- name: sv_data_time
+  type: type_satnav_time
+  description: >
+    Receiver time at which the data provided in this message is valid.
+- name: coordinate_frame
+  enum:
+  - ITRF: International Terrestrial Reference Frame
+  - ECEF: Earth-centered earth-fixed frame as defined by WGS-84 (nearly identical with ITRF)
+  - GTRF: Galileo Terrestrial Reference Frame (nearly identical with ITRF)
+  - PZ90: Parametri Zemli 1990 (PZ-90) reference frame
+  length: 8
+  description: >
+    Coordinate frame system used to describe satellite position and velocity.
+- name: sv_pos
+  type: float64[3]
+  units: m
+  description: >
+    Satellite position in frame specified by coordinate_frame at time specified by
+    sv_data_time_week_number and sv_data_time_seconds_of_week.
+- name: sv_vel
+  type: float64[3]
+  units: m/s
+  description: >
+    Satellite velocity in frame specified by coordinate_frame at time specified by
+    sv_data_time_week_number and sv_data_time_seconds_of_week.
+- name: sv_clock_bias
+  type: float64
+  units: sec
+  description: >
+    Satellite clock bias at the sv_data_time, used to correct the satellite time like delta_t_sv in
+    equation (1) of ICD-GPS-200L, Section 20.3.3.3.3.1.
+- name: sv_clock_drift
+  type: float64
+  units: sec/sec
+  description: >
+    Satellite clock drift rate at the sv_data_time.  By way of example, for GPS this would be af1 in
+    equation (2) of ICD-GPS-200L, Section 20.3.3.3.3.1.
+- name: group_delay_enum
+  enum:
+  - TGD_LNAV: >
+      group_delay_vector[0] is legacy Tgd as defined in ICD-GPS-200L Section 20.3.3.3.3.2.  All
+      other terms not used.
+  length: 4
+  description: >
+    Describes how to interpret group delay terms, because they vary by ephemeris type.  Descriptions
+    assume zero-indexing.
+- name: group_delay_vector
+  type: float32[4]
+  units: sec
+  description: >
+    Group delay terms, with interpretation provided by group_delay_enum.  (Need to verify that four
+    is sufficient for all ephemeris.)

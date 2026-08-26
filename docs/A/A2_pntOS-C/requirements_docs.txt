@@ -1,0 +1,32 @@
+# Breathe is an extension to reStructuredText and Sphinx to be able to read and render Doxygen xml output.
+breathe==4.34.0
+# docutils is a dependency of Sphinx.
+# Pinned to 0.17.1 because Sphinx 4.5.0 requires <0.18
+docutils==0.17.1
+# Exhale is an automatic C++ library API documentation generator using Doxygen, Sphinx, and Breathe
+exhale==0.3.5
+# Meson is a high performance build system
+meson==1.8.4
+# Sphinx is a Python documentation generator (and also supports C/C++)
+# Pinned to 4.5.0 because exhale does not currently support later versions
+Sphinx==4.5.0
+# A sphinx extension which outputs Apple help books.
+# Pinned to 1.0.4 because after this version it requires Sphinx>5.0.0
+sphinxcontrib-applehelp==1.0.4
+# A sphinx extension which outputs Devhelp document.
+# Pinned to 1.0.2 because after this version it requires Sphinx>5.0.0
+sphinxcontrib-devhelp==1.0.2
+# A sphinx extension which renders HTML help files.
+# Pinned to 2.0.1 because after this version it requires Sphinx>5.0.0
+sphinxcontrib-htmlhelp==2.0.1
+# A sphinx extension which renders display math in HTML via JavaScript.
+# Pinned to 1.0.1 because if it ever updates it will probably need Sphinx>5.0.0
+sphinxcontrib-jsmath==1.0.1
+# A sphinx extension which outputs QtHelp document.
+# Pinned to 1.0.3 because after this version it requires Sphinx>5.0.0
+sphinxcontrib-qthelp==1.0.3
+# A sphinx extension which outputs “serialized” HTML files (json and pickle).
+# Pinned to 1.1.5 because after this version it requires Sphinx>5.0.0
+sphinxcontrib-serializinghtml==1.1.5
+# Read the Docs theme for Sphinx
+sphinx-rtd-theme==1.0.0

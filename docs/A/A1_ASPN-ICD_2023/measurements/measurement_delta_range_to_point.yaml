@@ -1,0 +1,83 @@
+---
+
+name: measurement_delta_range_to_point
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Delta range to a point is the difference, d1 - d0, where
+
+    d1 is the distance between the sensor and the point at time = (time_of_validity)
+    d0 is the distance between the sensor and the point at time = (time_of_validity - delta_t)
+
+  Note, a negative obs indicates the sensor is closer to the point at time_of_validity than it was
+  at time_of_validity - delta_t.  Information about the remote point (its position and/or
+  correspondence with previous or future appearances of this same point) may be determined using
+  remote_point.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: remote_point
+  type: type_remote_point
+  units: various
+  description: >
+    Position and/or correspondence information about the remote point.
+
+- name: obs
+  type: float64
+  units: m
+  description: >
+    Delta range to the remote point.
+
+- name: delta_t
+  type: float64
+  units: sec
+  description: >
+    Duration of the observation time interval. The time_of_validity denotes the end of the time
+    interval. The start of the time interval is time_of_validity - delta_t.
+
+- name: variance
+  type: float64
+  units: m^2
+  description: >
+    Variance of the delta range measurement.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white
+    Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

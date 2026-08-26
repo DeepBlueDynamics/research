@@ -1,0 +1,89 @@
+---
+
+name: measurement_direction_of_motion_3d
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Direction of motion represented as a unit vector.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: reference_frame
+  enum:
+  - ECI: >
+      Direction of motion with respect to earth-centered inertial (ECi) frame, expressed in an
+      earth-centered inertial frame. See also ECi coordinate frame definition for x, y, and z
+      definitions.
+  - ECEF: >
+      Direction of motion with respect to earth-fixed frame expressed in earth-centered, earth-fixed
+      (ECEF) frame. See also ECEF coordinate frame definition for x, y, and z definitions.
+  - NED: >
+      Local level, geodetic velocity: Velocity with respect to earth-fixed frame expressed in the
+      North-East-Down (NED), local level frame.  See also NED coordinate frame definition for N, E,
+      and D definitions.
+  - SENSOR: >
+      Direction of motion with respect to earth-fixed frame expressed in sensor coordinate frame.
+      Sensor coordinate frame is defined in sensor metadataHeader.
+  length: 8
+  description: >
+    Defines measurement reference.
+
+- name: obs
+  type: float64[3]
+  description: >
+    Direction of motion represented as a unit vector.
+
+- name: error_vector
+  type: float64[3]
+  description: >
+    Error is expressed as rotation uncertainty about two axes, error_vector and
+    and a second error vector that is orthogonal to both the obs vector and the error_vector.
+
+- name: covariance
+  type: float64[2, 2]
+  units: rad^2
+  description: >
+    Error is expressed as rotation uncertainty about the following two axes: 1) error_vector, and 2)
+    a second error vector that is orthogonal to both the obs direction vector and the error_vector.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

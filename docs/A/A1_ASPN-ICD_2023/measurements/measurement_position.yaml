@@ -1,0 +1,94 @@
+---
+
+name: measurement_position
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  One, two, or three dimensional position relative to a user-defined reference frame.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: reference_frame
+  enum:
+  - ECI: >
+      Sensor position relative to the earth-centered, inertial (ECi) frame expressed where term1,
+      term2, and term3 are the x, y, and z components of ECI position in meters, respectively.  Each
+      term is optional. Error covariance is given using x-axis position error component (meters),
+      y-axis position error component (meters), and z-axis position error component (meters). In the
+      case of nulled position components, the corresponding error covariance terms are omitted. See
+      also ECi coordinate frame definition for x, y, and z definitions.
+  - GEODETIC: >
+      Sensor position relative to the WGS-84 reference expressed using term1 as geodetic latitude in
+      radians, term2 as longitude in radians, and term3 as geodetic altitude (or height above the
+      WGS-84 ellipsoid) in meters. Each term is optional. Error covariance is given using
+      north-south position error in meters (an expression of geodetic latitude error), east-west
+      position error in meters (an expression of longitude error in meters), and geodetic altitude
+      error in meters. In the case of nulled position components, the corresponding error covariance
+      terms are omitted.
+  length: 4
+  description: >
+    Defines measurement reference.
+- name: term1
+  type: float64?
+  units: various
+  description: >
+    First position term as defined in enum.
+- name: term2
+  type: float64?
+  units: various
+  description: >
+    Second position term as defined in enum.
+- name: term3
+  type: float64?
+  units: various
+  description: >
+    Third position term as defined in enum.
+- name: num_meas
+  type: uint8
+  description: >
+    Dimension of measurement provided.
+- name: covariance
+  type: float64[num_meas, num_meas]
+  units: various
+  description: >
+    Error covariance or variance depending on observation dimension.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

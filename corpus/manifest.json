@@ -1,0 +1,78 @@
+{
+  "run": "short-2026-08-26",
+  "grub_server": "http://host.docker.internal:6792",
+  "records": [
+    {
+      "id": "A1",
+      "title": "ASPN 2023 ICD (public YAML data model)",
+      "issuing_body": "Open-PNT / ASPN community",
+      "edition": "ASPN 2023",
+      "license": "FREE",
+      "url": "https://github.com/Open-PNT/ASPN-ICD",
+      "path": "corpus/A/A1_ASPN-ICD_2023.zip",
+      "sha256": "8f27d7cdf1c0c1f135b19eb88908a163bbf74e8702ea04964e13a0a6cdaed29a",
+      "retrieved_at": "2026-08-26T19:36:00Z",
+      "priority": "P0",
+      "demo_corpus": false
+    },
+    {
+      "id": "A1-GOV",
+      "title": "Government ASPN 2023 message set",
+      "license": "RESTRICTED",
+      "url": "https://www.aspn.us/access-government-aspn",
+      "notes": "Citizenship/contractor gate. Not fetched.",
+      "retrieved_at": "2026-08-26T19:35:57Z",
+      "priority": "P0"
+    },
+    {
+      "id": "A2",
+      "title": "pntOS C API",
+      "issuing_body": "Open-PNT",
+      "edition": "main @ 15d5aae 2026-08-21 (no tagged release)",
+      "license": "FREE",
+      "url": "https://github.com/Open-PNT/pntOS-C",
+      "path": "corpus/A/A2_pntOS-C.zip",
+      "sha256": "5db96705c49ffe6c84c07eedae3116efd886eade18e03bd7a3390ce55e7b7330",
+      "retrieved_at": "2026-08-26T19:37:20Z",
+      "priority": "P0"
+    },
+    {
+      "id": "C2",
+      "title": "NIST IR 8323r1 Foundational PNT Profile",
+      "edition": "Rev. 1 January 2023",
+      "license": "FREE",
+      "url": "https://nvlpubs.nist.gov/nistpubs/ir/2023/NIST.IR.8323r1.pdf",
+      "path": "corpus/C/C2_NIST_IR_8323r1.pdf",
+      "sha256": "3e047ea2ff737f6cff94ea7942a738ed49358b5d706ecd86dc23e3d1f2700e97",
+      "pages": 132,
+      "retrieved_at": "2026-08-26T19:38:00Z",
+      "priority": "P0",
+      "demo_corpus": true
+    },
+    {
+      "id": "C3",
+      "title": "DHS Resilient PNT Conformance Framework",
+      "edition": "Version 2.0 2022-05-31",
+      "license": "FREE",
+      "url": "https://www.dhs.gov/sites/default/files/2022-05/22_0531_st_resilient_pnt_conformance_framework_v2.0.pdf",
+      "catalog": "https://www.cisa.gov/resources-tools/resources/resilient-pnt-conformance-framework-version-20",
+      "path": "corpus/C/C3_DHS_Resilient_PNT_Conformance_Framework_v2.0.pdf",
+      "sha256": "f9e55aa93f9c0c7d1d51a06fbb1cb541504cb631df1ced61349d609ef9463070",
+      "pages": 37,
+      "retrieved_at": "2026-08-26T19:38:30Z",
+      "priority": "P0",
+      "notes": "Direct GET Akamai denied; recovered via browser download. CISA catalog confirmed in Hyperia pane 9863d913."
+    },
+    {
+      "id": "F2",
+      "title": "DON26BX05-NP004 topic + Q&A",
+      "license": "FREE",
+      "url": "https://www.navysbir.com/n26_5/DON26BX05-NP004.htm",
+      "path": "corpus/F/F2_DON26BX05-NP004_topic_2026-08-26.md",
+      "sha256": "ab67001293844b07b35df800b79dff8cc3549e52c88325fbd8b427d3478419b3",
+      "retrieved_at": "2026-08-26T19:37:48Z",
+      "priority": "P0",
+      "notes": "Unofficial navysbir copy. Q&A dated 8/8/26. Q2 answer garbled."
+    }
+  ]
+}

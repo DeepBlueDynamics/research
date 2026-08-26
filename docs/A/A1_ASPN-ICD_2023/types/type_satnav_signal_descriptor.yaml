@@ -1,0 +1,86 @@
+---
+
+name: type_satnav_signal_descriptor
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Satellite signal descriptor as defined in RINEX 3.05
+
+fields:
+- name: signal_descriptor
+  enum:
+  - L1C: See RINEX 3.05 Table A23
+  - L1S: See RINEX 3.05 Table A23
+  - L1L: See RINEX 3.05 Table A23
+  - L1X: See RINEX 3.05 Table A23
+  - L1P: See RINEX 3.05 Table A23
+  - L1W: See RINEX 3.05 Table A23
+  - L1N: See RINEX 3.05 Table A23
+  - L2C: See RINEX 3.05 Table A23
+  - L2D: See RINEX 3.05 Table A23
+  - L2S: See RINEX 3.05 Table A23
+  - L2L: See RINEX 3.05 Table A23
+  - L2X: See RINEX 3.05 Table A23
+  - L2P: See RINEX 3.05 Table A23
+  - L2W: See RINEX 3.05 Table A23
+  - L2N: See RINEX 3.05 Table A23
+  - L5I: See RINEX 3.05 Table A23
+  - L5Q: See RINEX 3.05 Table A23
+  - L5X: See RINEX 3.05 Table A23
+  - L4A: See RINEX 3.05 Table A23
+  - L4B: See RINEX 3.05 Table A23
+  - L4X: See RINEX 3.05 Table A23
+  - L6A: See RINEX 3.05 Table A23
+  - L6B: See RINEX 3.05 Table A23
+  - L6X: See RINEX 3.05 Table A23
+  - L3I: See RINEX 3.05 Table A23
+  - L3Q: See RINEX 3.05 Table A23
+  - L3X: See RINEX 3.05 Table A23
+  - L1B: See RINEX 3.05 Table A23
+  - L7I: See RINEX 3.05 Table A23
+  - L7Q: See RINEX 3.05 Table A23
+  - L7X: See RINEX 3.05 Table A23
+  - L8I: See RINEX 3.05 Table A23
+  - L8Q: See RINEX 3.05 Table A23
+  - L8X: See RINEX 3.05 Table A23
+  - L6C: See RINEX 3.05 Table A23
+  - L1Z: See RINEX 3.05 Table A23
+  - L5D: See RINEX 3.05 Table A23
+  - L5P: See RINEX 3.05 Table A23
+  - L5Z: See RINEX 3.05 Table A23
+  - L6S: See RINEX 3.05 Table A23
+  - L6L: See RINEX 3.05 Table A23
+  - L6E: See RINEX 3.05 Table A23
+  - L6Z: See RINEX 3.05 Table A23
+  - L2I: See RINEX 3.05 Table A23
+  - L2Q: See RINEX 3.05 Table A23
+  - L1D: See RINEX 3.05 Table A23
+  - L7D: See RINEX 3.05 Table A23
+  - L7P: See RINEX 3.05 Table A23
+  - L7Z: See RINEX 3.05 Table A23
+  - L8D: See RINEX 3.05 Table A23
+  - L8P: See RINEX 3.05 Table A23
+  - L6I: See RINEX 3.05 Table A23
+  - L6Q: See RINEX 3.05 Table A23
+  - L6D: See RINEX 3.05 Table A23
+  - L6P: See RINEX 3.05 Table A23
+  - L5A: See RINEX 3.05 Table A23
+  - L5B: See RINEX 3.05 Table A23
+  - L5C: See RINEX 3.05 Table A23
+  - L9A: See RINEX 3.05 Table A23
+  - L9B: See RINEX 3.05 Table A23
+  - L9C: See RINEX 3.05 Table A23
+  - L9X: See RINEX 3.05 Table A23
+  - L1Y: See RINEX 3.05 Table A23
+  - L1M: See RINEX 3.05 Table A23
+  - L2Y: See RINEX 3.05 Table A23
+  - L2M: See RINEX 3.05 Table A23
+  length: 256
+  description: >
+    Three letter RINEX Observation Code of signal as given in Table A23 of RINEX 3.05 specification
+    (https://files.igs.org/pub/data/format/rinex305.pdf). RINEX Observation Code must be paired with
+    Satellite system to determine a unique identifier

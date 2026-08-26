@@ -1,0 +1,31 @@
+---
+
+name: measurement_direction_3d_to_points
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  3D direction to points.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: num_obs
+  type: uint16
+  description: >
+    Total number of observations.
+
+- name: obs
+  type: type_direction_3d_to_point[num_obs]
+  description: Array of observations.

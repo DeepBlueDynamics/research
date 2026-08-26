@@ -1,0 +1,132 @@
+{
+    "title": "ASPN Measurement",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": ["string", "integer"],
+            "enum": [
+                "3.1",
+                2023
+            ]
+        },
+        "system_type": {
+            "type": "string",
+            "enum": [
+                "standard"
+            ]
+        },
+        "category": {
+            "type": "string",
+            "enum": [
+                "measurement",
+                "type",
+                "metadata"
+            ]
+        },
+        "controlled": {
+            "type": ["string"],
+            "enum": [
+                "no",
+                "yes",
+                "yes (proposed)"
+            ]
+        },
+        "distribution": {
+            "type": "string",
+            "enum": [
+                "unlimited (proposed)",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F"
+            ]
+        },
+        "experimental": {
+            "type": "boolean"
+        },
+        "description": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "pattern": "^((type_(direction_[23]d_to_point|header|image_feature|integrity|kepler_orbit|metadataheader|mounting|remote_point|satnav_(clock|obs|satellite_system|signal_descriptor|sv_data|time)|timestamp)|string|u?int(8|16|32|64)|float(32|64)|bool|enum)(\\[\\w+(, \\w+)?])?\\??)$"
+                    },
+                    "enum_values": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "length": {
+                        "type": "integer"
+                    },
+                    "units": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "description"
+                ],
+                "oneOf": [
+                    {
+                        "properties": {
+                            "name": true,
+                            "units": true,
+                            "description": true,
+                            "type": true
+                        },
+                        "required": [
+                            "type"
+                        ],
+                        "additionalProperties": false
+                    },
+                    {
+                        "properties": {
+                            "name": true,
+                            "units": true,
+                            "description": true,
+                            "enum": true,
+                            "length": true
+                        },
+                        "required": [
+                            "enum",
+                            "length"
+                        ],
+                        "additionalProperties": false
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "version",
+        "system_type",
+        "category",
+        "distribution",
+        "experimental",
+        "description",
+        "fields"
+    ]
+}

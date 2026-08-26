@@ -1,0 +1,74 @@
+---
+
+name: type_remote_point
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  ASPN custom type representing a point. This includes optional information
+  (indicated by included_terms) for the position and a correspondence ID for the
+  point.
+
+fields:
+- name: included_terms
+  type: uint8
+  description: >
+    Indicates which information is included about the point
+      0 = no information included (unknown point)
+      1 = id included (corresponded point)
+      2 = position included (known point)
+      3 = id and position included
+
+- name: id
+  type: uint32
+  description: >
+    Unique identification number assigned by the sensor. Points that have the
+    same id from a sensor are multiple instances of the same point as determined
+    by a sensor's point correspondence.
+
+- name: position_reference_frame
+  enum:
+  - NONE: |
+      No reference frame. This is only valid if position is not included
+      (included_terms is 0 or 1).
+  - GEODETIC: |
+      Point position relative to the WGS-84 reference expressed using position1 as geodetic latitude
+      in radians, position2 as longitude in radians, and position3 as geodetic altitude (or height
+      above the WGS-84 ellipsoid) in meters. Each term is optional.
+      position_covariance is given using north-south position error in meters (an expression of
+      geodetic latitude error), east-west position error in meters (an expression of longitude
+      error), and geodetic altitude error in meters. In the case of nulled position components, the
+      corresponding error covariance terms are omitted.
+  length: 8
+  description: >
+    Defines position reference.
+
+- name: position1
+  type: float64?
+  units: various
+  description: >
+    First position term as defined in position_reference_frame.
+- name: position2
+  type: float64?
+  units: various
+  description: >
+    Second position term as defined in position_reference_frame.
+- name: position3
+  type: float64?
+  units: various
+  description: >
+    Third position term as defined in position_reference_frame.
+
+- name: num_position_components
+  type: uint8
+  description: >
+    Dimension of position provided.
+- name: position_covariance
+  type: float64[num_position_components, num_position_components]
+  units: m^2
+  description: >
+    Position error covariance (or variance depending on num_position_components) as defined in
+    position_reference_frame.

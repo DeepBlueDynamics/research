@@ -1,0 +1,48 @@
+---
+
+name: type_image_feature
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: Image feature characteristics
+
+fields:
+- name: response
+  type: float64
+  description: >
+      Value representing the magnitude of the response of the keypoint detection
+      algorithm used to locate this keypoint in the image.
+- name: orientation
+  units: rad
+  type: float64
+  description: >
+      Value representing the orientation of the detected keypoint, as measured
+      relative to the image coordinate system (radians, clockwise). Metadata
+      flag determines if this field is calculated by the current keypoint
+      detector.
+- name: size
+  units: pixels
+  type: float64
+  description: >
+      Effective size (pixels) of the detected keypoint. This field takes into
+      consideration the octave and kernel used to localize the keypoint, and
+      normalizes to the original size of the image.
+- name: class_id
+  type: uint16
+  description: >
+      ID that ties the detected keypoint to a class or group of keypoints.
+- name: octave
+  type: uint16
+  description: >
+      Octave or pyramid layer from which the detected keypoint was extracted.
+- name: descriptor_size
+  type: uint16
+  description: >
+      Size of the descriptor in bytes.
+- name: descriptor
+  type: uint8[descriptor_size]
+  description: >
+      Feature descriptor.

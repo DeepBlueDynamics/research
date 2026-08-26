@@ -1,0 +1,74 @@
+---
+
+name: measurement_specific_force_1d
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Measures the apparent specific force along the sense-axis. Example sensors are an atomic
+  interferometer, quantum gravimeter, or accelerometer. The apparent specific force is corrupted by
+  inertial (Coriolis and Centrifugal) effects. The sense-axis is the sensor frame x-axis as defined
+  in mounting.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: sensor_type
+  enum:
+  - INTEGRATED: >
+      Specific force integrated over last measurement period expressed as delta velocity in m/s.
+      Variance units are (m/s)^2. Time of validity is the end of integration period. Integration
+      period is from previous measurement to the current measurement.
+  - SAMPLED: Specific force is sampled expressed in m/s/s. Variance units are (m/s/s)^2.
+  length: 32
+  description: sensor type
+
+
+- name: obs
+  type: float64
+  units: various
+  description: Specific force defined in sensor_type enum.
+
+- name: variance
+  type: float64
+  units: various
+  description: Variance of the observation with units defined in sensor_type enum.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

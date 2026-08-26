@@ -1,0 +1,70 @@
+---
+
+name: measurement_accumulated_distance_traveled
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Accumulated distance traveled over the time period from (time_of_validity - delta_t) to
+  time_of_validity.  For example, a sensor that travels (over the observation time period) in one
+  direction 1m and reverses course to travel 1m back (and ends at its starting position) would have
+  an accumulated distance traveled of 2m.  Sensor examples may include an odometer or a wheel
+  encoder.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: delta_t
+  type: float64
+  units: sec
+  description: >
+    Duration of the observation time interval. The time_of_validity denotes the end of the time
+    interval. The start of the time interval is time_of_validity - delta_t.
+- name: obs
+  type: float64
+  units: m
+  description: >
+    Accumulated distance traveled over time period.
+- name: variance
+  type: float64
+  units: m^2
+  description: >
+    Accumulated distance traveled variance.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

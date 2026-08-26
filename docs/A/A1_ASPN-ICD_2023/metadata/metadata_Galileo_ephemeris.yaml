@@ -1,0 +1,52 @@
+---
+
+name: metadata_Galileo_ephemeris
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: >
+  GALILEO Ephemeris describing satellite locations.  Definitions and usage are covered in OS SIS
+  ICD, Issue 2.0, January 2021, Section 4.2, 4.3, and 5.1.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: nav_msg_type
+  enum:
+  - INAV: I/NAV ephemeris.
+  - FNAV: F/NAV ephemeris.
+  length: 4
+  description: >
+    Enumerated field which describes the GALILEO message type used to define clock correction
+    parameters.
+
+- name: prn
+  type: int32
+  description: >
+    Satellite PRN number.
+
+- name: clock
+  type: type_satnav_clock
+  description: >
+   GNSS broadcast parameters required to calculate sv clock corrections.
+
+- name: orbit
+  type: type_kepler_orbit
+  description: >
+   Keplerian orbit parameters required to calculate satellite position.
+
+- name: bgd
+  type: float64
+  units: s
+  description: >
+    Broadcast group delay (E1-E5b if F/Nav, E1-E5b if I/NAV)

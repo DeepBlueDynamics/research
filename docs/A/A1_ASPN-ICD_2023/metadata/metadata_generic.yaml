@@ -1,0 +1,25 @@
+---
+
+name: metadata_generic
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Metadata for a generic sensor.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: mounting
+  type: type_mounting
+  description: >
+    Standard ASPN mounting information.

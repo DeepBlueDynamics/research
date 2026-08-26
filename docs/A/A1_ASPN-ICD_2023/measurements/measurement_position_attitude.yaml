@@ -1,0 +1,105 @@
+---
+
+name: measurement_position_attitude
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Position and attitude, also known as pose. Position is relative to a user-defined reference frame.
+  Attitude expressed as a quaternion, a four element vector representation, the elements of which
+  are functions of the orientation of the vector and the magnitude of the rotation.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: reference_frame
+  enum:
+  - ECI: >
+      Sensor position and attitude relative to the earth-centered, inertial (ECi) frame. Position is
+      expressed where p1, p2, and p3 are the x, y, and z components of ECI position in meters,
+      respectively. Attitude is expressed as a four-element quaternion. Error covariance is given
+      using x-axis position error component (meters), y-axis position error component (meters),
+      z-axis position error component (meters), tilt error about the x-axis (rad), tilt error about
+      the y-axis (rad), and tilt error about the z-axis (rad). See also ECi coordinate frame
+      definition for x, y, and z definitions.
+  - GEODETIC: >
+      Sensor position, and attitude relative to the WGS-84 reference.  Position is expressed where
+      p1 is the geodetic latitude in radians, p2 is the longitude in radians, and p3 is the geodetic
+      altitude (or height above the WGS-84 ellipsoid) in meters. Attitude is the sensor frame
+      rotation relative to the local level frame expressed as a four-element quaternion. Error
+      covariance is given using north-south position error (meters), east-west position error
+      (meters), geodetic altitude error (meters), tilt error about the north axis (rad), tilt error
+      about the east axis (rad), and tilt error about the down axis (rad).
+  length: 8
+  description: >
+    Defines measurement reference.
+- name: p1
+  type: float64
+  units: rad
+  description: >
+    First position term as defined in enum.
+- name: p2
+  type: float64
+  units: rad
+  description: >
+    First position term as defined in enum.
+- name: p3
+  type: float64
+  units: m
+  description: >
+    First position term as defined in enum.
+- name: quaternion
+  type: float64[4]
+  description: >
+    Four element quaternion, q = [a, b, c, d], where a = cos(phi/2), b = (phi_x/phi)*sin(phi/2), c =
+    (phi_y/phi)*sin(phi/2), and d = (phi_z/phi)*sin(phi/2).  In this description, the vector [phi_x,
+    phi_y, phi_z] represents the rotation vector that describes the frame rotation to be applied to
+    the "reference" frame (ECI, ECEF, or NED) to rotate it into the axes that describe the measured
+    attitude, and the value phi is the magnitude of the [phi_x, phi_y, phi_z] vector.
+
+    See "conventions" documentation for more detailed information.
+
+- name: covariance
+  type: float64[6, 6]
+  units: various
+  description: >
+    Measurement error variance or covariance depending on measurement dimension.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

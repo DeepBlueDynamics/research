@@ -1,0 +1,80 @@
+---
+
+name: measurement_speed
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Speed is the magnitude of the velocity vector with respect to the user-specified reference frame.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+        Time at which the measurement is considered to be valid.
+
+- name: reference
+  enum:
+  - TAS: >
+      Speed with respect to air measured as true airspeed (TAS) with respect to air mass expressed
+      in sensor coordinate frame.
+  - IAS: >
+      Speed with respect to air measured as indicated airspeed (IAS) with respect to air mass
+      expressed in sensor coordinate frame; for example, dynamic pressure from a pitot tube
+      converted to airspeed without compensation for instrument error, position, altitude, or
+      temperature.
+  - WATER: >
+      Speed with respect to water. Speed with respect to water expressed in sensor coordinate frame.
+  - GROUND: Speed with respect to ground. An example source is a ground Doppler radar.
+  length: 8
+  description: >
+    Defines measurement reference.
+
+- name: speed
+  type: float64
+  units: m/s
+  description: >
+    Speed as the magnitude of the velocity.
+
+- name: variance
+  type: float64
+  units: (m/s)^2
+  description: Speed variance.
+
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

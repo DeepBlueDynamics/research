@@ -1,0 +1,25 @@
+---
+
+name: type_satnav_satellite_system
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Satellite system name
+
+fields:
+- name: satellite_system
+  enum:
+  - SYS_GPS: GPS.
+  - SYS_GALILEO: Galileo.
+  - SYS_GLONASS: GLONASS.
+  - SYS_BEIDOU: BeiDou.
+  - SYS_SBAS: SBAS.
+  - SYS_QZSS: QZSS.
+  - SYS_IRNSS: IRNSS.
+  length: 32
+  description: >
+    Enumerated field which describes the Satellite System.

@@ -1,0 +1,79 @@
+---
+
+name: measurement_magnetic_field
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Vector magnetic field.  Represents the magnetic field strength along sensor x, y, and z axes as
+  defined in mounting.  May represent 1-D, 2-D, or 3-D measurement
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: num_meas
+  type: uint8
+  description: >
+    Dimension of measurement provided.  May be 1, 2, or 3.
+
+- name: x_field_strength
+  type: float64?
+  units: nT
+  description: >
+    Field strength of magnetic field in nanoTesla (nT).
+
+- name: y_field_strength
+  type: float64?
+  units: nT
+  description: >
+    Field strength of magnetic field in nanoTesla (nT).
+
+- name: z_field_strength
+  type: float64?
+  units: nT
+  description: >
+    Field strength of magnetic field in nanoTesla (nT).
+
+- name: covariance
+  type: float64[num_meas, num_meas]
+  units: (nT)^2
+  description: >
+    Measurement error variance or covariance depending on measurement dimension.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

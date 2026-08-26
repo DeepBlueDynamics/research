@@ -1,0 +1,59 @@
+---
+
+name: measurement_IMU
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Inertial Measurement Unit (IMU) measurements from the device's three axis accelerometers and three
+  axis gyroscopes.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: IMU_type
+  enum:
+  - INTEGRATED: >
+      delta velocity and delta rotation measurements from the device's three axis accelerometers and
+      three axis gyroscopes. Specific force integrated over last measurement period expressed as
+      delta_v array in m/s. Angular rate integrated over last measurement period expressed as
+      delta_theta array in radians. Time of validity is the end of integration period. Integration
+      period is from previous measurement to the current measurement.
+  - SAMPLED: >
+      sampled specific force and rotation rates from the device's three axis accelerometers and
+      three axis gyroscopes. Specific force is sampled expressed as an array in m/s/s. Angular rate
+      is sampled and expressed as an array in rad/s.
+  length: 4
+  description: IMU type
+
+- name: meas_accel
+  type: float64[3]
+  units: various
+  description: >
+    Accelerometer (specific force) measurements in 3 axes per enumerated
+    definition.
+- name: meas_gyro
+  type: float64[3]
+  units: various
+  description: Gyroscope measurements in 3 axes per enumerated definition.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

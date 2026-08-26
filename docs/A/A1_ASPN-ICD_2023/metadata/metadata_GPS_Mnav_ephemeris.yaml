@@ -1,0 +1,116 @@
+---
+
+name: metadata_GPS_Mnav_ephemeris
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: >
+  MNAV Ephemeris describing GPS satellite locations.  Definitions and usage are covered in
+  ICD-GPS-200L, Section 20.3.3.4 and following, with additional military use definitions
+  and usage covered in ICD-GPS-700D.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: week_number
+  type: uint16
+  units: weeks
+  description: >
+    Full GPS week number calculated from the Modulo 1024 WN in Subframe 1
+    and the number of GPS week rollovers
+- name: prn
+  type: int32
+  description: >
+    Satellite PRN number.
+- name: clock
+  type: type_satnav_clock
+  description: >
+   GNSS broadcast parameters required to calculate sv clock corrections.
+- name: orbit
+  type: type_kepler_orbit
+  description: >
+   Keplerian orbit parameters required to calculate satellite position.
+- name: a_dot
+  type: float64
+  units: m/s
+  description: >
+    Change rate of semi-major axis.
+- name: delta_af_0
+  type: float64
+  units: s
+  description: >
+    SV clock bias correction provided by the Mnav Message Correction (MMC).
+- name: delta_af_1
+  type: float64
+  units: s
+  description: >
+    SV clock drift correction provided by the Mnav Message Correction (MMC).
+- name: delta_gamma
+  type: float64
+  units: radians
+  description: >
+    Ephemeris parameters correction provided by the Mnav Message Correction (MMC).
+- name: delta_i
+  type: float64
+  units: radians
+  description: >
+    Angle of inclination correction provided by the Mnav Message Correction (MMC).
+- name: delta_omega
+  type: float64
+  units: radians
+  description: >
+    Angle of Right Ascension correction provided by the Mnav Message Correction (MMC).
+- name: delta_A
+  type: float64
+  units: m
+  description: >
+    Semi-major axis correction provided by the Mnav Message Correction (MMC).
+- name: isc_l1_m_e
+  type: float64
+  units: s
+  description: >
+    L M1_E to L1 P(Y) inter-signal correction.
+- name: isc_l2_m_e
+  type: float64
+  units: s
+  description: >
+    L M2_E to L1 P(Y) inter-signal correction.
+- name: isc_l1_m_s
+  type: float64
+  units: s
+  description: >
+    L M1_S to L1 P(Y) inter-signal correction.
+- name: isc_l2_m_s
+  type: float64
+  units: s
+  description: >
+    L M2_S to L1 P(Y) inter-signal correction.
+- name: isa_l2_py
+  type: float64
+  description: >
+    L2 P(Y) to L1 P(Y) inter-signal accuracy index.
+- name: isa_l1_m_e
+  type: float64
+  description: >
+    L M1_E to L1 P(Y) inter-signal accuracy index.
+- name: isa_l2_m_e
+  type: float64
+  description: >
+    L M2_E to L1 P(Y) inter-signal accuracy index.
+- name: isa_l1_m_s
+  type: float64
+  description: >
+    L M1_S to L1 P(Y) inter-signal accuracy index.
+- name: isa_l2_m_s
+  type: float64
+  description: >
+    L M2_S to L1 P(Y) inter-signal accuracy index.

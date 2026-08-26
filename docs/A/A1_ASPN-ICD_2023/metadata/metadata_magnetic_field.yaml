@@ -1,0 +1,57 @@
+---
+
+name: metadata_magnetic_field
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Metadata for a magnetic field measurement.  In addition to generic metadata information,
+  calibration parameters may be provided to account for effects such as soft iron, scale factor,
+  non-orthogonality, zero-bias, and hard iron.  In general, for an num_meas-dimensional measurement,
+  the magnetic field calibration metadata (K and b) shall be used as
+
+    m_calibrated = K * m_measured - b
+
+  where m_calibrated, m_measured, and b are num_meas x 1 vectors (scalar for num_meas = 1) and K is
+  an num_meas x num_meas matrix (scalar for num_meas = 1).  See magnetic_calibration.md for
+  additional details.
+
+  More sophisticated approaches that include calibration parameters such as time-varying effects,
+  first-order Gauss-Markov bias models, and calibration parameter uncertainties may be included
+  using an appropriate error model in the measurement message.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: mounting
+  type: type_mounting
+  description: >
+    Standard ASPN mounting information.
+
+- name: num_meas
+  type: uint8
+  description: >
+    Dimension of measurement for which this metadata is applicable.  May be 1, 2, or 3.
+
+- name: K
+  type: float64[num_meas, num_meas]?
+  description: >
+    Optional calibration parameter to account for the combined effects of soft iron, scale factor,
+    and non-orthogonality as a unitless num_meas x num_meas matrix. Optional, but if provided, b
+    must also be provided.
+
+- name: b
+  type: float64[num_meas]?
+  units: nT
+  description: >
+    Optional calibration parameter to account for the combined effects of zero-bias and hard iron as
+    a num_meas x 1 vector in nanoTesla (nT). Optional, but if provided, K must also be provided.

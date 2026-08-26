@@ -1,0 +1,23 @@
+<!-- crawl_url: https://github.com/Open-PNT/ASPN-ICD/tree/main/docs -->
+<!-- crawl_ts: 1787772987 -->
+<!-- quality: minimal -->
+<!-- char_count: 1166 -->
+<!-- word_count: 93 -->
+
+[Open-PNT](https://github.com/Open-PNT)/**[ASPN-ICD](https://github.com/Open-PNT/ASPN-ICD)**Public- [Notifications](https://github.com/login?return_to=%2FOpen-PNT%2FASPN-ICD)
+- [Fork 0](https://github.com/login?return_to=%2FOpen-PNT%2FASPN-ICD)
+- [Star 8](https://github.com/login?return_to=%2FOpen-PNT%2FASPN-ICD)
+
+## Collapse file tree
+
+## Files
+
+Search this repository(forward slash)forward slash//
+
+# docs
+
+/Copy pathMore optionsMore options[nosracd](https://github.com/Open-PNT/ASPN-ICD/commits?author=nosracd)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)successJan 21, 2026[b2e7b64](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)·Jan 21, 2026[History](https://github.com/Open-PNT/ASPN-ICD/commits/main/docs)Open commit detailsHistory/
+
+# docs
+
+/Copy pathNameNameLast commit messageLast commit date[..](https://github.com/Open-PNT/ASPN-ICD/tree/main)[figures](https://github.com/Open-PNT/ASPN-ICD/tree/main/docs/figures)[figures](https://github.com/Open-PNT/ASPN-ICD/tree/main/docs/figures)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[.gitkeep](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/.gitkeep)[.gitkeep](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/.gitkeep)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[FAQs.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/FAQs.md)[FAQs.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/FAQs.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[clock_identifiers.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/clock_identifiers.md)[clock_identifiers.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/clock_identifiers.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[conventions.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/conventions.md)[conventions.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/conventions.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[experimental_models.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/experimental_models.md)[experimental_models.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/experimental_models.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[extensibility.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/extensibility.md)[extensibility.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/extensibility.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[magnetic_calibration.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/magnetic_calibration.md)[magnetic_calibration.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/magnetic_calibration.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[message_identifiers.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/message_identifiers.md)[message_identifiers.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/message_identifiers.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[multiple_pva.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/multiple_pva.md)[multiple_pva.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/multiple_pva.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026[pressure_altitude.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/pressure_altitude.md)[pressure_altitude.md](https://github.com/Open-PNT/ASPN-ICD/blob/main/docs/pressure_altitude.md)[Initial commit: public release](https://github.com/Open-PNT/ASPN-ICD/commit/b2e7b64067b9cd0171f02ffe773c1174a7e2eb96)Jan 21, 2026

@@ -1,0 +1,38 @@
+---
+
+name: type_header
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Header for each ASPN measurement
+
+fields:
+- name: vendor_id
+  type: uint32
+  description: >
+    Unique identifier that identifies the device or application vendor.  Vendor ID is user-selected,
+    inspired by your company name to mitigate conflicts with other users.  Vendor IDs 0x23 00 00 00
+    through 0x23 FF FF FF inclusive are reserved and shall not be chosen as user-selected vendor
+    IDs.
+- name: device_id
+  type: uint64
+  description: >
+    Unique identifier that identifies the sensor or device type as assigned by the vendor.
+    Device_ids are unique within a given vendor_id.
+- name: context_id
+  type: uint32
+  description: >
+    Unique identifier that provides additional context to define a logical stream of data from the
+    sensor or device as assigned by the vendor.  This identifier allows multiple measurements of the
+    same type to be provided by a device. Context_ids are unique within a given vendor_id and
+    device_id.
+- name: sequence_id
+  type: uint16
+  description: >
+    Unique identifier for a specific message within a data stream as defined by a vendor_id,
+    device_id, and context_id.  Sequential messages from each data source (identified by vendor_id,
+    device_id, and context_id) shall increment by exactly 1 and rollover to 0 after an overflow.

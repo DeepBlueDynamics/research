@@ -1,0 +1,89 @@
+---
+
+name: measurement_attitude_3d
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Three-dimensional attitude expressed as a quaternion, a four element vector representation, the
+  elements of which are functions of the orientation of the vector and the magnitude of the
+  rotation.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid .
+- name: reference_frame
+  enum:
+  - ECI: >
+      Absolute inertial attitude. Sensor frame attitude relative to the earth-centered, inertial
+      (ECi) frame. See also ECi coordinate frame definition for x, y, and z definitions.
+  - ECEF: >
+      Attitude relative to Earth. Sensor frame attitude relative to the ECEF frame.  Generally, time
+      is required to convert between absolute inertial attitude and attitude relative to Earth. See
+      also ECEF coordinate frame definition for x, y, and z definitions.
+  - NED: >
+      Local level, geographic attitude.  Sensor frame attitude with respect to earth-fixed frame
+      expressed in the North-East-Down (NED), local level frame.  See also NED coordinate frame
+      definition for N, E, and D definitions.  Generally, position is required to convert between
+      attitude relative to the earth and locally level, geographic attitude.  See also NED
+      coordinate frame definition for N, E, and D definitions.
+  length: 8
+  description: >
+    Defines measurement reference.
+- name: quaternion
+  type: float64[4]
+  description: >
+    Four element quaternion, q = [a, b, c, d], where a = cos(phi/2), b = (phi_x/phi)*sin(phi/2), c =
+    (phi_y/phi)*sin(phi/2), and d = (phi_z/phi)*sin(phi/2).  In this description, the vector [phi_x,
+    phi_y, phi_z] represents the rotation vector that describes the frame rotation to be applied to
+    the "reference" frame (ECI, ECEF, or NED) to rotate it into the axes that describe the measured
+    attitude, and the value phi is the magnitude of the [phi_x, phi_y, phi_z] vector.
+
+    See "conventions" documentation for more detailed information.
+
+- name: tilt_error_covariance
+  type: float64[3, 3]
+  units: rad^2
+  description: >
+    Tilt error covariance matrix.  This matrix represents the uncertainty in the "tilt errors" that
+    represent the additional rotation to be applied to the provided attitude quaternion in order to
+    convert it to the true attitude with no errors.  By convention, these "tilt errors" are
+    expressed in the reference frame (ECI, ECEF, or NED).
+
+    See "conventions" documentation for more detailed information.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

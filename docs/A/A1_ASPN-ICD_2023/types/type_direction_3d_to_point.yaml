@@ -1,0 +1,103 @@
+---
+
+name: type_direction_3d_to_point
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  3D direction to or from a point as defined by the reference enum. Information about the remote
+  point (its position and/or correspondence with previous or future appearances
+  of this same point) may be determined using remote_point.
+
+fields:
+- name: remote_point
+  type: type_remote_point
+  units: various
+  description: >
+    Position and/or correspondence information about the remote point.
+
+- name: reference_frame
+  enum:
+  - AZ_EL: >
+      Azimuth (first component of obs) is the angle between the sensor frame x-axis
+      (boresight) and the projection of the point onto the sensor frame's
+      x-y plane (positive right-hand rule about the sensor frame z-axis). Elevation
+      (second component of obs) is the angle between the sensor frame's x-y plane and the
+      vector from the sensor to the point (positive right-hand rule about the
+      intermediate axis formed by the azimuth rotation). The covariance is for
+      the azimuth and elevation errors. Units for the observation are in rad,
+      covariance rad^2.
+  - PIXEL: >
+      The pixel coordinates of the point in an image (sub-pixel resolution is
+      allowed). When combined with the camera model, these can be converted to
+      the NORMALIZED_IMAGE reference frame representation.  Units for the
+      observation are in pixels, covariance pixels^2.
+  - NORMALIZED_IMAGE: >
+      2D position from the sensor frame origin to the point expressed in
+      components y and z of the sensor frame normalized by the boresight
+      distance. The x component of the sensor frame is the boresight axis. Units
+      for the observation are m/m, covariance (m/m)^2.
+  - SINE_SPACE: >
+      2D position from the sensor frame origin to the point expressed in
+      components y and z of the sensor frame normalized by the range to the
+      point. The x component of the sensor frame is the boresight axis. Units for
+      the observation are m/m, covariance (m/m)^2.
+  length: 8
+  description: >
+    Defines measurement reference frame.
+
+- name: obs
+  type: float64[2]
+  units: various
+  description: >
+    3D direction to the remote point as defined in reference_frame.
+
+- name: covariance
+  type: float64[2, 2]
+  units: various
+  description: >
+    Covariance of the direction measurement as defined in reference_frame.
+
+- name: has_observation_characteristics
+  type: bool
+  description: >
+    Switch for whether observation_characteristics is valid or not.
+- name: observation_characteristics
+  type: type_image_feature
+  units: various
+  description: >
+    Image feature characteristics.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white
+    Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

@@ -1,0 +1,92 @@
+---
+
+name: type_kepler_orbit
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Keplerian orbit parameters required to calculate satellite position
+
+fields:
+- name: m_0
+  type: float64
+  units: rad
+  description: >
+    Mean anomaly at reference time.
+- name: delta_n
+  type: float64
+  units: rad/s
+  description: >
+    Mean motion difference from computed value.
+- name: e
+  type: float64
+  description: >
+    Eccentricity.
+- name: sqrt_a
+  type: float64
+  units: sqrt(m)
+  description: >
+    Square root of semi-major axis.
+- name: omega_0
+  type: float64
+  units: rad
+  description: >
+    Longitude of ascending node of orbit plane at weekly epoch
+- name: i_0
+  type: float64
+  units: rad
+  description: >
+    Inclination angle at reference time.
+- name: i_dot
+  type: float64
+  units: rad
+  description: >
+    Rate of change of inclination angle.
+- name: omega
+  type: float64
+  units: rad
+  description: >
+    Argument of perigee.
+- name: omega_dot
+  type: float64
+  units: rad/s
+  description: >
+    Rate of right ascension.
+- name: c_uc
+  type: float64
+  units: rad
+  description: >
+    Amplitude of cosine harmonic correction terms to the argument of latitude.
+- name: c_us
+  type: float64
+  units: rad
+  description: >
+    Amplitude of sine harmonic correction terms to the argument of latitude.
+- name: c_rc
+  type: float64
+  units: m
+  description: >
+    Amplitude of cosine harmonic correction terms to the orbit radius.
+- name: c_rs
+  type: float64
+  units: m
+  description: >
+    Amplitude of sine harmonic correction terms to the orbit radius.
+- name: c_ic
+  type: float64
+  units: rad
+  description: >
+    Amplitude of cosine harmonic correction terms to the angle of inclination.
+- name: c_is
+  type: float64
+  units: rad
+  description: >
+    Amplitude of sine harmonic correction terms to the angle of inclination.
+- name: t_oe
+  type: float64
+  units: s
+  description: >
+    Ephemeris reference time.

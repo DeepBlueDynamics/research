@@ -1,0 +1,81 @@
+---
+
+name: measurement_attitude_2d
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Two-dimensional, local level, geographic attitude expressed in the locally level NED frame as a
+  rotation about two axes as defined by the reference_frame.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid .
+- name: reference_frame
+  enum:
+  - NE: Local level, geographic attitude expressed in the locally level NED
+      frame as a rotation about the E-axis followed by rotation about the N-axis. Positive rotation
+      follows the right-hand rule.  The third rotation in the NED-frame is unspecified and is not
+      sensed.  Use attitude_3d to report a sensed third dimension that is zero.  See also NED
+      coordinate frame definition for N, E, and D definitions.
+  - ND: Local level, geographic attitude expressed in the locally level NED
+      frame as a rotation about the D-axis followed by rotation about the N-axis. Positive rotation
+      follows the right-hand rule.  The third rotation in the NED-frame is unspecified and is not
+      sensed.  Use attitude_3d to report a sensed third dimension that is zero.  See also NED
+      coordinate frame definition for N, E, and D definitions.
+  - ED: Local level, geographic attitude expressed in the locally level NED
+      frame as a rotation about the D-axis followed by rotation about the E-axis. Positive rotation
+      follows the right-hand rule.  The third rotation in the NED-frame is unspecified and is not
+      sensed.  Use attitude_3d to report a sensed third dimension that is zero.  See also NED
+      coordinate frame definition for N, E, and D definitions.
+  length: 8
+  description: >
+    Defines measurement reference.
+
+- name: attitude2d
+  type: float64[2]
+  units: rad
+  description: >
+    Two-dimensional, local level, geographic attitude.
+
+- name: covariance
+  type: float64[2, 2]
+  units: rad^2
+  description: >
+    Covariance of the measurement.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

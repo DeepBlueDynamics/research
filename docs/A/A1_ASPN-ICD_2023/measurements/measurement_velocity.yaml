@@ -1,0 +1,98 @@
+---
+
+name: measurement_velocity
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: >
+  Velocity is time rate of change of position with respect to the user-specified reference frame.
+  May be one, two, or three dimensional.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: reference_frame
+  enum:
+  - ECI: >
+      Velocity with respect to earth-centered inertial frame, expressed in an earth-centered
+      inertial frame. See also ECi coordinate frame definition for x, y, and z definitions.
+  - ECEF: >
+      Velocity with respect to earth-fixed frame expressed in earth-centered, earth-fixed (ECEF)
+      frame. See also ECEF coordinate frame definition for x, y, and z definitions.
+  - NED: >
+      Local level, geodetic velocity: Velocity with respect to earth-fixed frame expressed in the
+      North-East-Down (NED), local level frame.  See also NED coordinate frame definition for N, E,
+      and D definitions.
+  - SENSOR: >
+      Velocity with respect to earth-fixed frame expressed in sensor coordinate frame. Sensor
+      coordinate frame is defined in sensor metadataHeader.
+  length: 32
+  description: >
+    Defines measurement reference.
+
+- name: x
+  type: float64?
+  units: m/s
+  description: >
+    Velocity along the first axis of the measurement reference frame enumerated in reference_frame.
+
+- name: y
+  type: float64?
+  units: m/s
+  description: >
+    Velocity along the second axis of the measurement reference frame enumerated in reference_frame.
+
+- name: z
+  type: float64?
+  units: m/s
+  description: >
+    Velocity along the third axis of the measurement reference frame enumerated in reference_frame.
+
+- name: num_meas
+  type: uint8
+  description: >
+    Dimension of measurement provided.
+
+- name: covariance
+  type: float64[num_meas, num_meas]
+  units: (m/s)^2
+  description: Measurement error covariance or variance depending on measurement dimension.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

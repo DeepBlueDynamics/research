@@ -1,0 +1,55 @@
+---
+
+name: metadata_BeiDou_ephemeris
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: >
+  BeiDou Ephemeris describing satellite locations.  Definitions and usage are covered in
+  BDS-SIS-ICD-BII-3.0, February 2019,
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: prn
+  type: int32
+  description: >
+    Satellite PRN number.
+- name: clock
+  type: type_satnav_clock
+  description: >
+   GNSS broadcast parameters required to calculate sv clock corrections.
+- name: orbit
+  type: type_kepler_orbit
+  description: >
+   Keplerian orbit parameters required to calculate satellite position.
+- name: t_gd1
+  type: float64
+  units: s
+  description: >
+    Group delay differential for B1I user.
+- name: t_gd2
+  type: float64
+  units: s
+  description: >
+    Group delay differential for B2I user.
+- name: aodc
+  type: int16
+  units: none
+  description: >
+    Age of data, clock is updated at start of each hour in BDT per table 5-6 in BDS-SIS-ICD-BII-3.0.
+- name: aode
+  type: int16
+  units: none
+  description: >
+    Age of data, ephemeris is updated at start of each hour in BDT per table 5-8 in
+    BDS-SIS-ICD-BII-3.0.

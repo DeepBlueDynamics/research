@@ -1,0 +1,5 @@
+# build artifacts and derived search indexes
+lume/target/
+.lume-index*/
+tools/*.log
+__pycache__/

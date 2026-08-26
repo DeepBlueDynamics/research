@@ -1,0 +1,33 @@
+---
+
+name: type_satnav_clock
+version: 2023
+system_type: standard
+category: type
+controlled: no
+distribution: A
+experimental: false
+description: |
+  satnav broadcast parameters required to calculate sv clock corrections
+
+fields:
+- name: t_oc
+  type: float64
+  units: s
+  description: >
+    Clock reference time.
+- name: af_0
+  type: float64
+  units: s
+  description: >
+    Satellite clock bias.
+- name: af_1
+  type: float64
+  units: s/s
+  description: >
+    Satellite clock drift.
+- name: af_2
+  type: float64
+  units: s/s^2
+  description: >
+    Satellite clock drift rate.

@@ -1,0 +1,84 @@
+---
+
+name: measurement_heading
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Local level, geographic attitude expressed in the locally level NED frame as
+  a rotation about the D-axis.
+
+  Positive rotation follows the right-hand rule.  Attitude about the other axes
+  in the NED-frame are unspecified and not sensed.  Use attitude_2d or
+  attitude_3d to report a sensed dimension that is zero.  See also NED
+  coordinate frame definition for N, E, and D definitions.
+
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+
+- name: reference
+  enum:
+  - TRUE_HEADING: >
+      True heading.  Direction to the geographic north expressed in the locally level NED frame as a
+      rotation about the D-axis.  This is akin to attitude_1d, which would be consistent with
+      attitude_2d and attitude_3d. In that case, a ref frame enum could be used to define multiple
+      one-dimensional attitudes, of which, heading could be one.  The simpler approach of just
+      having heading was chosen over the more general approach until there is a requirement for
+      multiple, one-dimensional attitudes.
+  - MAGNETIC_HEADING: >
+      Magnetic heading.  Direction to magnetic north expressed in the locally level NED frame as a
+      rotation about the D-axis.  In general, geographic position and time is required to convert
+      from magnetic heading to true heading.
+  length: 4
+  description: >
+    Defines heading reference.
+
+- name: obs
+  type: float64
+  units: rad
+  description: >
+    Heading.
+
+- name: variance
+  type: float64
+  units: rad^2
+  description: >
+    Variance of the measurement.
+
+- name: error_model
+  enum:
+  - NONE: No additional error model provided (num_error_model_params = 0).
+  length: 32
+  description: >
+    Defines an optional error model for other than zero-mean, additive, white Gaussian noise (AWGN).
+- name: num_error_model_params
+  type: uint16
+  description: >
+    Number of parameters required for the error model chosen.
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: Error model parameters that characterize the optional error model.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

@@ -1,0 +1,398 @@
+# Release Notes
+
+ASPN 2023 is released as a community-derived improvement over ASPN 3.0. Starting with ASPN 3.0, the
+ASPN community provided significant support which resulted in ASPN 3.1 Release Candidate 1 (RC1).
+The community reviewed RC1 and provided significant feedback which resulted in ASPN 3.1 Release
+Candidate 2 (RC2). Finally, the community reviewed RC2 and provided feedback which resulted in ASPN
+2023. The naming convention of ASPN 2023 was changed to reflect the release year and avoids the
+semantic versioning approach. (See `extensibility.md` for more details.)
+
+## ASPN Collaboration Space
+
+Community involvement will continue to be a key tenant of ASPN.  In the development of ASPN 2023,
+there was a separate git project for the community interest group (CIG) at
+https://git.aspn.us/aspn/cig. This project is no longer active. Future involvement should submit
+issues and interact directly with the aspn data model project at https://git.aspn.us/aspn-icd.
+Please submit your feedback at https://git.aspn.us/aspn/aspn-icd/-/issues. This will keep track of
+issues, comments about issues, allows other users to see your comments, and allows the ASPN
+developers to interact with user feedback. This will allow the entire user community to provide
+feedback in an open forum. Git.aspn.us is the preferred method for feedback.  As a backup for those
+without access to git.aspn.us, you may also send your feedback to info@aspn.us.
+
+There is an additional set of government messages that augment ASPN 2023. You may [request an
+account](https://aspn.us/devAccess) to access these. Once you have an account, you may find this
+version at https://git.aspn.us/aspn/aspn-icd.
+
+## Key Changes
+
+ASPN 2023 had a numerous updates compared to ASPN 3.0. The interested reader is encouraged to review
+the [aspn-icd repository](https://git.aspn.us/aspn/aspn-icd) in its entirety.  Instead of reviewing
+the aspn-icd repository itself, you may browse the [closed
+comments](https://git.aspn.us/aspn/cig/main/-/issues).  There you will find every comment that
+influenced ASPN 2023, as well as the discussions and the action taken.
+
+Key changes include the following:
+
+_From ASPN 3.0 to RC1_
+- ASPN system time (used for message timestamps) was updated
+- Time representation and clock definitions were updated
+- A new pose (position and attitude) measurement message as added
+- New angular velocity measurement messages were added
+- Measurements in relation to a point and how points are represented were updated
+- Additional image types were added to the image message
+- GNSS messages were improved, and the term GNSS was generalized to Satnav
+- Integrity information is included as an option for every measurement
+- Documentation was improved to include FAQs, clarify terms, address multiple PVA message streams
+  from a single device, and more
+
+_From RC1 to RC2_
+- Documentation cleanup and enhancement: typos, capitalization
+- Improved visnav messages
+- Changed magnetic field units from T to nT
+- Negative time representations were made consistent
+- Added reference enum (true, magnetic) to heading
+- Integrity was updated
+
+_From RC2 to ASPN 2023_
+- Documentation cleanup and enhancement: typos, capitalization, consistency, clarification
+- Updated magnetic field measurements
+- Added magnetic field metadata and documentation to define magnetic calibration information
+
+# Overview
+
+The aspn-icd repository defines a set of schema defining the information content of messages that
+can be exchanged between components of a navigation state estimation workflow. These messages
+represent measurements of navigation-related quantities from sensors, estimates of
+navigation-related quantities from estimators, and metadata about these measurements (including
+sensor error models).
+
+The scope of aspn-icd is to define the *information content* of navigation-related messages in
+adequate detail that will ensure compatibility between users.
+
+The goal of the aspn-icd format is not to prescribe how messages are actually passed between
+components, but simply to enforce the *information content* and *basic structure* of the messages.
+The *project-specific implementation* defines the actual message-passing infrastructure.  For
+example, one research implementation uses LCM to handle passing of measurements across a TCP/IP
+network, and uses YAML documents loaded from disk to describe the sensor metadata and error models.
+
+# Data Model Definition Format
+
+The schema is designed to be both parsed by humans and machine, enabled by describing the ICDs as a
+set of [YAML](http://www.yaml.org/spec/1.2/spec.html) documents. Within the ICD, the basic structure
+of each data model definition is
+
+```
+name:
+version:
+system_type:
+category:
+description:
+controlled:
+distribution:
+experimental:
+fields:
+```
+
+In table format, each definition contains the following:
+
+| Name of keyword | Description | Allowable Entries|
+| --- | --- | --- |
+| name | name of message | ASCII-only, no unicode characters |
+| version | ASPN version of the message | Any valid ASPN version, e.g., `2023` |
+| system_type | type of system | Currently, the only system defined is `standard` |
+| category | message type, _see below for more information_ | Currently, either `metadata`, `measurement`, or `type` |
+| description | Textual description of the _message definition_ (There are other description keys that describe other entries.) | ASCII-only, no unicode characters |
+| controlled | Defines whether or not the definition description is controlled or not | `no`, `yes`, `yes (proposed)` |
+| distribution | Describes the distribution of the message definition description, not the _content_ of the message when filled in for a particular system | `A` |
+| experimental | Declares whether or not the `yaml` is experimental | `true`, `false`. See experimental_models.md for more info. |
+| fields | Descriptions that define the information passed within each message | _See below_ |
+
+In general, `field` entries are implemented using the following syntax:
+
+```
+- name:
+  type:
+  units:
+  description:
+```
+
+The following describes the `field` entries implemented:
+| Field Entry | Description |
+| --- | ---|
+| `name` | name of the field |
+| `type` | data type (and shape if an array) may be an ASPN-defined type. A question mark (?) after the data type indicates that this information is optional, meaning the user may not need to provide this information.  The user shall indicate that no data is sent by sending a null for that data type.  Conversely, data types without a question mark are required; users must enter valid data for all required fields to be considered a valid ASPN message.  Additionally, custom aspn types that have been defined using a type message class may be used here. |
+| `units` (optional) |  `units` are typically the SI units of the information.  Use `various` for multiple units (e.g., an array of position in m and velocity in m/s).  This entry is optional, meaning `units` may be omitted from the field definition in the ASPN ICD.  In the case of an omitted units field, the units are interpreted as unitless or none |
+| `description` | description of this entry |
+
+For example, a 3-dimensional lever arm in meters is expressed as
+
+```
+- name: lever_arm
+  type: float64[3]
+  units: m
+  description: 3-dimensional lever arm from platform frame origin to the sensor frame origin
+```
+Another example using an array may be as follows:
+
+```
+- name: error_model_params
+  type: float64[num_error_model_params]
+  units: various
+  description: >
+    Error model parameters that characterize the optional error model.
+```
+
+In this case, `type` is array of length `num_error_model_params`, where each entry is a double-precision floating point. Notice the `units` are `various`, since the array of parameters may use differing units. The units must be defined somewhere within the document depending on the situation.
+
+Combining these elements, a typical data model definition is composed of several field entries; for example, for three entries, the definition takes on the following form:
+
+```
+name:
+version:
+system_type:
+category:
+description:
+distribution:
+experimental:
+fields:
+- name:
+  type:
+  units:
+  description:
+- name:
+  type:
+  units:
+  description:
+- name:
+  type:
+  units:
+  description:
+```
+
+# Definition Categories
+
+Currently, definitions fall under following three categories:
+- **Measurements:** These messages represent either measured or estimated values, and associated
+  uncertainty, of navigation-related physical quantities. Measurements can either be generated
+  directly from a sensor, or processed by some domain-specific logic to extract navigation-related
+  quantities from raw sensor data.
+
+- **Metadata:** These messages represent metadata about the sensors that generate the measurements
+  defined above. All metadata includes information about the mounting (translation and orientation
+  if applicable) of the sensor with respect to the platform 'body frame', a common coordinate system
+  defined by the system designer. The sensor-specific measurements have metadata that describes
+  their sensor-specific error models, (e.g., a simple IMU error model).
+
+- **Type:** ICDs in this class represent structures that occur across multiple ICDs, and are
+  factored out into their own aspn-defined types such that changes to the underlying structure can
+  be accomplished in a common location.
+
+## Measurements and Metadata
+
+ASPN 2023 defines messages for semantically unique measurements.  In some cases, multiple
+measurements are defined within a single ICD file, and each measurement type *enumerated* within
+that ICD file.   If applicable, the appropriate `enum` value is provided.  Furthermore, these
+message definitions are intended for a standard system.  It is anticipated that some systems (such
+as embedded or safety critical) may require a different format than the standard message.  Support
+for additional systems is planned for future versions of ASPN.
+
+The table below shows the measurements along with their corresponding ICD file and metadata file (if
+applicable).
+
+| Semantically Unique Measurement | Standard, ENUM Value*** | Metadata |
+| ---- | ---- | ---- |
+| Position, Earth-Centered, Inertial | `measurement_position`, `'reference_frame=ECI'` | `metadata_generic` |
+| Position, Geodetic | `measurement_position`, `'reference_frame=GEODETIC'` | `metadata_generic` |
+| Velocity, Earth-Centered, Inertial | `measurement_velocity`, `'reference_frame=ECI'` |`metadata_generic` |
+| Velocity, Earth-Centered, Earth-Fixed  | `measurement_velocity`, `'reference_frame=ECEF'` | `metadata_generic`|
+| Velocity, North-East-Down Locally Level  | `measurement_velocity`, `'reference_frame=NED` | `metadata_generic`|
+| Velocity, Sensor  | `measurement_velocity`, `'reference_frame=SENSOR'` | `metadata_generic`|
+| Attitude, 3-d, Earth-Centered, Inertial | `measurement_attitude_3d`, `'reference_frame=ECI'` | `metadata_generic` |
+| Attitude, 3-d, Earth-Centered, Earth-Fixed  | `measurement_attitude_3d`, `'reference_frame=ECEF'` | `metadata_generic` |
+| Attitude, 3-d, North-East-Down Locally Level  | `measurement_attitude_3d`, `'reference_frame=NED'` | `metadata_generic`|
+| Attitude, 2-d, North-East Locally Level  | `measurement_attitude_2d`, `'reference_frame=NE'` | `metadata_generic`|
+| Attitude, 2-d, North-Down Locally Level  | `measurement_attitude_2d`, `'reference_frame=ND'` | `metadata_generic`|
+| Attitude, 2-d, East-Down Locally Level  | `measurement_attitude_2d`, `'reference_frame=ED'` | `metadata_generic`|
+| Heading | `measurement_heading` | `metadata_generic`|
+| Position (1-,2-, or 3-d), Velocity (1-,2-, or 3-d), and Attitude (3-d), Earth-centered, inertial  | `measurement_position_velocity_attitude`, `'reference_frame=ECI'` | `metadata_generic`|
+| Position (1-,2-, or 3-d), Velocity (1-,2-, or 3-d), and Attitude (3-d), Geodetic | `measurement_position_velocity_attitude`, `'reference_frame=GEODETIC'` | `metadata_generic`|
+| Position (3-d) and Attitude (3-d) (a.k.a. Pose), Geodetic | `measurement_position_attitude`, `'reference_frame=GEODETIC'` | `metadata_generic`|
+| Position (3-d) and Attitude (3-d) (a.k.a. Pose), Earth-centered, inertial  | `measurement_position_attitude`, `'reference_frame=ECI'` | `metadata_generic`|
+| Altitude, Above Ground Level | `measurement_altitude`, `'reference=AGL'` | `metadata_generic`|
+| Altitude, Mean Sea Level | `measurement_altitude`, `'reference=MSL'` | `metadata_generic`|
+| Altitude, Height Above Ellipsoid | `measurement_altitude`, `'reference=HAE'` | `metadata_generic`|
+| Pressure, Ambient Barometric | `measurement_barometer` | `metadata_generic` |
+| Temperature | `measurement_temperature` | `metadata_generic`|
+| Magnetometer, Magnitude | `measurement_magnetic_field_magnitude` | `metadata_generic` or `metadata_magnetic_field`|
+| Magnetic Field (1-D, 2-D, or 3-D Vector) | `measurement_magnetic_field` | `metadata_magnetic_field`|
+| Speed, True Airspeed | `measurement_speed`, `'reference=TAS'` | `metadata_generic`|
+| Speed, Indicated Airspeed | `measurement_speed`, `'reference=IAS'` | `metadata_generic` |
+| Speed, Water | `measurement_speed`, `'reference=WATER'` | `metadata_generic` |
+| Speed, Ground | `measurement_speed`, `'reference=GROUND'` | `metadata_generic` |
+| Satnav Observations | `measurement_satnav` | `metadata_generic` |
+| Satnav Observations with SV info | `measurement_satnav_with_sv_data` | `metadata_generic` |
+| Satnav Subframe | `measurement_satnav_subframe` | `metadata_generic`|
+| GPS LNAV Ephemeris Data | Not Used | `metadata_GPS_Lnav_ephemeris` |
+| GPS CNAV Ephemeris Data | Not Used | `metadata_GPS_Cnav_ephemeris` |
+| GPS MNAV Ephemeris Data | Not Used | `metadata_GPS_Mnav_ephemeris` |
+| Galileo Ephemeris Data | Not Used | `metadata_Galileo_ephemeris` |
+| GLONASS Ephemeris Data | Not Used | `metadata_GLONASS_ephemeris` |
+| BeiDou Ephemeris Data | Not Used | `metadata_BeiDou_ephemeris` |
+| INS, Earth-centered, inertial  | `measurement_position_velocity_attitude`, `'reference_frame=ECI'` | `metadata_generic`|
+| INS, Geodetic | `measurement_position_velocity_attitude`, `'reference_frame=GEODETIC'` | `metadata_generic`|
+| IMU, Integrated | `measurement_IMU`,`'IMU_type=INTEGRATED'` | `metadata_IMU`|
+| IMU, Sampled | `measurement_IMU`,`'IMU_type=SAMPLED'` | `metadata_IMU`|
+| Specific Force, 1-d, Integrated | `measurement_specific_force_1d`,`'sensor_type=INTEGRATED'` | `metadata_generic`|
+| Specific Force, 1-d, Sampled | `measurement_specific_force_1d`,`'sensor_type=SAMPLED'` | `metadata_generic`|
+| Angular Velocity, 3-d, Integrated | `measurement_angular_velocity`,`'sensor_type=INTEGRATED'` | `metadata_generic`|
+| Angular Velocity, 3-d, SAMPLED | `measurement_angular_velocity`,`'sensor_type=SAMPLED'` | `metadata_generic`|
+| Angular Velocity, 3-d, ECI | `measurement_angular_velocity`,`'reference_frame=ECI'` | `metadata_generic`|
+| Angular Velocity, 3-d, ECEF | `measurement_angular_velocity`,`'reference_frame=ECEF'` | `metadata_generic`|
+| Angular Velocity, 3-d, NED | `measurement_angular_velocity`,`'reference_frame=NED'` | `metadata_generic`|
+| Angular Velocity, 3-d, Sensor | `measurement_angular_velocity`,`'reference_frame=SENSOR'` | `metadata_generic`|
+| Angular Velocity, 1-d, Integrated | `measurement_angular_velocity`,`'sensor_type=INTEGRATED'` | `metadata_generic`|
+| Angular Velocity, 1-d, SAMPLED | `measurement_angular_velocity`,`'sensor_type=SAMPLED'` | `metadata_generic`|
+| Optical Image | `measurement_image` | `metadata_generic`|
+| Image Features | `metadata_image_features` | Metadata not used |
+| Time, Single Timing Source | `measurement_time` | `metadata_generic`|
+| Time Difference Between Two Timing Sources | `measurement_time_difference` | `metadata_generic`|
+| Frequency Difference Between Two Timing Sources | `measurement_frequency_difference` | `metadata_generic`|
+| Time and Frequency Difference Between Two Timing Sources | `measurement_time_frequency_difference` | `metadata_generic`|
+| Time Difference of Arrival, Single Transmitter at Two Receivers | `measurement_TDOA_1Tx_2Rx` | `metadata_generic`|
+| Time Difference of Arrival, Two Transmitters at One Receiver | `measurement_TDOA_2Tx_1Rx` | `metadata_generic`|
+| Accumulated Distance Traveled | `measurement_accumulated_distance_traveled` | `metadata_generic`|
+| Delta Position | `measurement_delta_position` | `metadata_generic`|
+| Delta Range | `measurement_delta_range` | `metadata_generic`|
+| Delta Range to Point | `measurement_delta_range_to_point`  | `metadata_generic`|
+| Direction (2-d) to Points | `measurement_direction_2d_to_points` | `metadata_generic`|
+| Direction (3-d) to Points | `measurement_direction_3d_to_points` | `metadata_generic`|
+| Direction of Motion (2-d) | `measurement_direction_of_motion_2d` | `metadata_generic`|
+| Direction of Motion (3-d) | `measurement_direction_of_motion_3d` | `metadata_generic`|
+| Range to Point | `measurement_range_to_point` | `metadata_generic`|
+| Range Rate to Point | `measurement_range_rate_to_point` | `metadata_generic`|
+
+$ ^\bigstar{} $ `ENUM` is used to *enumerate* options within a single ICD file.   If applicable, the
+appropriate `enum` value is provided.
+
+## Types
+
+| Types | |
+| --- | --- |
+| Timestamp | `type_timestamp.yaml` |
+| Header | `type_header.yaml` |
+| Metadata Header | `type_metadataheader.yaml` |
+| Mounting | `type_mounting.yaml` |
+| Remote Point | `type_remote_point.yaml` |
+| Direction (2-d) to Point | `type_direction_2d_to_point.yaml` |
+| Direction (3-d) to Point | `type_direction_3d_to_point.yaml` |
+| Image Features | `type_image_feature.yaml` |
+| Keplerian Orbit Parameters | `type_kepler_orbit` |
+| Satnav Clock | `type_satnav_clock.yaml` |
+| Satnav Observations | `type_satnav_obs.yaml` |
+| Satnav_M Observations | `type_satnav_M_obs.yaml` |
+| Satnav Measurement Status | `type_satnav_measurement_status.yaml` |
+| Satnav Tracking Loop Observations | `type_satnav_tracking_loop.yaml` |
+| Satnav Satellite Vehicle (SV) Data | `type_satnav_sv_data.yaml` |
+| Satnav Satellite System | `type_satnav_satellite_system.yaml` |
+| Satnav Signal Descriptor | `type_satnav_signal_descriptor.yaml` |
+| Satnav Time | `type_satnav_time.yaml` |
+| Integrity | `type_integrity` |
+
+# Data Types
+
+Below is list of all of the data types supported by ASPN.  Previous versions of ASPN were ambiguous
+in the number of bits and did not support unsigned integers.  ASPN 2023 proposes explicit
+definitions for the number of bits by encoding the bit number with the name.
+
+| Data Type | Description |
+| --- | --- |
+| `int8`, `uint8` | signed/unsigned 8-bit integer |
+| `int16`, `uint16` | signed/unsigned 16-bit integer |
+| `int32`, `uint32` | signed/unsigned 32-bit integer |
+| `int64`, `uint64` | signed/unsigned 64-bit integer |
+| `bool` | boolean |
+| `float32` | 32-bit IEEE float, i.e., single-precision floating point |
+| `float64` | 64-bit IEEE float, i.e., double-precision floating point |
+| `enum` | enumerated list of options (_see below_) |
+| arrays | array of any other type, e.g., `int8[2]` is an array of length 2 where each entry is an `int8` |
+| `string` | string |
+| ASPN-defined types | any type defined by ASPN (_see below_) |
+
+A few types warrant further explanation.
+
+## Enum
+
+An enumerated list is in the following format:
+
+```
+- name:
+  enum:
+  - entry 1
+  - entry 2
+  length:
+  description:
+```
+Each key for the enum is described as follows:
+| Key | Description |
+| --- | --- |
+| `name:` | defines the name of the enum |
+| `enum:` | this line denots the beginning of the enum entries (and nothing follows the `enum:` on this line). Each entry should appear on subsequent lines. |
+| `length` | ensures extensibility.  From a transport perspective, enums are required to support as least `length` entries.  Conversely, from an ASPN data model perspective, enums are limited to no more than `length` entries.  See `extensibility.md` for detail, but the summary is `length` informs the data model tooling to reserve space in the enum. |
+| `description` | description of enum |
+
+
+For example, consider an `enum` that describes satellite navigation systems:
+
+```
+- name: satellite_system
+  enum:
+  - SYS_GPS: GPS.
+  - SYS_GALILEO: Galileo.
+  - SYS_GLONASS: GLONASS.
+  - SYS_BEIDOU: BeiDou.
+  - SYS_SBAS: SBAS
+  - SYS_QZSS: QZSS.
+  - SYS_IRNSS: IRNSS.
+  length: 32
+  description: satellite constellation example
+```
+Notice the length of the enum is `32`.  This may be visually represented as
+
+| # | Enum Entry |
+| --- | --- |
+|  1  | SYS_GALILEO                |
+|  2  | SYS_BEIDOU                 |
+|  3  | SYS_SBAS                   |
+|  4  | SYS_QZSS                   |
+|  5  | SYS_IRNSS                  |
+|  6  | SYS_BEIDOU                 |
+|  7  | SYS_BEIDOU                 |
+| --- | _Space for future methods_ |
+| 32  | _Last available entry_       |
+
+An implementation may represent this enum using 5 bits, or 2^5 = 32 entries.  Alternatively, 5 bits
+may be inconvenient and 8 bits = 1 byte may be more convenient.  From an implementation perspective,
+the enum length is the _minimum_ number of entries supported.
+
+## ASPN-defined Types
+
+ASPN-defined types are implemented as field entries using the value defined by the key `name:`
+within the `type_*.yaml` that defines the type. (The filenames _should_ match, but the filenames
+should not be relied upon.  Use the value found in `name:`.)
+
+For example,
+
+```
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+```
+
+defines a field entry named `time_of_validity` that is based upon ASPN-defined type with the name
+`type_timestamp` (which happens to be defined by `type_timestamp.yaml`).
+
+# Documentation
+
+Further information related directly to the aspn-icd may be found in the `docs` folder.  Log into
+https://aspn.us/ for additional ASPN resources.

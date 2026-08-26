@@ -1,0 +1,58 @@
+---
+
+name: measurement_satnav_subframe
+version: 2023
+system_type: standard
+category: measurement
+controlled: no
+distribution: A
+experimental: false
+description: |
+  satnav navigation data bit subframe.
+
+fields:
+- name: header
+  type: type_header
+  description: >
+    Standard ASPN measurement header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: gnss_message_id
+  type: int64
+  description: >
+    Message ID provided from the satnav receiver.
+- name: prn
+  type: int32
+  description: >
+    Satellite ID number.
+- name: satellite_system
+  type: type_satnav_satellite_system
+  description: >
+    Describes the satellite system that generated the subframe.
+- name: freq_slot_id
+  type: int32
+  description: >
+    Frequency slot +7 (range from 0-13). Only used for GLONASS.
+- name: num_bytes
+  type: uint16
+  description: >
+    Number of bytes of subframe data.
+- name: data_vector
+  type: int8[num_bytes]
+  description: >
+    num_bytes sized array of raw subframe message collected by the sensor. The underlying type and
+    shape of the data vector is given by satnav_msg_id.
+
+- name: num_integrity
+  type: uint8
+  description: >
+    Number of integrity values.
+
+- name: integrity
+  type: type_integrity[num_integrity]
+  description: >
+    Measurement integrity.  Includes the integrity method used and an integrity value (which is to
+    be interpreted based upon the integrity method).  The intent of allowing num_integrity > 1 is to
+    report multiple integrity values based on multiple integrity methods.

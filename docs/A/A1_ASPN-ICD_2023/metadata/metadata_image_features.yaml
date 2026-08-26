@@ -1,0 +1,85 @@
+---
+name: metadata_image_features
+version: 2023
+system_type: standard
+category: metadata
+controlled: no
+distribution: A
+experimental: false
+description: |
+  Features from an optical camera.
+
+fields:
+- name: info
+  type: type_metadataheader
+  description: >
+    Standard ASPN metadata header.
+- name: time_of_validity
+  type: type_timestamp
+  description: >
+    Time at which the measurement is considered to be valid.
+- name: keypoint_detector
+  units: none
+  enum:
+  - DET_AGAST: Keypoint detected using AGAST based detector.
+  - DET_AKAZE: Keypoint detected using AKAZE based detector.
+  - DET_BRISK: Keypoint detected using BRISK based detector.
+  - DET_FAST: Keypoint detected using FAST based detector.
+  - DET_GFTT: Keypoint detected using GFTT based detector.
+  - DET_KAZE: Keypoint detected using KAZE based detector.
+  - DET_MSER: Keypoint detected using MSER based detector.
+  - DET_ORB: Keypoint detected using ORB based detector.
+  - DET_SIFT: Keypoint detected using SIFT based detector.
+  - DET_SURF: Keypoint detected using SURF based detector.
+  - DET_HARRIS: Keypoint detected using Harris based detector.
+  - DET_SHI: Keypoint detected using Shi-Tomasi based detector.
+  - DET_OTHER: Keypoint detected using a detector not represented in this enum.
+  length: 32
+  description: >
+    Enumerated field which provides the type of keypoint detector used.
+- name: orientation_calculated
+  type: bool
+  units: none
+  description: >
+    Set to true if the keypoint detector or descriptor extractor calculates
+    and assigns a primary orientation to the features represented in the
+    measurements.
+- name: descriptor_extractor
+  units: none
+  enum:
+  - DESC_AKAZE: Descriptor computed using the AKAZE extractor.
+  - DESC_BRISK: Descriptor computed using the BRISK extractor.
+  - DESC_KAZE: Descriptor computed using the KAZE extractor.
+  - DESC_ORB: Descriptor computed using the ORB extractor.
+  - DESC_SIFT: Descriptor computed using the SIFT extractor.
+  - DESC_SURF: Descriptor computed using the SURF extractor.
+  - DESC_OTHER: Descriptor computed using an extractor not represented in this enum.
+  length: 32
+  description: >
+    Enumerated field which provides the type of descriptor extractor used to
+    generate the measurement descriptor vector.
+- name: is_bigendian
+  type: bool
+  description: >
+    True if the descriptor byte order is big endian, false if it is little
+    endian. Only applicable for descriptor_types with multi-byte elements.
+- name: descriptor_type
+  units: none
+  enum:
+  - UINT8: The descriptor data should be interpreted as an array of unsigned 8-bit ints.
+  - FLOAT32: The descriptor data should be interpreted as an array of 32-bit floats.
+  length: 8
+  description: >
+    Enumerated field describing the underlying datatype of the provided
+    descriptor vector.
+- name: descriptor_number_of_elements
+  type: uint16
+  units: none
+  description: >-
+    The number of elements of type 'descriptor_type' in the descriptor data array.
+    In type_image_feature, descriptor data is represented as an array of uint8 values
+    whose length is given by 'descriptor_size'.  Inconjunction with descriptor_type,
+    these fields describe how that data should be interpreted.
+    For example
+    - descriptor_type UINT8: descriptor_number_of_elements == descriptor_size
+    - descriptor_type FLOAT32: (descriptor_number_of_elements * 4) == descriptor_size

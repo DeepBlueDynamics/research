@@ -1,0 +1,13 @@
+#include <pntos/plugins/controller.h>
+#include <pntos/plugins/fusion.h>
+#include <pntos/plugins/fusion_strategy.h>
+#include <pntos/plugins/inertial.h>
+#include <pntos/plugins/initialization.h>
+#include <pntos/plugins/logging.h>
+#include <pntos/plugins/orchestration.h>
+#include <pntos/plugins/platform_integration.h>
+#include <pntos/plugins/preprocessor.h>
+#include <pntos/plugins/registry.h>
+#include <pntos/plugins/state_modeling.h>
+#include <pntos/plugins/transport.h>
+#include <pntos/plugins/ui.h>
