@@ -1,0 +1,577 @@
+<title>Assured-PNT Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ---- S-52 domain palettes: this console is a committed visual world,
+         its day/dusk/night switch is the S-52 palette, not the viewer OS theme ---- */
+  :root{
+    --good:#43b17f; --caution:#e0a53a; --alarm:#e06b45; --accent:#5bb0cb;
+    --font-label:"Saira Condensed",system-ui,sans-serif;
+    --font-body:"IBM Plex Sans",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --gap:12px; --radius:5px;
+  }
+  html[data-palette="night"]{
+    --bg:#070f17; --panel:#0d1a26; --panel-2:#102434; --water:#0a1826; --land:#1d2420;
+    --ink:#c9d6de; --ink-strong:#eaf1f5; --muted:#6f8593; --hair:#1a2c3a; --hair-2:#24394a;
+    --route:#c65b9c; --sounding:#4d6b7e; --scan:#0b1a27;
+  }
+  html[data-palette="dusk"]{
+    --bg:#12141c; --panel:#1a1e28; --panel-2:#222735; --water:#161b26; --land:#2a2822;
+    --ink:#d3cfc4; --ink-strong:#f0ebdd; --muted:#8a8577; --hair:#2b2e39; --hair-2:#3a3d49;
+    --route:#c76a86; --sounding:#7a7360; --scan:#171b24;
+  }
+  html[data-palette="day"]{
+    --bg:#dfe6ea; --panel:#f4f8fa; --panel-2:#e9f0f4; --water:#dbe8ef; --land:#e7e1cf;
+    --ink:#20323d; --ink-strong:#0b1a24; --muted:#5d7280; --hair:#c6d3da; --hair-2:#b2c2cb;
+    --route:#b24788; --sounding:#7c98a8; --scan:#eef4f7;
+    --good:#2f9268; --caution:#b9862a; --alarm:#c1552f; --accent:#2f88a6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-size:13px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .console{display:flex;flex-direction:column;min-height:100vh;max-width:1320px;margin:0 auto;padding:14px;gap:var(--gap)}
+  .label{font-family:var(--font-label);text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+  /* ---- top chrome ---- */
+  .chrome{display:flex;align-items:center;justify-content:space-between;gap:var(--gap);flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand h1{font-family:var(--font-label);font-weight:700;font-size:19px;letter-spacing:.12em;margin:0;color:var(--ink-strong);text-transform:uppercase}
+  .brand .compass{font-size:18px;filter:saturate(.7)}
+  .notional{font-family:var(--font-label);font-size:10px;letter-spacing:.14em;color:var(--muted);border:1px solid var(--hair-2);padding:2px 6px;border-radius:3px;text-transform:uppercase}
+  .chrome-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .clock{font-family:var(--font-mono);font-size:13px;color:var(--ink-strong);letter-spacing:.04em}
+  .seg{display:inline-flex;border:1px solid var(--hair-2);border-radius:var(--radius);overflow:hidden}
+  .seg > span{font-family:var(--font-label);font-size:10px;letter-spacing:.1em;color:var(--muted);padding:6px 8px 4px;align-self:center;text-transform:uppercase}
+  .seg button{
+    font-family:var(--font-label);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    background:transparent;color:var(--muted);border:0;padding:6px 11px;cursor:pointer;
+    border-left:1px solid var(--hair-2);transition:background .15s,color .15s;
+  }
+  .seg button:first-of-type{border-left:1px solid var(--hair-2)}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#04121a;font-weight:600}
+  html[data-palette="day"] .seg button[aria-pressed="true"]{color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+  /* ---- alert banner (BAM) ---- */
+  .banner{
+    display:none;align-items:center;gap:14px;
+    background:var(--caution);color:#1a1204;border-radius:var(--radius);
+    padding:11px 14px;font-family:var(--font-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;
+  }
+  body[data-state="degraded"] .banner{display:flex}
+  .banner .warn{font-size:17px}
+  .banner .grow{flex:1}
+  .banner.flash{animation:flash 1.05s steps(1) infinite}
+  .banner[data-ack="true"]{animation:none;background:var(--panel-2);color:var(--caution);border:1px solid var(--caution)}
+  @keyframes flash{50%{filter:brightness(.72)}}
+  @media (prefers-reduced-motion:reduce){.banner.flash{animation:none;outline:2px solid #1a1204}}
+  .ack-btn{
+    font-family:var(--font-label);font-weight:600;letter-spacing:.09em;text-transform:uppercase;font-size:11px;
+    background:#1a1204;color:var(--caution);border:0;border-radius:3px;padding:7px 13px;cursor:pointer;
+  }
+  .banner[data-ack="true"] .ack-btn{background:var(--caution);color:#1a1204}
+  .ack-btn:focus-visible{outline:2px solid #1a1204;outline-offset:2px}
+
+  /* ---- main grid ---- */
+  .grid{display:grid;grid-template-columns:212px 1fr 340px;gap:var(--gap);align-items:stretch}
+  .card{background:var(--panel);border:1px solid var(--hair);border-radius:var(--radius);padding:12px}
+  .card > .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;font-size:11px}
+
+  /* source roster */
+  .roster{display:flex;flex-direction:column;gap:var(--gap)}
+  .src{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:8px 0;border-top:1px solid var(--hair)}
+  .src:first-of-type{border-top:0}
+  .dot{width:9px;height:9px;border-radius:50%;position:relative}
+  .dot.good{background:var(--good)}
+  .dot.caution{background:var(--caution);border-radius:2px} /* redundant shape encoding */
+  .dot.alarm{background:var(--alarm);clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .src .nm{font-weight:500;color:var(--ink-strong);font-size:12.5px}
+  .src .sub{font-size:10.5px;color:var(--muted);font-family:var(--font-label);letter-spacing:.05em;text-transform:uppercase}
+  .src .age{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+  .readout{margin-top:auto}
+  .readout .row{display:flex;justify-content:space-between;padding:3px 0;font-size:11.5px}
+  .readout .row span:first-child{color:var(--muted);font-family:var(--font-label);letter-spacing:.05em;text-transform:uppercase;font-size:10.5px}
+  .readout .row span:last-child{font-family:var(--font-mono);color:var(--ink-strong)}
+
+  /* chart canvas */
+  .chart{padding:0;overflow:hidden;position:relative;background:var(--water);min-height:440px;display:flex}
+  .chart svg{width:100%;height:100%;display:block}
+  .chart .scalebar{position:absolute;left:12px;bottom:12px;background:color-mix(in srgb,var(--panel) 78%,transparent);border:1px solid var(--hair-2);border-radius:4px;padding:5px 8px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink);letter-spacing:.03em}
+  .chart .northtag{position:absolute;left:12px;top:12px;background:color-mix(in srgb,var(--panel) 78%,transparent);border:1px solid var(--hair-2);border-radius:4px;padding:5px 9px;font-family:var(--font-label);font-size:10px;letter-spacing:.09em;color:var(--ink);text-transform:uppercase}
+
+  /* evidence / status column */
+  .evidence{display:flex;flex-direction:column;gap:var(--gap)}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tile{background:var(--panel);border:1px solid var(--hair);border-left:3px solid var(--good);border-radius:var(--radius);padding:9px 10px}
+  .tile[data-sev="caution"]{border-left-color:var(--caution)}
+  .tile[data-sev="alarm"]{border-left-color:var(--alarm)}
+  .tile .t-label{font-size:10px}
+  .tile .t-state{font-family:var(--font-label);font-weight:700;font-size:16px;letter-spacing:.03em;color:var(--good);margin:2px 0 5px;text-transform:uppercase}
+  .tile[data-sev="caution"] .t-state{color:var(--caution)}
+  .tile[data-sev="alarm"] .t-state{color:var(--alarm)}
+  .tile .t-metric{display:flex;justify-content:space-between;font-size:11px}
+  .tile .t-metric span:first-child{color:var(--muted)}
+  .tile .t-metric span:last-child{font-family:var(--font-mono);color:var(--ink-strong)}
+
+  /* agreement matrix */
+  table.mtx{border-collapse:collapse;width:100%;font-size:11px}
+  table.mtx th{font-family:var(--font-label);font-weight:600;color:var(--muted);letter-spacing:.03em;font-size:9.5px;padding:3px 2px;text-transform:uppercase}
+  table.mtx td{text-align:center;padding:4px 2px;border:1px solid var(--hair);font-family:var(--font-mono);font-size:12px;cursor:default}
+  table.mtx td.self{color:var(--muted);background:var(--panel-2)}
+  table.mtx td.ok{color:var(--good)}
+  table.mtx td.no{color:var(--alarm);font-weight:600}
+  table.mtx th.rh{text-align:right;padding-right:6px}
+
+  /* scatter */
+  .scatterwrap{position:relative}
+  .scatter{width:100%;height:150px;display:block}
+  .finding{font-size:12px;line-height:1.5}
+  .finding b{color:var(--ink-strong)}
+
+  /* action bar */
+  .actionbar{display:grid;grid-template-columns:1.35fr 1fr;gap:var(--gap)}
+  .actions{display:flex;flex-direction:column;gap:8px}
+  .coa{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--panel-2);border:1px solid var(--hair);border-radius:var(--radius);padding:9px 11px}
+  .coa .idx{font-family:var(--font-mono);color:var(--accent);font-size:12px}
+  .coa .ct .h{font-weight:600;color:var(--ink-strong);font-size:12.5px}
+  .coa .ct .d{font-size:11px;color:var(--muted)}
+  .coa .btns{display:flex;gap:6px}
+  .coa button{font-family:var(--font-label);font-size:10px;letter-spacing:.07em;text-transform:uppercase;border-radius:3px;border:1px solid var(--hair-2);background:transparent;color:var(--ink);padding:5px 9px;cursor:pointer}
+  .coa button.acc{border-color:var(--good);color:var(--good)}
+  .coa button.acc[aria-pressed="true"]{background:var(--good);color:#03130c}
+  .coa button.rej[aria-pressed="true"]{background:var(--alarm);color:#160603;border-color:var(--alarm)}
+  .coa button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .coa[data-done="true"]{opacity:.72}
+  .nominal-note{color:var(--muted);font-size:12px;padding:8px 2px;display:flex;align-items:center;gap:8px}
+  .nominal-note .dot{flex:none}
+
+  .proc .doc{font-size:12px;line-height:1.55}
+  .proc .cite{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+  .proc blockquote{margin:7px 0 0;padding-left:10px;border-left:2px solid var(--hair-2);color:var(--ink);font-style:normal}
+  .proc .empty{color:var(--muted);font-size:12px}
+
+  /* replay scrubber */
+  .scrub{display:flex;align-items:center;gap:12px}
+  .scrub .tl{flex:1;height:22px;position:relative;border-radius:3px;background:linear-gradient(90deg,var(--good) 0 42%,var(--caution) 42% 100%)}
+  body[data-state="nominal"] .scrub .tl{background:var(--good)}
+  .scrub .now{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-strong);left:63%}
+  body[data-state="nominal"] .scrub .now{left:50%}
+  .scrub .ends{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+
+  /* tooltip */
+  #tip{position:fixed;pointer-events:none;z-index:20;background:var(--panel-2);border:1px solid var(--hair-2);border-radius:4px;padding:5px 8px;font-family:var(--font-mono);font-size:11px;color:var(--ink-strong);opacity:0;transition:opacity .1s;max-width:200px}
+
+  footer.foot{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:10.5px;font-family:var(--font-label);letter-spacing:.06em;text-transform:uppercase;flex-wrap:wrap}
+
+  @media (max-width:1080px){
+    .grid{grid-template-columns:1fr}
+    .actionbar{grid-template-columns:1fr}
+    .chart{min-height:340px}
+  }
+</style>
+
+<div class="console">
+  <header class="chrome">
+    <div class="brand">
+      <span class="compass" aria-hidden="true">🧭</span>
+      <h1>Assured-PNT Console</h1>
+      <span class="notional">Notional · design reference</span>
+    </div>
+    <div class="chrome-controls">
+      <div class="seg" role="group" aria-label="Scenario state">
+        <span>Scenario</span>
+        <button data-state-btn="nominal" aria-pressed="true">Nominal</button>
+        <button data-state-btn="degraded" aria-pressed="false">GNSS Degraded</button>
+      </div>
+      <div class="seg" role="group" aria-label="S-52 palette">
+        <span>S-52</span>
+        <button data-pal="day" aria-pressed="false">Day</button>
+        <button data-pal="dusk" aria-pressed="false">Dusk</button>
+        <button data-pal="night" aria-pressed="true">Night</button>
+      </div>
+      <time class="clock" id="clock">--:--:--Z</time>
+    </div>
+  </header>
+
+  <div class="banner flash" id="banner" data-ack="false" role="alert">
+    <span class="warn" aria-hidden="true">⚠</span>
+    <span class="grow">Suspected GNSS Degradation — Acknowledge</span>
+    <button class="ack-btn" id="ackBtn">Acknowledge</button>
+  </div>
+
+  <main class="grid">
+    <!-- SOURCE ROSTER -->
+    <aside class="roster card">
+      <div class="hd"><span class="label">Sources</span><span class="label" id="srcCount">6 online</span></div>
+      <div id="srcList"></div>
+      <div class="readout">
+        <div class="row"><span>HDG</span><span>045.0°T</span></div>
+        <div class="row"><span>SOG</span><span>12.4 kn</span></div>
+        <div class="row"><span>Posn</span><span id="posn">26°34.1′N</span></div>
+        <div class="row"><span>Fix mode</span><span id="fixmode">GNSS</span></div>
+        <div class="row"><span>Datum</span><span>WGS-84</span></div>
+      </div>
+    </aside>
+
+    <!-- CHART CANVAS (inline style for CSS-var support in SVG; literal font stacks) -->
+    <section class="chart card">
+      <svg viewBox="0 0 600 520" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Notional strait chart with own ship, route, and interference area">
+        <defs>
+          <pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="none"/><line x1="0" y1="0" x2="0" y2="8" style="stroke:var(--caution)" stroke-width="1.4" opacity=".55"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="520" style="fill:var(--water)"/>
+        <!-- land masses -->
+        <path d="M0,0 L165,0 Q150,90 120,150 Q95,220 130,300 Q150,380 110,460 L0,520 Z" style="fill:var(--land);stroke:var(--hair-2)" stroke-width="1"/>
+        <path d="M600,0 L455,0 Q470,70 500,140 Q535,240 500,330 Q470,430 520,520 L600,520 Z" style="fill:var(--land);stroke:var(--hair-2)" stroke-width="1"/>
+        <text x="70" y="120" style="fill:var(--muted)" font-family="'Saira Condensed',sans-serif" font-size="12" letter-spacing="1.5">CAPE DOVER</text>
+        <text x="512" y="150" style="fill:var(--muted)" font-family="'Saira Condensed',sans-serif" font-size="12" letter-spacing="1.5">EAST HEAD</text>
+        <!-- soundings -->
+        <g style="fill:var(--sounding)" font-family="'IBM Plex Mono',monospace" font-size="11">
+          <text x="230" y="90">32</text><text x="330" y="120">28</text><text x="270" y="200">142</text>
+          <text x="350" y="250">46</text><text x="250" y="330">92</text><text x="360" y="360">115</text>
+          <text x="300" y="430">184</text><text x="230" y="470">163</text><text x="380" y="200">68</text>
+        </g>
+        <!-- route -->
+        <polyline points="300,510 305,420 312,330 318,235 322,150 330,60" fill="none" style="stroke:var(--route)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <g style="fill:var(--route)" font-family="'IBM Plex Mono',monospace" font-size="11">
+          <circle cx="318" cy="235" r="4" fill="none" style="stroke:var(--route)" stroke-width="1.6"/><text x="326" y="239">WP3</text>
+          <circle cx="322" cy="150" r="4" fill="none" style="stroke:var(--route)" stroke-width="1.6"/><text x="330" y="154">WP4</text>
+        </g>
+        <!-- interference polygon (degraded only) -->
+        <polygon id="interf" points="345,110 470,140 455,290 360,300 320,200" fill="url(#hatch)" style="stroke:var(--caution);transition:opacity .3s" stroke-width="1.4" opacity="0"/>
+        <text id="interfLabel" x="360" y="205" style="fill:var(--caution);transition:opacity .3s" font-family="'Saira Condensed',sans-serif" font-size="12" font-weight="700" letter-spacing=".8" opacity="0">RF INTERFERENCE<tspan x="360" dy="15">REPORTED</tspan></text>
+        <!-- buoys -->
+        <g font-family="'IBM Plex Mono',monospace" font-size="10">
+          <circle cx="210" cy="300" r="4" style="fill:var(--good)"/><text x="196" y="322" style="fill:var(--good)">G"5"</text>
+          <circle cx="405" cy="350" r="4" style="fill:var(--alarm)"/><text x="412" y="354" style="fill:var(--alarm)">R"4"</text>
+        </g>
+        <!-- own ship -->
+        <g transform="translate(300,320)">
+          <line x1="0" y1="0" x2="0" y2="-120" style="stroke:var(--ink-strong)" stroke-width="1.4" opacity=".8"/>
+          <path d="M0,-16 L9,14 L0,7 L-9,14 Z" fill="none" style="stroke:var(--ink-strong)" stroke-width="1.8"/>
+        </g>
+      </svg>
+      <div class="northtag">North Up · Vector 6 min</div>
+      <div class="scalebar">1 NM &nbsp;|&nbsp; 1:50,000 &nbsp;|&nbsp; depths in metres</div>
+    </section>
+
+    <!-- EVIDENCE / STATUS -->
+    <aside class="evidence">
+      <div class="tiles" id="tiles"></div>
+      <div class="card">
+        <div class="hd"><span class="label">Source Agreement</span><span class="label">last 10 min</span></div>
+        <table class="mtx" id="mtx"></table>
+      </div>
+      <div class="card">
+        <div class="hd"><span class="label">Position Scatter</span><span class="label">rel. DR</span></div>
+        <div class="scatterwrap"><svg class="scatter" id="scatter" viewBox="0 0 300 150" role="img" aria-label="Position scatter of sources relative to dead-reckoning center"></svg></div>
+      </div>
+      <div class="card">
+        <div class="hd"><span class="label">Finding</span></div>
+        <p class="finding" id="finding"></p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ACTIONS + PROCEDURE -->
+  <section class="actionbar">
+    <div class="card">
+      <div class="hd"><span class="label">Recommended Actions</span><span class="label" id="coaMode">Informational aids</span></div>
+      <div class="actions" id="actions"></div>
+    </div>
+    <div class="card proc">
+      <div class="hd"><span class="label">Retrieved Procedure</span><span class="label" id="procTag"></span></div>
+      <div id="procBody"></div>
+    </div>
+  </section>
+
+  <section class="card scrub">
+    <span class="label">Replay</span>
+    <span class="ends mono">−30m</span>
+    <div class="tl"><div class="now"></div></div>
+    <span class="ends mono">now</span>
+  </section>
+
+  <footer class="foot">
+    <span>Notional ECDIS-N console · not a certified navigation system</span>
+    <span>DON26BX05-NP004 · design reference</span>
+  </footer>
+</div>
+
+<div id="tip" role="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  var body=document.body, html=document.documentElement;
+
+  // ---- persistence (per-viewer convenience; must tolerate throw/empty) ----
+  function load(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
+  function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+  // ---- data model for both states ----
+  var SRC={
+    nominal:[
+      {nm:"GPS-A",sub:"L1/L2/L5",age:"1.2s",st:"good"},
+      {nm:"GPS-B",sub:"L1/L2/L5",age:"1.1s",st:"good"},
+      {nm:"INS",sub:"aided",age:"0.1s",st:"good"},
+      {nm:"Alt PNT",sub:"eLoran",age:"2.3s",st:"good"},
+      {nm:"Radar fix",sub:"3 targets",age:"1.5s",st:"good"},
+      {nm:"Clock",sub:"disciplined",age:"0.8ms",st:"good"}
+    ],
+    degraded:[
+      {nm:"GPS-A",sub:"drift →E",age:"1.2s",st:"caution"},
+      {nm:"GPS-B",sub:"drift →E",age:"1.1s",st:"caution"},
+      {nm:"INS",sub:"DR mode",age:"0.1s",st:"good"},
+      {nm:"Alt PNT",sub:"eLoran",age:"2.3s",st:"good"},
+      {nm:"Radar fix",sub:"3 targets",age:"1.5s",st:"good"},
+      {nm:"Clock",sub:"holdover OCXO",age:"0.8ms",st:"good"}
+    ]
+  };
+  var TILES={
+    nominal:[
+      {k:"Position",sev:"good",state:"Nominal",m1:["Confidence","99.6%"],m2:["R95","38 m"]},
+      {k:"Navigation",sev:"good",state:"Nominal",m1:["Confidence","99.4%"],m2:["R95","38 m"]},
+      {k:"Timing",sev:"good",state:"Nominal",m1:["Confidence","99.7%"],m2:["R95","72 ns"]},
+      {k:"Overall",sev:"good",state:"Nominal",m1:["Confidence","99.5%"],m2:["R95","38 m"]}
+    ],
+    degraded:[
+      {k:"Position",sev:"caution",state:"Degraded",m1:["Confidence","61%"],m2:["R95","76 m"]},
+      {k:"Navigation",sev:"good",state:"Nominal",m1:["Confidence","92%"],m2:["R95","38 m"]},
+      {k:"Timing",sev:"good",state:"Nominal",m1:["Confidence","94%"],m2:["R95","72 ns"]},
+      {k:"Overall",sev:"caution",state:"Degraded",m1:["Confidence","61%"],m2:["R95","76 m"]}
+    ]
+  };
+  var IDS=["GPS-A","GPS-B","INS","Alt","DR"];
+  // agreement matrix: true=agree. nominal all agree; degraded splits GNSS vs others.
+  function mtxData(deg){
+    return {
+      "GPS-A":{"GPS-B":true,"INS":!deg,"Alt":!deg,"DR":!deg},
+      "GPS-B":{"GPS-A":true,"INS":!deg,"Alt":!deg,"DR":!deg},
+      "INS":{"GPS-A":!deg,"GPS-B":!deg,"Alt":true,"DR":true},
+      "Alt":{"GPS-A":!deg,"GPS-B":!deg,"INS":true,"DR":true},
+      "DR":{"GPS-A":!deg,"GPS-B":!deg,"INS":true,"Alt":true}
+    };
+  }
+  // scatter points: [east(m), north(m), color, label, shape]
+  function scatterData(deg){
+    return [
+      {e:deg?92:6,  n:14,  c:"caution", l:"GPS-A", s:"dot"},
+      {e:deg?88:-8, n:-10, c:"caution", l:"GPS-B", s:"dot"},
+      {e:-6, n:4,  c:"good", l:"INS", s:"sq"},
+      {e:-10,n:-6, c:"good", l:"Alt", s:"sq"},
+      {e:0,  n:0,  c:"accent", l:"DR", s:"cross"}
+    ];
+  }
+  var FIND={
+    nominal:"All six sources mutually consistent within R95. No interference reported in the operating area. GNSS is <b>authoritative</b>.",
+    degraded:"Both GNSS receivers shifted <b>east ~180 m</b> while INS and alternate PNT remained mutually consistent — the cross-family disagreement that a receiver-vs-receiver check cannot see. RF interference reported in the operating area."
+  };
+  var COA={
+    nominal:null,
+    degraded:[
+      {h:"Cross-check by independent means",d:"Validate position with INS, alternate PNT, radar and visual fixes."},
+      {h:"Designate INS + Alt PNT primary",d:"Demote GNSS to advisory; navigate on the independent families."},
+      {h:"Operate per suspect-GNSS procedure",d:"Apply operational guidance and enhanced monitoring."}
+    ]
+  };
+  var PROC={
+    nominal:null,
+    degraded:{
+      tag:"MGN 379 Amd 1 §4.5",
+      quote:"The prudent navigator should never rely totally on a single position fixing piece of equipment and should regularly cross check the ship's position by other, independent means.",
+      cite:"docs/B/… · MGN 379 (2024) · retrieved via lume"
+    }
+  };
+
+  // ---- renderers ----
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
+
+  function renderSources(deg){
+    var list=document.getElementById("srcList"); list.innerHTML="";
+    SRC[deg?"degraded":"nominal"].forEach(function(s){
+      var r=el("div","src");
+      r.innerHTML='<span class="dot '+s.st+'"></span>'+
+        '<span><div class="nm">'+s.nm+'</div><div class="sub">'+s.sub+'</div></span>'+
+        '<span class="age">'+s.age+'</span>';
+      list.appendChild(r);
+    });
+    document.getElementById("srcCount").textContent = deg? "2 suspect":"6 online";
+    document.getElementById("fixmode").textContent = deg? "INS + eLoran":"GNSS";
+  }
+
+  function renderTiles(deg){
+    var wrap=document.getElementById("tiles"); wrap.innerHTML="";
+    TILES[deg?"degraded":"nominal"].forEach(function(t){
+      var d=el("div","tile"); d.setAttribute("data-sev",t.sev);
+      d.innerHTML='<div class="t-label label">'+t.k+'</div>'+
+        '<div class="t-state">'+t.state+'</div>'+
+        '<div class="t-metric"><span>'+t.m1[0]+'</span><span>'+t.m1[1]+'</span></div>'+
+        '<div class="t-metric"><span>'+t.m2[0]+'</span><span>'+t.m2[1]+'</span></div>';
+      wrap.appendChild(d);
+    });
+  }
+
+  function renderMtx(deg){
+    var m=mtxData(deg), t=document.getElementById("mtx"); t.innerHTML="";
+    var head="<tr><th></th>"+IDS.map(function(i){return "<th>"+i+"</th>"}).join("")+"</tr>";
+    var rows=IDS.map(function(r){
+      var cells=IDS.map(function(c){
+        if(r===c) return '<td class="self">—</td>';
+        var ok=m[r][c];
+        return '<td class="'+(ok?"ok":"no")+'" data-tip="'+r+' vs '+c+': '+(ok?"agree":"DIVERGE")+'">'+(ok?"✓":"✗")+'</td>';
+      }).join("");
+      return "<tr><th class='rh'>"+r+"</th>"+cells+"</tr>";
+    }).join("");
+    t.innerHTML=head+rows;
+    bindTips(t);
+  }
+
+  function renderScatter(deg){
+    var svg=document.getElementById("scatter"); svg.innerHTML="";
+    var W=300,H=150,cx=W/2,cy=H/2, sx=1.05, sy=1.4; // m -> px
+    var NS="http://www.w3.org/2000/svg";
+    function line(x1,y1,x2,y2,st,w,dash){var l=document.createElementNS(NS,"line");l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);l.style.stroke=st;l.setAttribute("stroke-width",w||1);if(dash)l.setAttribute("stroke-dasharray",dash);svg.appendChild(l);}
+    // grid axes
+    line(cx,8,cx,H-8,"var(--hair-2)",1,"3 3");
+    line(20,cy,W-8,cy,"var(--hair-2)",1,"3 3");
+    var eLab=document.createElementNS(NS,"text");eLab.setAttribute("x",W-10);eLab.setAttribute("y",cy-5);eLab.setAttribute("text-anchor","end");eLab.style.fill="var(--muted)";eLab.setAttribute("font-family","'IBM Plex Mono',monospace");eLab.setAttribute("font-size","9");eLab.textContent="E (m)";svg.appendChild(eLab);
+    scatterData(deg).forEach(function(p){
+      var px=cx+p.e*sx, py=cy-p.n*sy, col="var(--"+p.c+")";
+      // scatter cloud
+      if(p.s!=="cross"){
+        for(var i=0;i<9;i++){
+          var c=document.createElementNS(NS,"circle");
+          var jx=(Math.sin(i*2.4+p.e)*7), jy=(Math.cos(i*1.7+p.n)*6);
+          c.setAttribute("cx",px+jx);c.setAttribute("cy",py+jy);c.setAttribute("r","1.7");
+          c.style.fill=col;c.setAttribute("opacity",".55");svg.appendChild(c);
+        }
+      }
+      var g=document.createElementNS(NS,"g");
+      g.setAttribute("data-tip",p.l+": "+p.e+" m E, "+p.n+" m N");
+      var mk;
+      if(p.s==="cross"){
+        mk=document.createElementNS(NS,"path");
+        mk.setAttribute("d","M"+(px-5)+","+py+" h10 M"+px+","+(py-5)+" v10");
+        mk.style.stroke=col;mk.setAttribute("stroke-width","1.6");
+      }else if(p.s==="sq"){
+        mk=document.createElementNS(NS,"rect");mk.setAttribute("x",px-3.5);mk.setAttribute("y",py-3.5);mk.setAttribute("width","7");mk.setAttribute("height","7");mk.style.fill=col;
+      }else{
+        mk=document.createElementNS(NS,"circle");mk.setAttribute("cx",px);mk.setAttribute("cy",py);mk.setAttribute("r","4");mk.style.fill=col;
+      }
+      mk.style.stroke="var(--panel)";mk.setAttribute("stroke-width","1.5");
+      g.appendChild(mk);
+      var lb=document.createElementNS(NS,"text");
+      lb.setAttribute("x",px+7);lb.setAttribute("y",py-6);lb.style.fill="var(--ink)";
+      lb.setAttribute("font-family","'Saira Condensed',sans-serif");lb.setAttribute("font-size","9.5");lb.setAttribute("letter-spacing",".04em");
+      lb.textContent=p.l;g.appendChild(lb);
+      svg.appendChild(g);
+    });
+    bindTips(svg);
+  }
+
+  function renderActions(deg){
+    var wrap=document.getElementById("actions"); wrap.innerHTML="";
+    document.getElementById("coaMode").textContent = deg? "Informational aids · Phase I":"—";
+    if(!deg){
+      wrap.appendChild(el("div","nominal-note",'<span class="dot good"></span> No action required — monitoring, hold course.'));
+      return;
+    }
+    COA.degraded.forEach(function(c,i){
+      var d=el("div","coa");
+      d.innerHTML='<span class="idx">'+(i+1)+'</span>'+
+        '<span class="ct"><div class="h">'+c.h+'</div><div class="d">'+c.d+'</div></span>'+
+        '<span class="btns"><button class="acc" aria-pressed="false">Accept</button>'+
+        '<button class="rej" aria-pressed="false">Reject</button></span>';
+      var acc=d.querySelector(".acc"), rej=d.querySelector(".rej");
+      acc.addEventListener("click",function(){acc.setAttribute("aria-pressed","true");rej.setAttribute("aria-pressed","false");d.setAttribute("data-done","true");});
+      rej.addEventListener("click",function(){rej.setAttribute("aria-pressed","true");acc.setAttribute("aria-pressed","false");d.setAttribute("data-done","true");});
+      wrap.appendChild(d);
+    });
+  }
+
+  function renderProc(deg){
+    var b=document.getElementById("procBody"), tag=document.getElementById("procTag");
+    if(!deg){tag.textContent="";b.innerHTML='<p class="empty">No procedure retrieved — nominal state.</p>';return;}
+    var p=PROC.degraded; tag.textContent=p.tag;
+    b.innerHTML='<div class="doc"><blockquote>"'+p.quote+'"</blockquote><div class="cite">'+p.cite+'</div></div>';
+  }
+
+  function renderChart(deg){
+    var o=deg?1:0;
+    document.getElementById("interf").style.opacity=o;
+    document.getElementById("interfLabel").style.opacity=o;
+  }
+
+  document.getElementById("finding");
+  function renderFinding(deg){document.getElementById("finding").innerHTML=FIND[deg?"degraded":"nominal"];}
+
+  // ---- tooltip wiring ----
+  var tip=document.getElementById("tip");
+  function bindTips(root){
+    root.querySelectorAll("[data-tip]").forEach(function(n){
+      n.addEventListener("mousemove",function(ev){
+        tip.textContent=n.getAttribute("data-tip");
+        tip.style.left=(ev.clientX+12)+"px";tip.style.top=(ev.clientY+12)+"px";tip.style.opacity="1";
+      });
+      n.addEventListener("mouseleave",function(){tip.style.opacity="0";});
+    });
+  }
+
+  // ---- state + palette control ----
+  function setState(s){
+    var deg = s==="degraded";
+    body.setAttribute("data-state",s);
+    renderSources(deg);renderTiles(deg);renderMtx(deg);renderScatter(deg);
+    renderActions(deg);renderProc(deg);renderChart(deg);renderFinding(deg);
+    // reset banner ack each time we enter degraded
+    var ban=document.getElementById("banner"); ban.setAttribute("data-ack","false"); ban.classList.add("flash");
+    document.querySelectorAll("[data-state-btn]").forEach(function(b){b.setAttribute("aria-pressed", b.getAttribute("data-state-btn")===s ? "true":"false");});
+    save("apnt-state",s);
+  }
+  function setPalette(p){
+    html.setAttribute("data-palette",p);
+    document.querySelectorAll("[data-pal]").forEach(function(b){b.setAttribute("aria-pressed", b.getAttribute("data-pal")===p ? "true":"false");});
+    // re-render scatter/matrix so their CSS-var colors resolve for the new palette
+    var deg=body.getAttribute("data-state")==="degraded";
+    renderScatter(deg);
+    save("apnt-pal",p);
+  }
+
+  document.querySelectorAll("[data-state-btn]").forEach(function(b){
+    b.addEventListener("click",function(){setState(b.getAttribute("data-state-btn"));});
+  });
+  document.querySelectorAll("[data-pal]").forEach(function(b){
+    b.addEventListener("click",function(){setPalette(b.getAttribute("data-pal"));});
+  });
+  document.getElementById("ackBtn").addEventListener("click",function(){
+    var ban=document.getElementById("banner");
+    ban.setAttribute("data-ack","true");ban.classList.remove("flash");
+    ban.querySelector(".grow").textContent="GNSS Degradation — Acknowledged · monitoring";
+  });
+
+  // ---- clock ----
+  function tick(){
+    try{
+      var d=new Date();
+      function p(n){return (n<10?"0":"")+n;}
+      document.getElementById("clock").textContent=p(d.getUTCHours())+":"+p(d.getUTCMinutes())+":"+p(d.getUTCSeconds())+"Z";
+    }catch(e){}
+  }
+  setInterval(tick,1000); tick();
+
+  // ---- init from storage ----
+  setPalette(load("apnt-pal","night"));
+  setState(load("apnt-state","nominal"));
+})();
+</script>

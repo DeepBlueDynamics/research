@@ -43,7 +43,34 @@ python3 search_repl.py         # queries .lume-index built from docs/
 lume> :index                   # full indexing: semantic vectors + entity graph
 lume> gps spoofing detection
 lume> :alpha 0.8               # lean semantic; :graph 0 disables SKG boost
+lume> :verify                  # is the index stale vs docs/? (see below)
+lume> :history                 # index build history
 ```
+
+## Index provenance (staleness flagging)
+
+An index is a frozen snapshot of `docs/`; a hit from a since-changed source can be
+silently wrong. `tools/index_manifest.py` records what was indexed and flags drift:
+
+```
+python3 tools/index_manifest.py snapshot   # record docs/ state after `lume index`
+python3 tools/index_manifest.py verify     # diff docs/ vs manifest (exit 1 on drift)
+python3 tools/index_manifest.py history    # the append-only index-run trail
+```
+
+It writes `docs_manifest.json` + `index_history.jsonl` into the index dir. The REPL
+runs `verify` at startup and **tags each search hit** whose source drifted:
+`⚠ VERIFY` (source modified since index) or `⚠ INVALID` (source removed). `:index`
+auto-records a new snapshot.
+
+## Browse the docs
+
+```
+python3 tools/docs_browser.py            # http://localhost:7070/
+```
+A zero-dependency doc browser: collapsible `docs/` tree on the left, click a file to
+read it rendered (markdown, tables, code) on the right; per-page markers link back to
+the source PDF at that page. Binds `0.0.0.0` so it works from a container.
 
 ## Everything else
 
