@@ -83,3 +83,4 @@ the source PDF at that page. Binds `0.0.0.0` so it works from a container.
 Collection rules: public/unclassified only (no CUI/FOUO/ITAR/Dist B–F); paid standards
 recorded but not fetched; full-text marking scan of docs/ is clean (only Distribution
 Statement A on the GPS ICDs).
+# navy
