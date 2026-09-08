@@ -1,0 +1,113 @@
+DeepBlue Dynamics | DON26BX05-NP004 | Technical Proposal Draft
+
+1.2 PHASE I (BASE AND OPTION) STATEMENT OF WORK
+----------------------------------------------------------------------
+
+DeepBlue Dynamics will establish the feasibility of an explainable PNT
+awareness interface through a six-month base effort. All tasks will be
+performed by DeepBlue Dynamics in a proposed company-controlled U.S.
+development and test environment. The performance location and
+assigned personnel will be finalized in Facilities/Equipment and Key
+Personnel before submission. Evaluation will use synthetic inputs and
+automated replay; the base effort does not require human-subject
+research, shipboard access, or government-furnished equipment.
+
+BASE PERIOD: SIX MONTHS FROM AWARD
+
+B1. Requirements, architecture, and evaluation plan | Months 1-2
+Translate the topic and technical objectives into a
+requirements-to-test matrix. Define source interfaces, evidence
+dependencies, threat model, failure states, and the secured offline
+runtime. Separate development scenarios from a frozen held-out
+evaluation set; specify expected outcomes and critical-case failure
+rules before tuning. Document hardware, workloads, timestamp
+boundaries, and measurement uncertainty.
+Deliver: kickoff briefing, architecture, and evaluation plan.
+
+B2. Source ingestion and scenario simulation | Months 1-3
+Implement adapters and a repeatable simulator for 3-8 sources at 1-10
+Hz. Preserve source identity, health, confidence, and data age,
+including missing fields. Generate nominal, recoverable, and
+unresolved cases spanning faults, jamming, spoofing, stale data, and
+shared dependencies. Keep simulator truth outside the operational
+inference path.
+Deliver: interface schema, versioned fixtures, and replay harness.
+
+B3. Explainable interface and local decision support | Months 2-4
+Build the unified display, evidence-based confidence/triage logic, and
+prerequisite-bound recommendations. Report INDETERMINATE when
+available evidence cannot support a definitive conclusion. Implement
+the initial alert and recommendation in a deterministic path
+independent of language-model generation. Run retrieval, optional
+inference, and detailed explanations locally; retain initial
+functionality if the local model fails.
+Deliver: integrated feasibility prototype and evidence-linked traces.
+
+B4. Secured runtime and measured evaluation | Months 3-6
+Package the full stack for offline cold start. Verify least privilege,
+access controls, protected configuration/data, verified offline
+updates, dependency inventory, and tamper-evident audit. Exercise
+unauthorized access, package tampering, and audit failure. Test the
+proposed <100 ms
+input-receipt-to-first-displayed-alert-and-recommendation target with
+security enabled; any measured event at or above 100 ms fails that
+target. Report the topic's <1 s requirement separately.
+
+Run the frozen 60-case evaluation, critical-case checks, repeated
+replays, and information-access checks defined in the evaluation
+protocol. Include source/rate corner loads, mixed rates, bursts, and a
+60-minute maximum-load soak. Compare against a synthetic
+fragmented-display control and an explanation-disabled configuration.
+Report every miss, uncertainty, and unsupported conclusion; do not
+infer fleet reliability or operator performance from these tests.
+Deliver: test evidence, security findings, and feasibility assessment.
+
+B5. Findings and Phase II preparation | Months 5-6
+Demonstrate the prototype and assess each objective against recorded
+evidence. Identify remaining technical risks, interface dependencies,
+and corrective work. Prepare the final report and initial Phase II
+proposal with integration milestones and a transition plan.
+Deliver: demonstration, final technical report, and initial Phase II
+proposal.
+
+Base reviews: kickoff in Month 1; progress report and review in Month
+3; final demonstration and report in Month 6. Final products include
+the prototype package, interface documentation, scenario/replay
+package, and evaluation evidence, with applicable data-rights
+markings.
+
+OPTION PERIOD: SIX MONTHS FROM OPTION EXERCISE
+
+The option will advance preparation for Phase II and bridge the
+funding gap. Exercise is contingent on government action following
+Phase II selection. Option work will not depend on access to a ship or
+operational system.
+
+O1. Resolve feasibility findings | Option Months 1-2
+Address prioritized base-period deficiencies and extend scenario
+coverage. Preserve the original evaluation results; use separately
+versioned regression and new challenge sets to measure changes.
+Deliver: updated prototype, issue disposition, and regression
+evidence.
+
+O2. Prepare integration and deployment | Option Months 2-4
+Refine the GPNTS-facing interface plan using available authorized
+specifications; explicitly identify assumptions where specifications
+remain unavailable. Exercise interface emulators, offline
+installation/update procedures, and resource budgets on the declared
+test platform.
+Deliver: interface-control draft, deployment package, and dependency
+register.
+
+O3. Establish Phase II readiness | Option Months 4-6
+Repeat performance and security checks after option changes. Refine
+the Phase II integration schedule, verification criteria, and
+transition risks. If later operator research is proposed, prepare the
+determination and approval plan required before that work begins.
+Deliver: option demonstration, updated evidence package, final option
+report, and Phase II execution plan.
+
+Option reviews: kickoff in Month 1; progress report in Month 3; final
+review and report in Month 6. The effort produces feasibility and
+integration-readiness evidence; accreditation, ECDIS certification,
+and operational deployment are outside this SOW.

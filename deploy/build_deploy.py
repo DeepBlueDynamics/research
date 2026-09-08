@@ -80,14 +80,14 @@ def build_index():
             "GNSS-degraded, S-52 day/dusk/night. DON26BX05-NP004.")
     og = f'''<meta charset="utf-8">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Assured-PNT Console">
+<meta property="og:title" content="SEXTANT">
 <meta property="og:description" content="{desc}">
 <meta property="og:image" content="{URL}/og-card.png">
 <meta property="og:image:width" content="2400">
 <meta property="og:image:height" content="1260">
 <meta property="og:url" content="{URL}/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Assured-PNT Console">
+<meta name="twitter:title" content="SEXTANT">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="{URL}/og-card.png">
 '''

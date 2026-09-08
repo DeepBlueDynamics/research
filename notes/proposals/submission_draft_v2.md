@@ -1,0 +1,677 @@
+DeepBlue Dynamics | DON26BX05-NP004 | Phase I Technical Proposal
+
+1.0 DESCRIPTION OF PROPOSED PHASE I TECHNICAL EFFORT
+
+During a destroyer transit through a GPS-degraded strait, the
+navigation electronics technician must determine what information
+remains credible, which assumption has failed, and what evidence would
+justify the next response. DON26BX05-NP004 identifies fragmented APNT
+displays as an obstacle to timely understanding and decisions. The
+operational need is a coherent assessment with an understandable
+basis, rather than an additional isolated indicator. [1] This need has
+a current maritime context: U.S. Maritime Advisory 2026-008 calls for
+planning responses to GPS disruption before departure. [2]
+
+DeepBlue Dynamics proposes a unified APNT awareness and
+decision-support interface that shows source health, a transparent
+composite assessment, and informational recovery options with their
+prerequisites. Its central hypothesis is that making dependencies and
+unresolved uncertainty visible will help operators find
+decision-relevant evidence more effectively than aggregation alone.
+Phase I will test technical feasibility and establish the basis for
+subsequent operator-effectiveness evaluation.
+
+The representative simulation begins with apparently healthy
+positioning feeds. Two feeds then agree because they share a
+compromised dependency; a separate reference contradicts them before
+becoming stale. The operator must distinguish agreement from
+independent corroboration. The interface will show which observations
+support its assessment, their age, known dependencies, and the
+conditions required for each proposed response. Unknown dependencies
+remain marked unknown.
+
+Figure 1. Notional ETV console: alert banner with acknowledge,
+resolution options, chart, source roster, event log. [Embed the
+console mockup image here; it counts toward the ten-page limit.]
+
+When the available observations cannot distinguish fault, jamming or
+spoofing, the interface will preserve those alternatives and identify
+an accessible cross-check that could resolve them. If no such evidence
+is accessible, it will state that limit and present appropriately
+bounded degraded-operation information. It will not guarantee
+detection from indistinguishable inputs or equate an ordinal
+confidence label with a calibrated probability.
+
+The simulation deliberately changes what counts as success: a
+confident answer unsupported by the available evidence fails, even
+when it happens to match hidden truth. Conversely, permanent
+uncertainty fails cases where a useful response is supported. Nominal,
+recoverable and unresolved scenarios will therefore be tested
+together, with evaluator truth isolated from operational inputs.
+Recovery transitions will test whether the interface updates its
+recommendation when credible evidence returns. The simulator is
+feasibility infrastructure; the delivered capability is the interface
+and its explainable integration service.
+
+The entire stack will operate air-gapped and secured, including
+analytics, UI, local retrieval and any model inference. A bounded,
+deterministic path presents the alert and initial informational
+recommendation first; supporting explanation follows through local
+drill-down, and the initial response does not depend on the local
+model. The latency gate for that path is stated once, in Section 1.1.
+No ship controls will be actuated. The work develops no
+new PNT sensors, timing sources, hardware, or ownship-fix /
+navigation-solution algorithms; it integrates, assesses and presents
+existing-source information, including an explainable composite
+confidence and triage assessment that is not a replacement navigator.
+[1]
+
+Phase I will build on the firm's existing retrieval and interface
+software; these are development assets, not evidence of a fielded APNT
+product. The demonstration will use public-standard synthetic
+interfaces and an ECDIS-inspired layout as a familiarity target for
+the electronics technician, not an S-57/S-52/NMEA or
+ECDIS-certification claim, with GPNTS integration planned modularly.
+[1] It will produce reproducible software measurements, failure
+analyses and a transition plan. Phase I operator-effectiveness evidence comes from
+human-centered design validation with Government-provided
+subject-matter experts and instrumented workflow proxies (Section
+1.1); measured operator studies are Phase II work.
+
+Technical approach. The delivered capability is a trainable
+retrieval-augmented pipeline that drives the operator display. It
+ships as one container image built on an Iron Bank base, carrying the
+retrieval tools, the reference-document base, the retrieval index, and
+the compiled decision rules. The firm has prototyped, in its nemesis8
+tooling, a container built on an Iron Bank base image that packages
+the retrieval tools, reference data, and display driver; this is
+existing firm work and hardening-ready packaging, not an accredited or
+fielded system. Phase I adapts and measures this existing work.
+
+The decision rules are deterministic code derived from guidance
+documents: the public PNT interface standards, IMO alert and integrity
+guidance, resilient-PNT frameworks, and the representative procedures
+the Q&A permits performers to define. They are produced by a
+development-time training loop, which the firm calls combative
+training:
+
+1. The scenario generator produces failure scenarios (fault, jamming,
+spoofing, shared dependency, stale or missing data, recovery) with
+evaluator-held truth.
+2. A language model, running in the development environment, exercises
+the pipeline's own tools against each scenario: it queries the local
+retrieval service over the document base, inspects what is returned,
+and writes candidate rule code and test cases that handle the case.
+Each rule carries the citation of the guidance clause it embodies.
+3. Rule code is reviewed, versioned, and regression-tested. Only
+compiled rules, the index, the reference data, and versioned
+procedures ship. No model participates in the runtime alert or
+recommendation path; a local model, if present, composes drill-down
+explanation after the alert is displayed and may be absent without
+loss of the initial response.
+4. Training produces a labelled dataset of scenario runs, tool
+returns, rule versions, and outcomes that serves as regression
+evidence. Training scenarios are kept separate from the frozen
+held-out evaluation cases, so the no-win and recoverable cases score
+rules that never saw them.
+
+Agents are used only on training scenarios, simulated in Phase I,
+never in the shipboard runtime. The pipeline is built to be retrained:
+audit records of alerts, evidence, recommendations, and operator
+acknowledgements are collected in a form that can feed later
+retraining offline, under whatever handling rules apply to that data,
+with representative Government data expected only in Phase II.
+
+Retrieval. The local hybrid search (lexical, vector, graph) is keyed
+by anomaly state so that the procedure and evidence for a displayed
+alert are fetched by a precomputed key. The design target is a keyed
+lookup under 30 microseconds, with semantic search reserved for
+operator drill-down, so retrieval never threatens the latency gate. This is a target to be measured, not a result.
+
+Unresolved cases. When the observations do not discriminate among
+fault, jamming, and spoofing, the rules produce an explicit unresolved
+state rather than a forced diagnosis. The console shows that the cause
+is not determined, names the accessible cross-check that would resolve
+it, and offers an acknowledge action that records the operator's
+decision in the audit trail. No-win scenarios reward this behaviour;
+nominal and recoverable scenarios penalize abstention when the
+evidence supports a response.
+
+Deployment. Building on an Iron Bank base is hardening-ready
+packaging, not accreditation. The Phase I final demonstration will run
+the containerized stack in an isolated runtime, which the Topic Q&A
+identifies as highly encouraged; the secured-runtime gate applies
+regardless. [1]
+
+1.1 PHASE I TECHNICAL OBJECTIVES
+
+The six-month base will answer four questions: can the interface
+preserve and explain multi-source evidence; can it distinguish
+supported recommendations from unresolved alternatives; can it do so
+within a secured, air-gapped execution envelope that meets the latency
+gate below; and does the unified presentation give an ETV a shorter,
+more accurate path from alert to a supported recovery option than
+fragmented displays, as judged by human-centered design validation?
+
+O1-Integrate: Normalize synthetic ASPN/pntOS-compatible inputs, retain
+source identity, health, confidence and age, and derive a separately
+explained composite assessment. 
+O2-Support decisions: Present versioned informational recommendations,
+prerequisites and traceable evidence; recognize missing corroboration
+and update on recovery. 
+O3-Establish feasibility: Exercise the secured stack on frozen
+scenarios against an identical-input synthetic fragmented-display
+surrogate-a test control, not a validated fleet baseline.
+O4-Validate the presentation: Determine and validate the display's
+visual hierarchy through human-centered design practice with
+Government-provided SMEs, scored against the Government's stated
+measures (speed to decision, threat comprehension accuracy, decision
+accuracy, workload) using expert review and instrumented proxies, not
+research on human participants. [1]
+
+The source-stated envelope is 3-8 simultaneous sources at 1-10 Hz. [1]
+The source envelope, sub-second response, air-gapped operation and
+secured runtime are fixed constraints; the gates below are proposed
+engineering targets except where marked as Government requirements.
+Before tuning, freeze the
+threat model, hardware profile, payload/load assumptions, test oracle
+and held-out cases. Proposed starting coverage is 60 cases: 20
+nominal, 20 recoverable and 20 unresolved, with fault/jam/spoof
+indicators, shared dependencies, missing/stale data and recovery
+transitions; report counts and outcomes by anomaly class. These counts
+support feasibility testing, not fleet reliability claims.
+
+Latency gate (stated once; later sections refer to it by name)
+Government requirement: sub-second end-to-end, from ingestion to
+presentation of the alert and initial recommended course of action;
+reported separately. [1] Offeror gate: under 100 ms from input receipt
+at the system boundary to the first displayed frame containing both
+the alert and the initial recommendation, in the hardened
+configuration, on a monotonic clock, with queueing and actual frame
+presentation included. Rationale: headroom for GPNTS integration
+overhead in Phase II. Test: 3/8-source x 1/10-Hz corners, intermediate
+and mixed rates, and local-model failure; report every event, the
+maximum, the distribution and drops. Any missing response or event at
+or above 100 ms fails the offeror gate, and a measurement whose
+uncertainty overlaps 100 ms is not a pass. A failed offeror gate is a
+reported feasibility limitation, not a waiver of the Government
+requirement.
+
+Air-gapped operation
+Cold-start and complete ingestion, UI, analytics, retrieval, inference
+and replay with external interfaces disconnected and dependencies
+preloaded. Permit only declared internal communications. Any attempted
+external communication or offline functional failure fails.
+
+Secured runtime
+Require least privilege, authenticated role-limited access, verified
+offline packages/SBOM, protected data and keys, and persistent
+tamper-evident audit. Inspect effective controls; test denied access,
+modified packages and audit tampering. Any mandatory-control failure
+or unremediated applicable high/critical vulnerability fails. [3]
+
+Evidence fidelity and replay
+Preserve required emitted fields or explicit missingness; every
+assessment/recommendation must resolve to its input evidence and rule
+version. Across all heldouts and three repeats, any silent loss,
+unsupported citation or unexplained analytical replay mismatch fails.
+
+Useful, bounded recommendations
+Zero unsupported definitive claims or prerequisite violations in
+unresolved cases; identify missing discriminating evidence or its
+unavailability. At least 18/20 nominal and 18/20 recoverable cases
+must provide an acceptable response. Every predeclared critical case
+must pass its evidence-based oracle; no case may claim assurance
+contradicted by observable evidence. Report each stratum and failure.
+
+Human-centered design validation
+Two design cycles (wireframes, then the working mid-fidelity display)
+each close with a structured expert review by Government-provided SMEs
+and the firm: a cognitive walkthrough of 12 frozen tasks, a heuristic
+evaluation against a predefined checklist (legibility, priority, and
+ECDIS-convention conformance as the transfer-of-training proxy), and
+disposition of every finding. Metrics, all scored on the frozen tasks
+against the evaluator oracle and against the fragmented surrogate and
+an explanation-disabled unified view: speed to decision by keystroke-
+level path modeling from alert to selection of a supported recovery
+option; threat comprehension accuracy by SME identification of the
+displayed state (fault, jamming, spoofing, unresolved) and of the
+named missing evidence; decision accuracy by SME-selected fallback
+versus the oracle-supported fallback; workload by views, interactions
+and attention shifts required to reach the required evidence. Pass:
+every required evidence path reachable and complete, no unresolved
+critical checklist defect, and SME comprehension and fallback
+agreement reported per task with every disagreement dispositioned.
+These are expert-review and analytic proxies and are reported as such;
+no percentage improvement is promised, and instrumented operator
+studies are Phase II work. Reviews are structured as design
+consultation, not research on human participants, and collect no
+personal data about reviewers.
+
+The evaluation protocol specifies event counts, timing
+instrumentation, case selection, security tests, review checklists and
+comparison controls. The final report will include results, unresolved
+integration risks and the Phase II plan.
+
+No research on human participants is proposed, consistent with the
+Topic Q&A; if the Government determines that any review activity
+requires a determination, that activity pauses until it is resolved.
+The CUI handling scope must be resolved with the Government; synthetic
+data do not establish public releasability. [1]
+
+1.2 PHASE I (BASE AND OPTION) STATEMENT OF WORK
+
+DeepBlue Dynamics will establish the feasibility of an explainable PNT
+awareness interface through a six-month base effort. All tasks will be
+performed by DeepBlue Dynamics in a proposed company-controlled U.S.
+development and test environment. The performance location and
+assigned personnel will be finalized in Facilities/Equipment and Key
+Personnel before submission. Evaluation will use synthetic inputs,
+automated replay, and expert design review with Government-provided
+SMEs; the base effort does not require research on human
+participants, shipboard access, or government-furnished equipment.
+
+BASE PERIOD: SIX MONTHS FROM AWARD
+
+B1. Requirements, architecture, and evaluation plan | Months 1-2
+Translate the topic and technical objectives into a
+requirements-to-test matrix. Define source interfaces, evidence
+dependencies, threat model, failure states, and the secured offline
+runtime. Separate development scenarios from a frozen held-out
+evaluation set; specify expected outcomes and critical-case failure
+rules before tuning. Document hardware, workloads, timestamp
+boundaries, and measurement uncertainty.
+Deliver: kickoff briefing, architecture, and evaluation plan.
+
+B2. Source ingestion and scenario simulation | Months 1-3
+Implement adapters and a repeatable simulator for 3-8 sources at 1-10
+Hz. Preserve source identity, health, confidence, and data age,
+including missing fields. Generate nominal, recoverable, and
+unresolved cases spanning faults, jamming, spoofing, stale data, and
+shared dependencies. Keep simulator truth outside the operational
+inference path.
+Generate combative-training scenarios and their evaluator-held truth
+as a dataset separate from the frozen held-out set.
+Deliver: interface schema, versioned fixtures, and replay harness.
+
+B3. Explainable interface and local decision support | Months 2-4
+Build the unified display, evidence-based confidence/triage logic, and
+prerequisite-bound recommendations. Run two human-centered design cycles: wireframes for the essential
+elements (source health, navigation confidence, threats and
+degradations, operational impacts, recovery options), then the working
+mid-fidelity display; close each cycle with an SME cognitive
+walkthrough and heuristic review, and record each visual-hierarchy
+decision with its rationale and the finding that drove it.
+Report INDETERMINATE when
+available evidence cannot support a definitive conclusion. Implement
+the initial alert and recommendation in a deterministic path
+independent of language-model generation. Run retrieval, optional
+inference, and detailed explanations locally; retain initial
+functionality if the local model fails.
+Run the rule-synthesis loop: model-assisted rule and test generation
+from guidance documents and tool returns in the development
+environment; human review; versioned, cited rules compiled into the
+runtime. Key the retrieval index by anomaly state; measure
+keyed-lookup latency against the 30 microsecond target.
+Deliver: integrated feasibility prototype, evidence-linked traces,
+and design-decision record.
+
+B4. Secured runtime and measured evaluation | Months 3-6
+Package the full stack for offline cold start. Verify least privilege,
+access controls, protected configuration/data, verified offline
+updates, dependency inventory, and tamper-evident audit. Exercise
+unauthorized access, package tampering, and audit failure. Run the
+latency gate (Section 1.1) with security enabled.
+
+Include at least six recoverable cases per fault, jamming, and
+spoofing class. Run the frozen 60-case evaluation, critical-case
+checks, repeated replays, and the human-centered design validation
+defined in the evaluation protocol, closing with the final SME review
+of the frozen tasks. Run four 30-minute source/rate corners, a
+30-minute intermediate/mixed-rate sweep, and a 60-minute maximum-load
+soak with bursts, covering at least 1,000 scored event transitions.
+Compare against a
+synthetic fragmented-display control and an explanation-disabled
+configuration. Report every miss, uncertainty, and unsupported
+conclusion; do not infer fleet reliability or operator performance
+from these tests.
+Deliver: test evidence, security findings, feasibility assessment,
+design validation report, training dataset, rule provenance (rule to
+guidance clause), and regression results.
+
+B5. Findings and Phase II preparation | Months 5-6
+Demonstrate the prototype and assess each objective against recorded
+evidence. Identify remaining technical risks, interface dependencies,
+and corrective work. Prepare the final report and initial Phase II
+proposal with integration milestones and a transition plan.
+Deliver: demonstration, final technical report, and initial Phase II
+proposal.
+
+Base reviews: kickoff in Month 1; progress report and review in Month
+3; final demonstration and report in Month 6. Final products include
+the prototype package, interface documentation, scenario/replay
+package, and evaluation evidence, with applicable data-rights
+markings.
+
+OPTION PERIOD: SIX MONTHS FROM OPTION EXERCISE
+
+The option will advance preparation for Phase II and bridge the
+funding gap. Exercise is contingent on government action following
+Phase II selection. Option work will not depend on access to a ship or
+operational system.
+
+OP1. Resolve feasibility findings | Option Months 1-2
+Address prioritized base-period deficiencies and extend scenario
+coverage. Preserve the original evaluation results; use separately
+versioned regression and new challenge sets to measure changes.
+Deliver: updated prototype, issue disposition, and regression
+evidence.
+
+OP2. Prepare integration and deployment | Option Months 2-4
+Refine the GPNTS-facing interface plan using available authorized
+specifications; explicitly identify assumptions where specifications
+remain unavailable. Exercise interface emulators, offline
+installation/update procedures, and resource budgets on the declared
+test platform.
+Deliver: interface-control draft, deployment package, and dependency
+register.
+
+OP3. Establish Phase II readiness | Option Months 4-6
+Repeat performance and security checks after option changes. Refine
+the Phase II integration schedule, verification criteria, and
+transition risks. If later operator research is proposed, prepare the
+determination and approval plan required before that work begins.
+Deliver: option demonstration, updated evidence package, final option
+report, and Phase II execution plan.
+
+Option reviews: kickoff in Month 1; progress report in Month 3; final
+review and report in Month 6. The effort produces feasibility and
+integration-readiness evidence; accreditation, ECDIS certification,
+and operational deployment are outside this SOW.
+
+1.3 RELATED WORK
+
+The Open Topic template requires related work by the PI, firm,
+consultants, or others. What exists is a public unclassified corpus
+and design tooling - not a GPNTS-integrated product, not a certified
+navigation display, and not a measured operator result.
+
+The firm has a provenance-tracked public library of PNT interface
+material (including ASPN and pntOS) and the current topic, Q&A, and
+CSO. It is the intended Phase I standards source, not
+Government-furnished information. A vendored retrieval engine is
+available for optional drill-down after the initial alert and
+recommendation. A notional console layout (source health,
+composite, alert, informational recovery options) is design reference
+only - not certified ECDIS and not real chart data. The firm has
+prototyped, in its nemesis8 tooling, a container built on an Iron Bank
+base image that packages the retrieval tools, reference data, and
+display driver; this is existing firm work and hardening-ready
+packaging, not an accredited or fielded system.
+
+Phase I will adapt these assets to three-to-eight synthetic ASPN/pntOS
+streams, keep source health separate from a transparent composite, and
+run air-gapped with informational recommendations only.
+
+[PI publications, firm product/IP, and consultant prior work to be
+confirmed.] No prior, current, or pending Government support is
+claimed; if any exists, client, point of contact, and dates belong in
+Volume 5.
+
+1.4 DEFENSE NEED
+
+Q&A names the GPNTS program of record as transition owner, Phase II
+ICDs as Government-furnished information, no shore interface, and
+Phase I on synthetic ASPN/pntOS data. That is the intended path, not a
+claim that GPNTS selected or endorsed this firm. [1]
+
+The preferred Phase I use case is a destroyer transit through a
+GPS-degraded or spoofed strait. The intended user is the electronics
+technician-navigation (ETV). An ECDIS-like layout is a familiarity
+target, not a certification claim. [1]
+
+The topic identifies fragmented physical displays as increasing
+workload and slowing decisions. The increment is one workflow for
+triage (fault versus jamming versus spoofing) and fallback: a unified
+air-gapped informational console that keeps source health visible,
+adds a transparent composite, and names missing evidence, without new
+sensors, ownship-fix algorithms, or ship control. No
+operator-performance gain is claimed until measured.
+
+OPNAVINST 9420.1C paragraph 5a(3) requires a DoD-approved primary and
+a GPS-independent alternate; paragraph 5a(11) requires new PNT systems
+to indicate degradation from jamming, multipath, weather, terrain, or
+spoofing. [4] Exhibit P-40, OPN LI 2657 (March 2024) describes GPNTS
+as the Navy primary PNT system (open architecture, MGUE M-code);
+FY2025 M-GUE and NoGAPSS kits install in FY2026 (secondary copy of the
+unclassified exhibit). [5] GAO-22-106010 (5 August 2022) reported
+incomplete Navy alternative-PNT business cases and no Oversight
+Council progress metrics. [6]
+
+Closed NAVCEN GPS Problem Reports, June-August 2026, include Red Sea
+jamming and spoofing, Fujairah multi-vessel disruption, Baltic
+interference, and GPS failure southeast of Sweden; each closed with no
+constellation anomaly. [7]
+
+Phase I establishes synthetic feasibility against a fragmented-display
+surrogate (a test control, not a validated fleet baseline). Phase II
+maps modularly to GPNTS when interface documents arrive. Dual-use
+follows the topic's Phase III list (for example commercial shipping
+and logistics, aviation operations, and critical infrastructure
+monitoring).
+
+2.0 KEY PERSONNEL
+
+Kord Campbell, Founder [PI designation to confirm]
+Employer: DeepBlue Dynamics
+Qualifications: Founder of DeepBlue Dynamics since September 2019.
+Chief AI Officer, FeatureBase (2022-2023): machine-learning
+applications for a high-throughput database. Founder and CEO, Loggly
+(2009-2012): SaaS time-series search. Director of Developer Marketing,
+Splunk (2007-2009): developer advocacy for time-series machine data.
+Founder and CEO, Grub, Inc. (2000-2003): open-source distributed web
+crawler, acquired by LookSmart (2004). University of Central Oklahoma,
+computer science and mathematics, 1990-1995 [degree conferral to
+confirm].
+Foreign person: [confirm]
+Publications: "Building Self-Aware Machines," presentation, Lucidworks
+Activate 2018. Internet-Draft, "Agentic Hypercall Protocol (AHP): Tool
+Invocation, Blind Settlement, and Portable Reputation over HTTP," IETF
+Datatracker, 2026 [authorship and draft name to confirm].
+
+Clint Robison, [title to confirm]
+Employer: DeepBlue Dynamics [start date to confirm; August 2026 is a
+drafting assumption]
+Qualifications: Lead Software Engineer, Behold Business Intelligence
+(2024-2025); Senior Software Engineer, Apkudo (2022-2024): pipelines,
+internal workflow, and customer/partner portals on AWS, Python,
+Postgres; Principal Software Engineer, Incyte Studios (2020-2022):
+product-owner and developer role covering cloud operations, CI/CD, and
+UI/UX with a client creative team; Senior Software Engineer, Cognizant
+(2018-2019): revenue-cycle clearinghouse workflow connecting 340,000
+providers. Earlier: Department of Defense computer scientist (2002-2003): ported
+a DoD Ada program to C++, preserving the behavior of a legacy defense
+codebase across languages [program and organization to confirm]. U.S.
+Navy Electrician's Mate, USS Kalamazoo (AOR-6), 1993-1996 [confirm
+rate: "EM4" is not a standard abbreviation; an E-4 Electrician's Mate
+is EM3]; stood helmsman watches on the bridge throughout a 20-day
+underway period. University of Central Oklahoma, computer science,
+1999-2003 [degree conferral to confirm].
+Foreign person: [confirm]
+Publications: None listed.
+
+PROPOSED ROLES
+
+Kord Campbell will direct the technical approach and architecture, own
+the evidence-retrieval and explanation design, lead Government
+interaction, and write the transition and commercialization plan. His
+background spans founding and operating commercial search and
+data-systems companies, developer adoption of technical products, and
+recent applied machine-learning leadership, which maps to the topic's
+call for data integration, analytics, and decision-support expertise
+rather than new navigation algorithms. [base hours / option hours to
+confirm]
+
+Clint Robison will implement the ingestion and normalization services,
+the containerized secured runtime, the operator interface, and the
+evaluation harness, and will run the latency, isolation, and security
+gate tests. His record is full-stack delivery on Python, PostgreSQL,
+REST and GraphQL interfaces, Linux, Docker, and CI/CD, in
+product-owner-facing roles. His Navy sea service, including bridge
+helm watches through a 20-day underway period, gives first-hand
+context for the bridge watch team the ETV supports, and his DoD Ada-
+to-C++ port gives experience carrying legacy defense software across
+interfaces without changing its behavior; neither is presented as
+GPNTS or APNT-specific expertise. [base hours / option hours to
+confirm]
+
+CONSULTANTS AND SUBCONTRACTORS
+
+[Company to confirm whether any are proposed; identify employer, role,
+and share of base and option effort.]
+
+[Confirm PI primary employment at award and during performance.]
+
+3.0 COMMERCIALIZATION/TRANSITION PLAN SUMMARY
+
+DEFENSE TRANSITION
+The primary Department of Defense (DoD) transition target for the
+proposed unified APNT operational awareness and decision-support
+capability is the GPNTS program of record, which the Q&A names as the
+primary integration target and transition owner [1]. GPNTS is the
+Navy's primary shipboard PNT system, is an open-architecture
+development, hosts the M-code Military GPS User Equipment (MGUE) card,
+and is fielding M-code and non-GPS-aided positioning (NoGAPSS) upgrade
+kits with FY2025 procurements installing in FY2026 [5]. The topic
+solicitation identifies GPNTS as the primary shipboard integration
+baseline for ingesting alternate PNT data sources via All-Source
+Positioning and Navigation (ASPN) and PNT Operating System (pntOS)
+message standards [1].
+
+Our proposed commercialization strategy follows a structured
+three-phase transition model:
+- Phase I (Feasibility & Interface Alignment): Establish software
+feasibility on ASPN/pntOS synthetic data streams in an air-gapped
+containerized runtime, delivering a Phase II transition plan and GPNTS
+interface mapping [1].
+- Phase II (Prototype Maturity & GPNTS Integration): Mature the
+software into a working prototype, ingesting representative GPNTS
+message formats, validating performance against representative Navy
+data sources, and conducting Government-SME design reviews subject to
+the appropriate research-determination process [1].
+- Phase III (Program of Record Insertion & Fleet Deployment):
+Transition the software module into GPNTS acquisition baselines as an
+enterprise decision-support extension for shipboard bridge displays
+and navigation consoles.
+
+Transition Disclaimer: This transition pathway represents a proposed
+technical alignment strategy. It is stated without implying Government
+endorsement, formal acquisition commitment, or a pre-awarded Phase III
+contract.
+
+COMMERCIAL MARKETS
+Beyond military platforms, commercial maritime and industrial sectors
+face related operational challenges in integrating disaggregated PNT
+data during signal disruption [1]. The commercial necessity for
+resilient navigation is evidenced by U.S. Maritime Advisory 2026-008
+(active, expires 21 October 2026), which alerts commercial mariners to
+worldwide GPS disruption and urges pre-voyage contingency planning
+[2].
+
+Dual-use commercialization will target the commercial application
+areas identified in the topic solicitation [1]:
+1.  Autonomous transportation systems
+2.  Commercial shipping and logistics
+3.  Aviation operations
+4.  Industrial automation
+5.  Telecommunications network operations
+6.  Smart infrastructure management
+7.  Cloud and data center operations
+8.  Critical infrastructure monitoring
+9.  Public safety
+10. Enterprise operations centers
+
+Commercial Stance: All commercial opportunities are prospective. No
+commercial sales, private revenue, or customer commitments are claimed
+for Phase I.
+
+PROPOSED MILESTONES
+All commercialization and transition timeline milestones are proposed
+engineering targets:
+- Month 6 (Proposed): Complete Phase I feasibility report; run the
+latency gate (Section 1.1), the human-centered design validation, and
+the air-gapped and secured-runtime gates.
+- Phase II, contingent on award and interface access: Complete Phase
+II prototype integration with GPNTS message interfaces and ASPN/pntOS
+live streams.
+- Phase III preparation, contingent on transition agreements: Prepare
+the Phase III transition package and commercial software licensing
+model; resolve the applicable deployment and container-hardening
+requirements with the Government.
+
+INTELLECTUAL PROPERTY AND DATA RIGHTS
+[Company to confirm background intellectual property, ownership, and
+proposed restrictions for Volume 5.] Award-generated software and
+technical data will be delivered with rights and markings consistent
+with the applicable contract clauses.
+
+FACILITIES/EQUIPMENT
+
+DeepBlue Dynamics proposes to perform the effort at [U.S. performance
+location to confirm]. [Company to identify available office space,
+workstations, instrumentation, local build infrastructure, and test
+network.] Development and synthetic-data evaluation will use local
+workstation compute and simulation tools. [Company to confirm
+equipment availability, any purchases, and consistency with Volume 3.]
+
+The full application will operate in a secured, air-gapped
+environment. Applicable CUI handling and assessment requirements will
+be confirmed with the Government before affected performance. [Company
+to confirm the existing environment, required remediation, and
+assessment status against the topic Q&A of August 28, 2026.] No
+accreditation or assessment completion is claimed. [1]
+
+[Company to confirm that the performance facilities meet applicable
+federal, state, and local environmental laws and regulations
+concerning airborne emissions, waterborne effluents, external
+radiation, outdoor noise, solid and bulk waste, and toxic or hazardous
+materials.]
+
+REFERENCES
+
+[1] Department of the Navy, DoW 2026 SBIR CSO Release 5, Open Topic
+DON26BX05-NP004, "NAVWAR Open Topic for Unified Assured Positioning,
+Navigation, and Timing Operational Awareness and Decision Support,"
+topic text and Topic Q&A (answers dated 1 Jul-1 Sep 2026).
+https://www.navysbir.com/n26_5/DON26BX05-NP004.htm (public mirror;
+DSIP is controlling). Accessed 7 Sep 2026.
+
+[2] U.S. Maritime Administration, U.S. Maritime Advisory 2026-008,
+"Global - U.S. Maritime Advisory Updates, Resources, and Contacts"
+(active; expires 21 Oct 2026).
+https://www.maritime.dot.gov/msci/2026-008-global-us-maritime-advisory-updates-resources-and-contacts
+
+[3] National Institute of Standards and Technology, Special
+Publication 800-190, "Application Container Security Guide."
+https://csrc.nist.gov/pubs/sp/800/190/final
+
+[4] Office of the Chief of Naval Operations, OPNAVINST 9420.1C,
+"Positioning, Navigation and Timing Policy," 30 Sep 2019, paragraph
+5a(3) and paragraph 5a(11).
+https://www.secnav.navy.mil/doni/Directives/09000%20General%20Ship%20Design%20and%20Support/09-400%20Command%20and%20Surveillance%20Systems%20Support/9420.1C.pdf
+
+[5] Department of the Navy, Exhibit P-40 Budget Line Item
+Justification, PB 2025, Other Procurement Navy, Line Item 2657
+"NAVSTAR GPS Receivers (Space)," March 2024, pp. 1-2. [Cite the
+official Navy FY2025 OPN justification book; an unclassified secondary
+copy was used for drafting.]
+
+[6] U.S. Government Accountability Office, GAO-22-106010, "GPS
+Alternatives: DOD Is Developing Navigation Systems but Is Not
+Measuring Overall Progress," 5 Aug 2022.
+https://www.gao.gov/products/gao-22-106010
+
+[7] U.S. Coast Guard Navigation Center, "GPS Problem Report Status,"
+marine entries June-August 2026.
+https://www.navcen.uscg.gov/gps-problem-report-status Accessed 7 Sep
+2026.

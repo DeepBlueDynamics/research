@@ -3,6 +3,10 @@
 Public, unclassified document corpus and retrieval system for the Navy SBIR topic
 **DON26BX05-NP004** (assured-PNT operator awareness; proposal closes 2026-09-23).
 
+## Proposal rules and references
+
+Read [How to Reference Shit](HOW_TO_REFERENCE_SHIT.md) for the source hierarchy, local submission rules/templates, page and font limits, citation examples, draft locations and known stale assumptions. Volume 2 is limited to **10 pages total**; one page per opening section is our drafting allocation, not a separate Navy limit.
+
 ## Start here: `docs/`
 
 **`docs/` is the indexing and retrieval target.** It is the all-text rendition of the

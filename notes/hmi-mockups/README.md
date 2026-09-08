@@ -2,7 +2,7 @@
 
 ## Current reference: `apnt-console.html`
 
-**`apnt-console.html`** is the working design-system reference — an interactive,
+**`apnt-console.html`** is the working design-system reference for **SEXTANT** (offeror code name for the unified APNT interface; not a Navy designation) — an interactive,
 S-52-styled ECDIS-N console built as widgets (confidence tiles, source roster,
 agreement matrix, divergence scatter, BAM degradation banner, COA cards, retrieved-
 procedure panel, replay scrubber). Toggle **Nominal ⇄ GNSS-Degraded** to see the

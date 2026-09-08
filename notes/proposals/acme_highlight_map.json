@@ -1,0 +1,62 @@
+[
+  [
+    "A Product and buyer",
+    "green",
+    "develop a Big Network Reporting (BNR) system",
+    "DeepBlue Dynamics proposes a unified APNT awareness and decision-support interface"
+  ],
+  [
+    "B Rules from evidence",
+    "green",
+    "Create a library of behavioral rules based upon the available data and the desired results",
+    "The decision rules are deterministic code derived from guidance documents"
+  ],
+  [
+    "C Existing software reuse",
+    "green",
+    "will reuse components and software already developed on earlier programs",
+    "The firm has prototyped, in its nemesis8 tooling, a container built on an Iron Bank base image"
+  ],
+  [
+    "D Work plan",
+    "green",
+    "The six-month work plan is designed",
+    "B2. Source ingestion and scenario simulation | Months 1-3"
+  ],
+  [
+    "E Measurable feasibility",
+    "green",
+    "We will evaluate the expected system performance using data sets with known ground truth.",
+    "Run the frozen 60-case evaluation"
+  ],
+  [
+    "F Traceable reasoning",
+    "green",
+    "Providing a reasoning accountability display, so that a user can identify the rules that contributed to a particular assertion.",
+    "Each rule carries the citation of the guidance clause it embodies."
+  ],
+  [
+    "G Phase II preparation",
+    "green",
+    "Phase I defines the scope and plan for Phase II",
+    "O3. Establish Phase II readiness | Option Months 4-6"
+  ],
+  [
+    "H Personnel specificity",
+    "orange",
+    "The Principal Investigator, Mr. Road Runner, is an award-winning software developer",
+    "Kord Campbell, Founder [PI designation to confirm]"
+  ],
+  [
+    "I Customer evidence",
+    "orange",
+    "6.2 Existing Customers",
+    "Commercial Stance: All commercial opportunities are prospective."
+  ],
+  [
+    "J Figures",
+    "orange",
+    "Figure 1: Object-oriented representation for measurable elements.",
+    "Figure 1 (notes/hmi-mockups/remarkable/fig_console_sketch-8.png)"
+  ]
+]
