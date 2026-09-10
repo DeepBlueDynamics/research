@@ -1,0 +1,26 @@
+{
+  "view": {
+    "center": [
+      56.25,
+      26.6
+    ],
+    "zoom": 9,
+    "minZoom": 7,
+    "maxZoom": 14,
+    "bounds": [
+      55,
+      25,
+      57.5,
+      27.5
+    ]
+  },
+  "basemap": {
+    "pmtiles": "../hormuz.pmtiles",
+    "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap contributors</a> · Protomaps"
+  },
+  "labels": {
+    "font": "Noto Sans Regular",
+    "glyphs": "../vendor/fonts/{fontstack}/{range}.pbf"
+  },
+  "disclaimer": "DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS"
+}

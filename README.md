@@ -76,6 +76,42 @@ A zero-dependency doc browser: collapsible `docs/` tree on the left, click a fil
 read it rendered (markdown, tables, code) on the right; per-page markers link back to
 the source PDF at that page. Binds `0.0.0.0` so it works from a container.
 
+## Offline Hormuz map demonstrator
+
+`code/maps/` contains the Meridian-derived MapLibre GL / PMTiles viewer and a local
+Strait of Hormuz basemap. From the repository root:
+
+```bash
+node code/maps/server/serve.mjs --port 8090
+```
+
+Open `http://localhost:8090/`. The server binds `0.0.0.0`; when running inside n8,
+expose port 8090 to the host with the `expose_port` tool. Runtime JavaScript, CSS,
+label glyphs, and tiles are local; the viewer does not require a CDN or tile service.
+
+- **Coverage:** 55.0–57.5°E, 25.0–27.5°N; tile zooms 0–12. The viewer can overzoom
+  to 14 using the same data, without adding geographic detail.
+- **Data and provenance:** `code/maps/hormuz.pmtiles`, `hormuz.manifest.json`,
+  `meridian-extraction.manifest.json`, and the licenses in `vendor/`.
+- **Preview and exercised checks:** [map screenshot](code/maps/hormuz-preview.png)
+  and `code/maps/verification.json` (offline rendering, geographic moves, zoom
+  control, attribution, and HTTP Range boundaries).
+- **Integration:** `window.m.map` is the MapLibre map;
+  `window.m.flyTo(longitudeDegrees, latitudeDegrees, zoom)` changes the view;
+  `window.m.state()` reports readiness, center, zoom, and errors. ASPN geodetic
+  radians must be converted at the adapter boundary before using these controls.
+
+To regenerate assets online in the Linux x86-64 container with Python 3.11+:
+
+```bash
+python3 code/tools/acquire_hormuz_tiles.py  # refuses to overwrite an existing archive
+python3 code/tools/vendor_hormuz_runtime.py
+```
+
+This is an OSM-derived geographic basemap, **not an ENC, navigation chart, or
+ECDIS**. It does not implement the simulator, MCP controls, or APNT assessment
+console. No proposal PDF was modified by this mapping extraction.
+
 ## Everything else
 
 - `corpus/` — original fetched documents (PDF/zip/md) + `manifest.csv|json`,

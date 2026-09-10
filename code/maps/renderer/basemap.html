@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEXTANT — Strait of Hormuz</title>
+<link rel="icon" href="data:,">
+<!-- Meridian layers.html MapLibre + PMTiles pattern, extracted for the Navy
+     demonstrator. Offline basemap only: no Google tiles, NOAA overlay, CDN,
+     routing or simulated navigation measurements. Provenance: ../meridian-extraction.manifest.json. -->
+<link rel="stylesheet" href="../vendor/maplibre-gl.css">
+<style>
+  :root { color-scheme: dark; --ink: #e2ebef; --muted: #9daeb8; --panel: #0c1922ed; --line: #35505e; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; color: var(--ink); background: #102b3b; font: 13px system-ui, sans-serif; }
+  #map { position: absolute; inset: 0; }
+  header { position: absolute; top: 20px; left: 20px; z-index: 2; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; pointer-events: none; }
+  .eyebrow { font-size: 10px; letter-spacing: .18em; color: #8ac8dc; text-transform: uppercase; }
+  h1 { margin: 5px 0 4px; font-size: 23px; letter-spacing: -.02em; font-weight: 600; }
+  header p { margin: 0; color: var(--muted); font-size: 12px; }
+  #status { position: absolute; bottom: 50px; left: 20px; z-index: 2; margin: 0; padding: 8px 12px; background: var(--panel); border: 1px solid var(--line); font: 11px ui-monospace, monospace; }
+  #status.error { color: #ffb4a8; border-color: #ff8978; }
+  #disclaimer { position: absolute; bottom: 16px; left: 20px; z-index: 2; padding: 5px 10px; background: var(--panel); color: #e8bd75; font-size: 10px; letter-spacing: .08em; }
+  .maplibregl-ctrl-attrib { background: #0c1922ed !important; color: var(--muted); font-size: 11px; }
+  .maplibregl-ctrl-attrib a { color: #a9d8e6 !important; }
+  .maplibregl-ctrl-scale { background: #0c1922ed !important; color: var(--ink); border-color: var(--ink); }
+  @media (max-width: 650px) { header { top: 12px; left: 12px; padding: 10px 14px; } h1 { font-size: 18px; } #status { bottom: 75px; left: 12px; } #disclaimer { bottom: 45px; left: 12px; max-width: 85%; } }
+</style>
+</head>
+<body>
+<div id="map" role="region" aria-label="Interactive Strait of Hormuz basemap"></div>
+<header><div class="eyebrow">SEXTANT · geographic context</div><h1>Strait of Hormuz</h1><p>Local vector tiles · OpenStreetMap / Protomaps</p></header>
+<p id="status" role="status">Loading local map…</p>
+<div id="disclaimer">DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS</div>
+<script src="../vendor/maplibre-gl.js"></script>
+<script src="../vendor/pmtiles.js"></script>
+<script>
+(async function () {
+  'use strict';
+  const status = document.getElementById('status');
+  const fail = (error) => { status.className = 'error'; status.textContent = 'Map unavailable: ' + error.message; };
+  try {
+    const response = await fetch('./config.json');
+    if (!response.ok) throw new Error('Map configuration HTTP ' + response.status);
+    const cfg = await response.json();
+    document.getElementById('disclaimer').textContent = cfg.disclaimer;
+    const archive = new URL(cfg.basemap.pmtiles, location.href).href;
+    const protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
+    const source = 'basemap';
+    const font = [cfg.labels.font];
+    const english = ['has', 'name:en'];
+    const labelText = ['get', 'name:en'];
+    const style = {
+      version: 8,
+      glyphs: decodeURI(new URL(cfg.labels.glyphs, location.href).href),
+      sources: { basemap: { type: 'vector', url: 'pmtiles://' + archive, attribution: cfg.basemap.attribution, maxzoom: 12 } },
+      layers: [
+        { id: 'ocean', type: 'background', paint: { 'background-color': '#102b3b' } },
+        { id: 'earth', type: 'fill', source, 'source-layer': 'earth', paint: { 'fill-color': '#28373a', 'fill-outline-color': '#708789' } },
+        { id: 'landuse', type: 'fill', source, 'source-layer': 'landuse', paint: { 'fill-color': '#354444', 'fill-opacity': .48 } },
+        { id: 'water', type: 'fill', source, 'source-layer': 'water', paint: { 'fill-color': '#102b3b' } },
+        { id: 'coast', type: 'line', source, 'source-layer': 'earth', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'line-color': '#718b8e', 'line-width': .8 } },
+        { id: 'roads', type: 'line', source, 'source-layer': 'roads', minzoom: 8, paint: { 'line-color': '#66706e', 'line-opacity': .65, 'line-width': ['interpolate', ['linear'], ['zoom'], 8, .4, 14, 1.8] } },
+        { id: 'boundaries', type: 'line', source, 'source-layer': 'boundaries', paint: { 'line-color': '#93a2a4', 'line-opacity': .5, 'line-width': 1, 'line-dasharray': [3, 3] } },
+        { id: 'island-labels', type: 'symbol', source, 'source-layer': 'earth', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': 13 }, paint: { 'text-color': '#c6d5d8', 'text-halo-color': '#213237', 'text-halo-width': 1.5 } },
+        { id: 'water-labels', type: 'symbol', source, 'source-layer': 'water', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': 13, 'text-letter-spacing': .12 }, paint: { 'text-color': '#84b6cb', 'text-halo-color': '#102b3b', 'text-halo-width': 1.5 } },
+        { id: 'places', type: 'symbol', source, 'source-layer': 'places', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': ['interpolate', ['linear'], ['zoom'], 8, 12, 13, 15], 'symbol-sort-key': ['coalesce', ['get', 'min_zoom'], 0] }, paint: { 'text-color': '#e0e7e5', 'text-halo-color': '#24383d', 'text-halo-width': 1.6 } },
+      ],
+    };
+    const map = new maplibregl.Map({
+      container: 'map', style, center: cfg.view.center, zoom: cfg.view.zoom,
+      minZoom: cfg.view.minZoom, maxZoom: cfg.view.maxZoom,
+      maxBounds: [[cfg.view.bounds[0], cfg.view.bounds[1]], [cfg.view.bounds[2], cfg.view.bounds[3]]],
+      attributionControl: { compact: false },
+    });
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.addControl(new maplibregl.ScaleControl({ unit: 'nautical' }), 'bottom-right');
+    let error = null;
+    map.on('error', (event) => { error = event.error || new Error(String(event)); fail(error); });
+    const showPosition = () => {
+      if (error) return;
+      const center = map.getCenter();
+      status.textContent = 'LOCAL TILES · ' + center.lat.toFixed(4) + '°N / ' + center.lng.toFixed(4) + '°E · zoom ' + map.getZoom().toFixed(1);
+    };
+    map.on('idle', showPosition);
+    // Preserve Meridian's browser control convention for subsequent console integration.
+    window.m = {
+      map,
+      flyTo: (lon, lat, zoom = map.getZoom()) => map.jumpTo({ center: [lon, lat], zoom }),
+      state: () => ({ zoom: map.getZoom(), center: map.getCenter(), ready: map.loaded(), error: error?.message || null, sources: Object.keys(style.sources) }),
+    };
+  } catch (error) { fail(error); }
+})();
+</script>
+</body>
+</html>

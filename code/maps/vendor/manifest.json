@@ -1,0 +1,86 @@
+{
+  "purpose": "Offline Meridian-derived Hormuz map runtime",
+  "files": [
+    {
+      "file": "maplibre-gl.js",
+      "sha256": "be9633c4d870e26fb37f1cfe5c5a77181667114003ea16207ac7850d8da8add1",
+      "package": "maplibre-gl",
+      "version": "4.7.1",
+      "source": "https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.7.1.tgz",
+      "npm_integrity": "sha512-lgL7XpIwsgICiL82ITplfS7IGwrB1OJIw/pCvprDp2dhmSSEBgmPzYRvwYYYvJGJD7fxUv1Tvpih4nZ6VrLuaA=="
+    },
+    {
+      "file": "maplibre-gl.css",
+      "sha256": "576b085fdd9487a65a19215328c1e086c07ce5bf6da09b666b3806d3d008dae9",
+      "package": "maplibre-gl",
+      "version": "4.7.1",
+      "source": "https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.7.1.tgz",
+      "npm_integrity": "sha512-lgL7XpIwsgICiL82ITplfS7IGwrB1OJIw/pCvprDp2dhmSSEBgmPzYRvwYYYvJGJD7fxUv1Tvpih4nZ6VrLuaA=="
+    },
+    {
+      "file": "maplibre-gl.LICENSE.txt",
+      "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+      "package": "maplibre-gl",
+      "version": "4.7.1",
+      "source": "https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.7.1.tgz",
+      "npm_integrity": "sha512-lgL7XpIwsgICiL82ITplfS7IGwrB1OJIw/pCvprDp2dhmSSEBgmPzYRvwYYYvJGJD7fxUv1Tvpih4nZ6VrLuaA=="
+    },
+    {
+      "file": "pmtiles.js",
+      "sha256": "367c19f8936d1d6c1b1820b0dee053f793fc29277655c3e471f5ed4d37b5f045",
+      "package": "pmtiles",
+      "version": "3.2.1",
+      "source": "https://registry.npmjs.org/pmtiles/-/pmtiles-3.2.1.tgz",
+      "npm_integrity": "sha512-3R4fBwwoli5mw7a6t1IGwOtfmcSAODq6Okz0zkXhS1zi9sz1ssjjIfslwPvcWw5TNhdjNBUg9fgfPLeqZlH6ng=="
+    },
+    {
+      "file": "pmtiles.LICENSE.txt",
+      "sha256": "9500fb7d824af20acfb30e32e8350d98ba60525610a91008e91fd83e16da7bb5",
+      "package": "pmtiles",
+      "version": "3.2.1",
+      "source": "https://raw.githubusercontent.com/protomaps/PMTiles/d7357088c5b971b6d756a43b798182bb6777043d/LICENSE"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/0-255.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/0-255.pbf",
+      "sha256": "62c6d49b15fa836eb6aa45e259c7ca6762f44b011b09e47776efbe4a6db1b397",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/256-511.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/256-511.pbf",
+      "sha256": "2eca7561f9f566bcacfda5dd04fb5880baec1328ec0f5484678289a13994de8a",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/512-767.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/512-767.pbf",
+      "sha256": "6abc80badad0e823e228ab739515be257c8b33bc68bb077dd873030e9b2d143a",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/768-1023.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/768-1023.pbf",
+      "sha256": "537ccbee79180f4f8b3f6d2bdd27df979260ce1a0358c40d7aa7db505d9b03aa",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/7680-7935.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/7680-7935.pbf",
+      "sha256": "b9100ec886dff647198802c41d1ca6df9e6f82325179d8d71e3d377b5fe8682e",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/Noto Sans Regular/8192-8447.pbf",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/Noto%20Sans%20Regular/8192-8447.pbf",
+      "sha256": "8ea977a587352fe31b4159ffdbc9a40be79056f2472017c742ea1e4a931864b9",
+      "license": "OFL-1.1"
+    },
+    {
+      "file": "fonts/OFL.txt",
+      "source": "https://raw.githubusercontent.com/protomaps/basemaps-assets/028c18f713baecad011301ff7a69acc39bcc2ae7/fonts/OFL.txt",
+      "sha256": "7713cfc8e3c36d5ec4aa3d6cffe7500a1b3310f8a86d914b8ea09c2a9dee7c2d",
+      "license": "OFL-1.1"
+    }
+  ]
+}

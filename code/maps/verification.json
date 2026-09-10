@@ -1,0 +1,170 @@
+{
+  "verified_at": "2026-09-10T18:13:19.491Z",
+  "tile_sha256": "40fb1af5b809cc7ca07c65c322a196a0d5533d9d3f98259303ebc811ecb82a09",
+  "transport": {
+    "header_status": 206,
+    "header_bytes": 127,
+    "bounds": [
+      55,
+      25,
+      57.5,
+      27.5
+    ],
+    "zooms": [
+      0,
+      12
+    ],
+    "range_cases": [
+      {
+        "range": "bytes=-16",
+        "status": 206,
+        "bytes": 16,
+        "contentRange": "bytes 6713415-6713430/6713431"
+      },
+      {
+        "range": "bytes=6713431-",
+        "status": 416,
+        "bytes": 0,
+        "contentRange": "bytes */6713431"
+      },
+      {
+        "range": "bytes=100-10",
+        "status": 416,
+        "bytes": 0,
+        "contentRange": "bytes */6713431"
+      },
+      {
+        "range": "bytes=0-1junk",
+        "status": 416,
+        "bytes": 0,
+        "contentRange": "bytes */6713431"
+      }
+    ],
+    "head_status": 200,
+    "head_content_length": "6713431",
+    "outside_root_status": 403,
+    "write_method_status": 405
+  },
+  "browser": {
+    "home": {
+      "zoom": 9,
+      "center": {
+        "lng": 56.25,
+        "lat": 26.6
+      },
+      "ready": true,
+      "error": null,
+      "sources": [
+        "basemap"
+      ]
+    },
+    "zoomButton": {
+      "before": 9,
+      "after": 10
+    },
+    "locations": [
+      {
+        "name": "Khasab / Musandam",
+        "zoom": 11,
+        "center": {
+          "lng": 56.25,
+          "lat": 26.18
+        },
+        "ready": true,
+        "error": null,
+        "sources": [
+          "basemap"
+        ]
+      },
+      {
+        "name": "Qeshm",
+        "zoom": 11,
+        "center": {
+          "lng": 56.27,
+          "lat": 26.96
+        },
+        "ready": true,
+        "error": null,
+        "sources": [
+          "basemap"
+        ]
+      },
+      {
+        "name": "Bandar Abbas",
+        "zoom": 11,
+        "center": {
+          "lng": 56.27,
+          "lat": 27.18
+        },
+        "ready": true,
+        "error": null,
+        "sources": [
+          "basemap"
+        ]
+      }
+    ],
+    "state": {
+      "zoom": 9,
+      "center": {
+        "lng": 56.25,
+        "lat": 26.6
+      },
+      "ready": true,
+      "error": null,
+      "sources": [
+        "basemap"
+      ]
+    },
+    "attribution": "© OpenStreetMap contributors · Protomaps",
+    "disclaimer": "DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS",
+    "labels": [
+      "Balashahr",
+      "Band-e Zarak",
+      "Bandar Abbas",
+      "Bandar Khamir",
+      "Bandar Laft",
+      "Bandar e Pol",
+      "Bukha",
+      "Dargahan",
+      "Garuk",
+      "Ghalilah",
+      "Greater Tunb",
+      "Hengam Island",
+      "Hormuz",
+      "Hormuz Island",
+      "Kargan",
+      "Khasab",
+      "Kohurestan",
+      "Kuhestak",
+      "Larak Island",
+      "Minab",
+      "Qeshm",
+      "Qeshm Island",
+      "Ramchah",
+      "Ramkan",
+      "Seerik",
+      "Sha'am",
+      "Sima",
+      "Strait of Hormuz",
+      "Suza",
+      "Tabl",
+      "Wadi Al Kubari",
+      "Wadi Ma`ash",
+      "Wadi Makhus",
+      "Wadi al Jalbat",
+      "Wadi ash Sharjah"
+    ],
+    "externalRequests": [],
+    "failedResponses": [],
+    "pageErrors": [],
+    "rangeResponses": 53,
+    "screenshot": "code/maps/hormuz-preview.png",
+    "http_cache_disabled": true,
+    "nonlocal_http_requests_blocked": true,
+    "viewport": {
+      "width": 1600,
+      "height": 1000
+    }
+  },
+  "scope": "Standalone offline geographic basemap and its control interface. No simulator, ASPN stream, alert latency, or ECDIS-conformance claim."
+}

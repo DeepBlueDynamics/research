@@ -1,0 +1,33 @@
+{
+  "origin": "DeepBlueDynamics Meridian working tree, extracted 2026-09-10",
+  "bundle_sha256": "1a84a9ee6e556efbd43b5e37f8c68cd68ecb62e5f552e19edc6c010a6f11c661",
+  "mapping_stack": {
+    "maplibre_gl": "4.7.1",
+    "pmtiles": "3.2.1",
+    "transport": "PMTiles v3 MVT over local HTTP Range"
+  },
+  "files": [
+    {
+      "installed": "renderer/basemap.html",
+      "source": "meridian/layers.html",
+      "extraction": "renderer/basemap.html",
+      "extraction_sha256": "1b9ca2f84577510ae07f96dad0d8869e4399b69e2ba775221ed79e8af51aed44",
+      "changes": "Local pinned dependencies and glyphs; actual Protomaps layer schema; removed online style fallback, unrelated ENC overlay and suppressed source errors; region-bound view; preserved window.m control convention."
+    },
+    {
+      "installed": "server/serve.mjs",
+      "source": "meridian/electron/main.js /charts/ Range route",
+      "extraction": "server/serve.mjs",
+      "extraction_sha256": "70cfd6adcf9f9fdb03cf12437e2f7856cc6de823f25b44e62b10701b2e5df431",
+      "changes": "Static map-root server without Electron; exact single-range parsing, realpath containment and stream error handling."
+    }
+  ],
+  "not_imported": [
+    "Google 3D Tiles and Cesium",
+    "Electron shell",
+    "US-only NOAA chart archives",
+    "wind/current, routing, radio, telemetry and credentials"
+  ],
+  "license_note": "Meridian-derived code is reused internally for DeepBlueDynamics. The inspected extraction reports no project LICENSE; no open-source licence is asserted. Third-party notices are in vendor/. Tile provenance is in hormuz.manifest.json.",
+  "disclaimer": "Geographic context demonstrator only; not an ENC, navigation chart, or ECDIS."
+}
