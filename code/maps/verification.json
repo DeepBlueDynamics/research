@@ -1,4 +1,47 @@
 {
+  "vessel_verification": {
+    "recorded_at": "2026-09-10T19:47:24.830Z",
+    "surface": "Live Windows-host Hyperia web pane",
+    "url": "http://127.0.0.1:8095/renderer/basemap.html",
+    "design_references": [
+      "proposal/notes/hmi-mockups/README.md",
+      "proposal/notes/hmi-mockups/apnt-console.html",
+      "proposal/notes/remarkable_navy_notebook_2026-09-07.md"
+    ],
+    "checks": {
+      "runStarted": true,
+      "movedEast": true,
+      "knotsDistanceMatchesTime": true,
+      "pauseStopsMotion": true,
+      "headingWrapsNorth": true,
+      "zeroSpeedStationary": true,
+      "movesNorth": true,
+      "realTimePace": true,
+      "resetRestoresVoyage": true,
+      "centerFindsVessel": true,
+      "controlsCollapseAndReopen": true,
+      "started": true,
+      "hiddenPauses": true,
+      "restoredWithoutJump": true
+    },
+    "eastbound_motion": {
+      "initial_position": [
+        56.45,
+        26.55
+      ],
+      "final_position": [
+        56.45342494170768,
+        26.54999999976709
+      ],
+      "heading_degrees": 90,
+      "speed_knots": 20,
+      "time_scale": 30,
+      "elapsed_simulated_seconds": 33.110999999642374,
+      "distance_nm": 0.1839499999980131
+    },
+    "map_error": null,
+    "scope": "Browser-local illustrative vessel motion and controls only. No ASPN source simulation, composite confidence, MCP server, latency measurement, or navigation-conformance claim."
+  },
   "host_resize_verification": {
     "recorded_at": "2026-09-10T19:13:14.987Z",
     "surface": "Hyperia native web pane on the Windows host",
@@ -214,5 +257,5 @@
       "height": 1000
     }
   },
-  "scope": "Standalone offline geographic basemap and its control interface. No simulator, ASPN stream, alert latency, or ECDIS-conformance claim."
+  "scope": "Offline geographic basemap with browser-local illustrative vessel motion and controls. No ASPN sensor streams, composite confidence, MCP server, alert-latency measurement, or ECDIS-conformance claim."
 }

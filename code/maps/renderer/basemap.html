@@ -6,8 +6,8 @@
 <title>SEXTANT — Strait of Hormuz</title>
 <link rel="icon" href="data:,">
 <!-- Meridian layers.html MapLibre + PMTiles pattern, extracted for the Navy
-     demonstrator. Offline basemap only: no Google tiles, NOAA overlay, CDN,
-     routing or simulated navigation measurements. Provenance: ../meridian-extraction.manifest.json. -->
+     demonstrator. Local tiles and illustrative vessel motion; no Google tiles,
+     NOAA overlay, CDN or sensor feeds. Provenance: ../meridian-extraction.manifest.json. -->
 <link rel="stylesheet" href="../vendor/maplibre-gl.css">
 <style>
   :root { color-scheme: dark; --ink: #e2ebef; --muted: #9daeb8; --panel: #0c1922ed; --line: #35505e; }
@@ -24,17 +24,78 @@
   .maplibregl-ctrl-attrib { background: #0c1922ed !important; color: var(--muted); font-size: 11px; }
   .maplibregl-ctrl-attrib a { color: #a9d8e6 !important; }
   .maplibregl-ctrl-scale { background: #0c1922ed !important; color: var(--ink); border-color: var(--ink); }
+  .vessel-controls { position: absolute; top: 136px; left: 20px; z-index: 3; width: 310px; max-width: calc(100vw - 40px); max-height: calc(100vh - 230px); overflow: auto; color: var(--ink); background: #0c1922f5; border: 1px solid var(--line); border-radius: 5px; box-shadow: 0 8px 28px #0004; }
+  .vessel-controls summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; font-weight: 600; }
+  .vessel-controls summary::-webkit-details-marker { display: none; }
+  .vessel-controls summary > span:first-child { flex: 1; }
+  .vessel-controls summary small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; font-weight: 500; letter-spacing: .12em; }
+  .vessel-controls summary::after { content: ''; width: 6px; height: 6px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); transform: rotate(45deg); }
+  .vessel-controls[open] summary { border-bottom: 1px solid var(--line); }
+  .vessel-controls[open] summary::after { transform: rotate(225deg); }
+  #vessel-mode { padding: 4px 6px; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); font: 9px ui-monospace, monospace; letter-spacing: .06em; }
+  #vessel-mode[data-running="true"] { color: #8ac8dc; border-color: #5bb0cb; }
+  .vessel-controls fieldset { margin: 0; padding: 16px; min-width: 0; border: 0; }
+  .vessel-controls fieldset:disabled { opacity: .5; }
+  .vessel-field { margin-bottom: 18px; }
+  .vessel-field-heading, .vessel-pace { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .vessel-field label { font-size: 12px; font-weight: 500; }
+  .vessel-field label span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 400; }
+  .vessel-controls input[type="number"] { width: 90px; padding: 5px 7px; background: #102434; border: 1px solid var(--line); border-radius: 3px; color: #eaf1f5; font: 23px ui-monospace, monospace; font-variant-numeric: tabular-nums; text-align: right; }
+  .vessel-controls input[type="range"] { display: block; width: 100%; height: 20px; margin: 10px 0 2px; accent-color: #5bb0cb; cursor: pointer; }
+  .vessel-scale { display: flex; justify-content: space-between; color: var(--muted); font: 9px ui-monospace, monospace; }
+  .vessel-pace { margin-bottom: 16px; color: var(--muted); font-size: 11px; }
+  .vessel-controls select { padding: 6px 9px; background: #102434; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; font: 12px ui-monospace, monospace; }
+  .vessel-actions { display: flex; gap: 8px; }
+  .vessel-actions button { flex: 1; min-height: 38px; padding: 7px 9px; background: #102434; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; font: 600 12px system-ui, sans-serif; cursor: pointer; }
+  .vessel-actions #vessel-toggle { background: #5bb0cb; border-color: #5bb0cb; color: #04121a; }
+  .vessel-actions button:hover { filter: brightness(1.15); }
+  .vessel-controls :is(button, input, select, summary):focus-visible { outline: 2px solid #8ac8dc; outline-offset: 3px; }
+  .vessel-readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 17px 0 13px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .vessel-readouts > div:first-child { grid-column: 1 / -1; }
+  .vessel-readouts dt { margin-bottom: 5px; color: var(--muted); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+  .vessel-readouts dd { margin: 0; font: 11px ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .vessel-legend { display: flex; gap: 15px; color: var(--muted); font-size: 10px; }
+  .vessel-legend span::before { content: ''; display: inline-block; width: 20px; margin: 0 6px 3px 0; border-top: 2px solid #8ac8dc; }
+  .vessel-legend span:last-child::before { border-top: 1px dashed #eaf1f5; }
+  .vessel-note { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+  .vessel-marker { width: 40px; height: 40px; filter: drop-shadow(0 1px 3px #000b); pointer-events: none; }
+  @media (max-width: 650px) { .vessel-controls { top: 112px; left: 12px; max-width: calc(100vw - 24px); max-height: calc(100vh - 230px); } }
   @media (max-width: 650px) { header { top: 12px; left: 12px; padding: 10px 14px; } h1 { font-size: 18px; } #status { bottom: 75px; left: 12px; } #disclaimer { bottom: 45px; left: 12px; max-width: 85%; } }
 </style>
 </head>
 <body>
 <div id="map" role="region" aria-label="Interactive Strait of Hormuz basemap"></div>
 <header><div class="eyebrow">SEXTANT · geographic context</div><h1>Strait of Hormuz</h1><p>Local vector tiles · OpenStreetMap / Protomaps</p></header>
+<details id="vessel-controls" class="vessel-controls" open>
+  <summary><span>Vessel controls<small>SIMULATED OWN SHIP</small></span><span id="vessel-mode">LOADING</span></summary>
+  <fieldset id="vessel-fields" aria-label="Vessel motion controls" disabled>
+    <div class="vessel-field">
+      <div class="vessel-field-heading"><label for="vessel-heading">Heading<span>degrees true</span></label><input id="vessel-heading" type="number" min="0" max="360" step="1" value="281"></div>
+      <input id="vessel-heading-range" type="range" min="0" max="359" step="1" value="281" aria-label="Adjust true heading">
+      <div class="vessel-scale"><span>000° N</span><span>180° S</span><span>359°</span></div>
+    </div>
+    <div class="vessel-field">
+      <div class="vessel-field-heading"><label for="vessel-speed">Speed<span>knots · no current</span></label><input id="vessel-speed" type="number" min="0" max="40" step="0.5" value="18"></div>
+      <input id="vessel-speed-range" type="range" min="0" max="40" step="0.5" value="18" aria-label="Adjust speed in knots">
+      <div class="vessel-scale"><span>0 kn</span><span>20 kn</span><span>40 kn</span></div>
+    </div>
+    <div class="vessel-pace"><label for="vessel-rate">Simulation pace</label><select id="vessel-rate"><option value="1">1× real time</option><option value="10" selected>10×</option><option value="30">30×</option></select></div>
+    <div class="vessel-actions"><button id="vessel-toggle" type="button" aria-pressed="false">Run</button><button id="vessel-reset" type="button" title="Pause and restore the initial vessel state">Reset</button><button id="vessel-center" type="button" title="Center the map on the vessel">Center</button></div>
+    <dl class="vessel-readouts">
+      <div><dt>Simulated position</dt><dd><output id="vessel-position">Waiting for map</output></dd></div>
+      <div><dt>Simulated time</dt><dd><output id="vessel-elapsed">00:00</output></dd></div>
+      <div><dt>Distance travelled</dt><dd><output id="vessel-distance">0.00 NM</output></dd></div>
+    </dl>
+    <div class="vessel-legend"><span>Recent track</span><span>6 min vector</span></div>
+    <p class="vessel-note">Illustrative motion only; no sensor feeds or confidence assessment. Pauses when this tab is hidden.</p>
+  </fieldset>
+</details>
 <p id="status" role="status">Loading local map…</p>
 <div id="disclaimer">DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS</div>
 <script src="../vendor/maplibre-gl.js"></script>
 <script src="../vendor/pmtiles.js"></script>
-<script>
+<script type="module">
+import { createVesselControls } from './vessel.mjs';
 (async function () {
   'use strict';
   const status = document.getElementById('status');
@@ -96,11 +157,13 @@
       status.textContent = 'LOCAL TILES · ' + center.lat.toFixed(4) + '°N / ' + center.lng.toFixed(4) + '°E · zoom ' + map.getZoom().toFixed(1);
     };
     map.on('idle', showPosition);
+    const vessel = createVesselControls(map);
     // Preserve Meridian's browser control convention for subsequent console integration.
     window.m = {
       map,
+      vessel,
       flyTo: (lon, lat, zoom = map.getZoom()) => map.jumpTo({ center: [lon, lat], zoom }),
-      state: () => ({ zoom: map.getZoom(), center: map.getCenter(), ready: map.loaded(), error: error?.message || null, sources: Object.keys(style.sources) }),
+      state: () => ({ zoom: map.getZoom(), center: map.getCenter(), ready: map.loaded(), error: error?.message || null, sources: Object.keys(map.getStyle()?.sources || style.sources) }),
     };
   } catch (error) { fail(error); }
 })();

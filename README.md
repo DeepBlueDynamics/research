@@ -101,6 +101,19 @@ label glyphs, and tiles are local; the viewer does not require a CDN or tile ser
   `window.m.state()` reports readiness, center, zoom, and errors. ASPN geodetic
   radians must be converted at the adapter boundary before using these controls.
 
+**Vessel controls.** The collapsible panel starts paused with an illustrative
+ownship at 26.55°N / 56.45°E. Set heading in degrees true and speed in knots, then
+use Run/Pause, Reset, or Center. Simulation pace is explicitly selectable at 1×,
+10×, or 30×; it pauses when the tab is hidden. The chart shows recent simulated
+track and a six-minute vector at the selected speed. There is no wind/current
+model, and the marker is not a sensor fix or a confidence assessment.
+
+`renderer/vessel.mjs` owns this browser-local demonstrator. Each browser has its
+own voyage; `window.m.vessel.state()` returns a read-only snapshot, with position
+as [longitude, latitude] in degrees. This is not a shared simulator service or
+an MCP transport. Control and hidden-tab checks are recorded in
+`code/maps/verification.json`.
+
 To regenerate assets online in the Linux x86-64 container with Python 3.11+:
 
 ```bash
@@ -109,8 +122,8 @@ python3 code/tools/vendor_hormuz_runtime.py
 ```
 
 This is an OSM-derived geographic basemap, **not an ENC, navigation chart, or
-ECDIS**. It does not implement the simulator, MCP controls, or APNT assessment
-console. No proposal PDF was modified by this mapping extraction.
+ECDIS**. Vessel movement is a browser-local illustration, not the ASPN source
+simulator, MCP controls, or APNT assessment console. No proposal PDF was modified.
 
 ## Everything else
 
