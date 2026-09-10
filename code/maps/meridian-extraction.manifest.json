@@ -22,6 +22,13 @@
       "changes": "Static map-root server without Electron; exact single-range parsing, realpath containment and stream error handling."
     }
   ],
+  "local_evolution": {
+    "date": "2026-09-10",
+    "geometry_fix": "Restore polygon-only predicates on earth, landuse and water fills. River LineStrings were being closed and filled as triangles. Rivers now use a separate line layer; the source tile archive is unchanged.",
+    "marine_order": "Ocean background, regional MSL depth contours and labels, land fills, inland-water polygons, then coast/roads/labels and recorded aids. Ocean fill is omitted because the background already supplies its colour.",
+    "marine_provenance": "marine/provenance.json",
+    "navigation_scope": "Browser-local illustrative source observations and fault controls; not ASPN transport, a shared MCP service, RF diagnosis, or an accuracy/integrity assessment."
+  },
   "not_imported": [
     "Google 3D Tiles and Cesium",
     "Electron shell",

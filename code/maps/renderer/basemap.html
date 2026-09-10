@@ -6,9 +6,10 @@
 <title>SEXTANT — Strait of Hormuz</title>
 <link rel="icon" href="data:,">
 <!-- Meridian layers.html MapLibre + PMTiles pattern, extracted for the Navy
-     demonstrator. Local tiles and illustrative vessel motion; no Google tiles,
-     NOAA overlay, CDN or sensor feeds. Provenance: ../meridian-extraction.manifest.json. -->
+     demonstrator. Local map data and illustrative navigation-source observations;
+     no Google tiles, runtime CDN or real sensor feeds. Provenance: ../meridian-extraction.manifest.json. -->
 <link rel="stylesheet" href="../vendor/maplibre-gl.css">
+<link rel="stylesheet" href="./source-panel.css">
 <style>
   :root { color-scheme: dark; --ink: #e2ebef; --muted: #9daeb8; --panel: #0c1922ed; --line: #35505e; }
   * { box-sizing: border-box; }
@@ -17,7 +18,6 @@
   header { position: absolute; top: 20px; left: 20px; z-index: 2; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; pointer-events: none; }
   .eyebrow { font-size: 10px; letter-spacing: .18em; color: #8ac8dc; text-transform: uppercase; }
   h1 { margin: 5px 0 4px; font-size: 23px; letter-spacing: -.02em; font-weight: 600; }
-  header p { margin: 0; color: var(--muted); font-size: 12px; }
   #status { position: absolute; bottom: 50px; left: 20px; z-index: 2; margin: 0; padding: 8px 12px; background: var(--panel); border: 1px solid var(--line); font: 11px ui-monospace, monospace; }
   #status.error { color: #ffb4a8; border-color: #ff8978; }
   #disclaimer { position: absolute; bottom: 16px; left: 20px; z-index: 2; padding: 5px 10px; background: var(--panel); color: #e8bd75; font-size: 10px; letter-spacing: .08em; }
@@ -58,14 +58,31 @@
   .vessel-legend span::before { content: ''; display: inline-block; width: 20px; margin: 0 6px 3px 0; border-top: 2px solid #8ac8dc; }
   .vessel-legend span:last-child::before { border-top: 1px dashed #eaf1f5; }
   .vessel-note { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+  .marine-controls { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .marine-controls h3 { margin: 0 0 10px; color: var(--muted); font-size: 10px; letter-spacing: .1em; }
+  .marine-options { display: flex; flex-wrap: wrap; gap: 10px 14px; }
+  .marine-options label { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+  .marine-options input { margin: 0; accent-color: #5bb0cb; }
+  .marine-controls p { margin: 9px 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+  .marine-controls #marine-grid-depth { color: #c3e0eb; font: 11px/1.5 ui-monospace, monospace; }
+  .marine-controls a { color: #8ac8dc; font-size: 10px; }
+  .marine-controls.error #marine-grid-depth { color: #ffb4a8; }
+  .marine-popup .maplibregl-popup-content { padding: 16px; background: #0c1922; color: var(--ink); border: 1px solid var(--line); border-radius: 5px; }
+  .marine-popup .maplibregl-popup-tip { border-top-color: #0c1922; border-bottom-color: #0c1922; }
+  .marine-popup h3 { margin: 0 15px 10px 0; font-size: 14px; }
+  .marine-popup p, .marine-popup dt, .marine-popup dd { font-size: 11px; line-height: 1.5; }
+  .marine-popup p, .marine-popup dt { color: var(--muted); }
+  .marine-popup dd { margin: 0 0 5px; }
+  .marine-popup a { color: #8ac8dc; }
   .vessel-marker { width: 40px; height: 40px; filter: drop-shadow(0 1px 3px #000b); pointer-events: none; }
   @media (max-width: 650px) { .vessel-controls { top: 112px; left: 12px; max-width: calc(100vw - 24px); max-height: calc(100vh - 230px); } }
   @media (max-width: 650px) { header { top: 12px; left: 12px; padding: 10px 14px; } h1 { font-size: 18px; } #status { bottom: 75px; left: 12px; } #disclaimer { bottom: 45px; left: 12px; max-width: 85%; } }
+  @media (max-width: 800px) { .vessel-controls { top: 112px; left: 12px; max-height: calc(50vh - 124px); max-height: calc(50dvh - 124px); } }
 </style>
 </head>
 <body>
 <div id="map" role="region" aria-label="Interactive Strait of Hormuz basemap"></div>
-<header><div class="eyebrow">SEXTANT · geographic context</div><h1>Strait of Hormuz</h1><p>Local vector tiles · OpenStreetMap / Protomaps</p></header>
+<header><div class="eyebrow">SEXTANT · geographic context</div><h1>Strait of Hormuz</h1></header>
 <details id="vessel-controls" class="vessel-controls" open>
   <summary><span>Vessel controls<small>SIMULATED OWN SHIP</small></span><span id="vessel-mode">LOADING</span></summary>
   <fieldset id="vessel-fields" aria-label="Vessel motion controls" disabled>
@@ -87,15 +104,19 @@
       <div><dt>Distance travelled</dt><dd><output id="vessel-distance">0.00 NM</output></dd></div>
     </dl>
     <div class="vessel-legend"><span>Recent track</span><span>6 min vector</span></div>
-    <p class="vessel-note">Illustrative motion only; no sensor feeds or confidence assessment. Pauses when this tab is hidden.</p>
+    <p class="vessel-note">Illustrative motion and simulated sources; no real sensor inputs or confidence assessment. Pauses when this tab is hidden.</p>
+    <section id="marine-controls" aria-label="Regional marine reference layers"></section>
   </fieldset>
 </details>
+<aside id="source-controls"></aside>
 <p id="status" role="status">Loading local map…</p>
 <div id="disclaimer">DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS</div>
 <script src="../vendor/maplibre-gl.js"></script>
 <script src="../vendor/pmtiles.js"></script>
 <script type="module">
 import { createVesselControls } from './vessel.mjs';
+import { createNavigationControls } from './navigation.mjs';
+import { createMarineLayers } from './marine.mjs';
 (async function () {
   'use strict';
   const status = document.getElementById('status');
@@ -118,9 +139,10 @@ import { createVesselControls } from './vessel.mjs';
       sources: { basemap: { type: 'vector', url: 'pmtiles://' + archive, attribution: cfg.basemap.attribution, maxzoom: 12 } },
       layers: [
         { id: 'ocean', type: 'background', paint: { 'background-color': '#102b3b' } },
-        { id: 'earth', type: 'fill', source, 'source-layer': 'earth', paint: { 'fill-color': '#28373a', 'fill-outline-color': '#708789' } },
-        { id: 'landuse', type: 'fill', source, 'source-layer': 'landuse', paint: { 'fill-color': '#354444', 'fill-opacity': .48 } },
-        { id: 'water', type: 'fill', source, 'source-layer': 'water', paint: { 'fill-color': '#102b3b' } },
+        { id: 'earth', type: 'fill', source, 'source-layer': 'earth', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#28373a', 'fill-outline-color': '#708789' } },
+        { id: 'landuse', type: 'fill', source, 'source-layer': 'landuse', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#354444', 'fill-opacity': .48 } },
+        { id: 'water', type: 'fill', source, 'source-layer': 'water', filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['!=', ['get', 'kind'], 'ocean']], paint: { 'fill-color': '#102b3b' } },
+        { id: 'waterways', type: 'line', source, 'source-layer': 'water', filter: ['==', ['geometry-type'], 'LineString'], minzoom: 9, paint: { 'line-color': '#507f8e', 'line-width': ['interpolate', ['linear'], ['zoom'], 9, 0.7, 14, 1.8], 'line-opacity': 0.6 } },
         { id: 'coast', type: 'line', source, 'source-layer': 'earth', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'line-color': '#718b8e', 'line-width': .8 } },
         { id: 'roads', type: 'line', source, 'source-layer': 'roads', minzoom: 8, paint: { 'line-color': '#66706e', 'line-opacity': .65, 'line-width': ['interpolate', ['linear'], ['zoom'], 8, .4, 14, 1.8] } },
         { id: 'boundaries', type: 'line', source, 'source-layer': 'boundaries', paint: { 'line-color': '#93a2a4', 'line-opacity': .5, 'line-width': 1, 'line-dasharray': [3, 3] } },
@@ -158,10 +180,14 @@ import { createVesselControls } from './vessel.mjs';
     };
     map.on('idle', showPosition);
     const vessel = createVesselControls(map);
+    const sources = createNavigationControls(map, vessel, document.getElementById('source-controls'));
+    const marine = createMarineLayers(map, vessel, document.getElementById('marine-controls'));
     // Preserve Meridian's browser control convention for subsequent console integration.
     window.m = {
       map,
       vessel,
+      sources,
+      marine,
       flyTo: (lon, lat, zoom = map.getZoom()) => map.jumpTo({ center: [lon, lat], zoom }),
       state: () => ({ zoom: map.getZoom(), center: map.getCenter(), ready: map.loaded(), error: error?.message || null, sources: Object.keys(map.getStyle()?.sources || style.sources) }),
     };

@@ -37,6 +37,13 @@ export function createVesselControls(map) {
   const events = new AbortController();
   const on = (element, event, handler) => element.addEventListener(event, handler, { signal: events.signal });
   const state = { ...INITIAL, position: INITIAL.position.slice(), running: false, ready: false, elapsedSeconds: 0, distanceNm: 0 };
+  const listeners = new Set();
+  const snapshot = () => ({ ...state, position: state.position.slice() });
+  const publish = (reason) => {
+    if (!listeners.size) return;
+    const value = snapshot();
+    for (const listener of listeners) listener(value, reason);
+  };
   const trail = [state.position.slice(), state.position.slice()];
   const geometry = { type: 'FeatureCollection', features: [
     { type: 'Feature', properties: { kind: 'trail' }, geometry: { type: 'LineString', coordinates: trail } },
@@ -57,7 +64,7 @@ export function createVesselControls(map) {
   const marker = new maplibregl.Marker({ element: symbol, anchor: 'center', rotationAlignment: 'map', pitchAlignment: 'map' })
     .setLngLat(state.position).setRotation(state.headingDegrees).addTo(map);
 
-  const renderControls = () => {
+  const renderControls = (reason = 'controls') => {
     heading.value = headingRange.value = String(state.headingDegrees);
     speed.value = state.speedKnots.toFixed(1);
     speedRange.value = String(state.speedKnots);
@@ -68,6 +75,7 @@ export function createVesselControls(map) {
     mode.dataset.running = String(state.running);
     symbol.setAttribute('aria-label', 'Simulated ownship, heading ' + state.headingDegrees + ' degrees true');
     marker.setRotation(state.headingDegrees);
+    publish(reason);
   };
 
   const renderReadouts = () => {
@@ -92,14 +100,19 @@ export function createVesselControls(map) {
     lastFrame = now;
     state.elapsedSeconds += seconds;
     const metres = state.speedKnots * METRES_PER_NM / 3600 * seconds;
-    if (metres === 0) return;
-    state.position = destination(state.position, state.headingDegrees, metres);
-    state.distanceNm += metres / METRES_PER_NM;
-    marker.setLngLat(state.position);
-    geometryDirty = true;
+    if (metres !== 0) {
+      state.position = destination(state.position, state.headingDegrees, metres);
+      state.distanceNm += metres / METRES_PER_NM;
+      marker.setLngLat(state.position);
+      geometryDirty = true;
+    }
+    publish('tick');
   };
 
-  const frame = (now) => {
+  const frame = () => {
+    // A queued RAF timestamp can predate a command event in the same frame.
+    // Use the same monotonic clock as Run, Pause and heading/speed changes.
+    const now = performance.now();
     advance(now);
     if (now - lastReadout >= 250) { renderReadouts(); lastReadout = now; }
     animation = requestAnimationFrame(frame);
@@ -156,7 +169,7 @@ export function createVesselControls(map) {
     trail.splice(0, trail.length, state.position.slice(), state.position.slice());
     marker.setLngLat(state.position);
     geometryDirty = true;
-    renderControls();
+    renderControls('reset');
     renderReadouts();
   });
   on(document, 'visibilitychange', () => { if (document.hidden && state.running) pause(); });
@@ -177,10 +190,18 @@ export function createVesselControls(map) {
     state.running = false;
     state.ready = false;
     events.abort();
+    listeners.clear();
     marker.remove();
     map.off('load', attach);
   });
   renderControls();
   renderReadouts();
-  return { state: () => ({ ...state, position: state.position.slice() }) };
+  return {
+    state: snapshot,
+    subscribe: (listener) => {
+      listeners.add(listener);
+      listener(snapshot(), 'initial');
+      return () => listeners.delete(listener);
+    },
+  };
 }

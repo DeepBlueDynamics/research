@@ -1,4 +1,592 @@
 {
+  "source_marine_verification": {
+    "verifiedAt": "2026-09-10T21:11:28.829Z",
+    "surface": "Actual MapLibre page in headless Chromium attached through CDP; Node server running on the Windows host at port 8095. Native Hyperia tab activation failed and is separately reported; new host-visible interaction is not claimed.",
+    "browser": "Chrome/155.0.8050.0",
+    "viewport": [
+      2095,
+      1321
+    ],
+    "uiChecks": [
+      "gps-a offline stops samples while other sources continue",
+      "gps-a offline retains explicitly stale observations",
+      "gps-a jammed stops samples while other sources continue",
+      "gps-a jammed retains explicitly stale observations",
+      "gps-b offline stops samples while other sources continue",
+      "gps-b offline retains explicitly stale observations",
+      "gps-b jammed stops samples while other sources continue",
+      "gps-b jammed retains explicitly stale observations",
+      "Pausing freezes source ages and voyage time",
+      "gps-a bad data emits a divergent fix while still receiving",
+      "gps-b bad data emits a divergent fix while still receiving",
+      "ins bad data emits a divergent fix while still receiving",
+      "alt-pnt bad data emits a divergent fix while still receiving",
+      "radar bad data emits a divergent fix while still receiving",
+      "Shared GPS spoofing stays mutually close but diverges from independent families",
+      "The page refuses independent confirmation from GPS A and B alone",
+      "Reset sources clears faults without changing the voyage",
+      "ins dropout stops only its observations",
+      "alt-pnt dropout stops only its observations",
+      "radar dropout stops only its observations",
+      "clock dropout stops only its observations",
+      "Independent source outages do not stop GNSS receivers",
+      "Alternate PNT interference stops new fixes and ages the last one",
+      "INS and alternate drift modes emit changing readings",
+      "Clock holdover continues UTC output with increasing model offset",
+      "Clock drift changes emitted timestamps while remaining available",
+      "Clock bad-data injects an actual timestamp error",
+      "Vessel reset also resets source histories and fault modes",
+      "Radar displays three finite synthetic range and bearing observations",
+      "Fault selector focus survives live observation refreshes",
+      "Heading changes drive vessel motion and source navigation measurements",
+      "Normal reported sources remain coherent through a commanded turn",
+      "Hiding the page pauses source time without a catch-up jump",
+      "Stale RAF timestamps cannot reverse simulation time",
+      "Narrow viewport keeps source and vessel panels separate and usable",
+      "Cold-loaded page runs mixed faults without runtime errors",
+      "Final reset restores the ready six-source baseline"
+    ],
+    "modelBoundaryChecks": [
+      "Correlated GPS spoofing diverges from independent families",
+      "Two agreeing GPS receivers alone are insufficient",
+      "INS drift creates a divergent reported position",
+      "Clock holdover advances UTC with a growing modeled offset",
+      "Stopping INS drift does not silently snap position to truth",
+      "Source reset clears faults without rewinding voyage UTC",
+      "Dropout ages retained data without inventing emissions",
+      "Recovery emits a current fix immediately"
+    ],
+    "marineChecks": [
+      "Depth contours toggle off without losing data",
+      "Depth contours restore with metre-labelled grid data",
+      "Buoy and light symbols toggle off",
+      "A real buoy popup exposes its OSM source and provenance",
+      "Out-of-coverage depth queries do not invent values",
+      "Settled zoom renders preserve polygon fills and river lines",
+      "Settled regional view retains real inland water and rivers",
+      "Runtime assets stay on the local demo server"
+    ],
+    "sourceModes": [
+      {
+        "id": "gps-a",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data",
+          "jammed",
+          "spoofed"
+        ],
+        "nominalHz": 5
+      },
+      {
+        "id": "gps-b",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data",
+          "jammed",
+          "spoofed"
+        ],
+        "nominalHz": 2
+      },
+      {
+        "id": "ins",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data",
+          "drift"
+        ],
+        "nominalHz": 10
+      },
+      {
+        "id": "alt-pnt",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data",
+          "jammed",
+          "drift"
+        ],
+        "nominalHz": 1
+      },
+      {
+        "id": "radar",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data"
+        ],
+        "nominalHz": 1
+      },
+      {
+        "id": "clock",
+        "modes": [
+          "normal",
+          "offline",
+          "bad-data",
+          "holdover",
+          "drift"
+        ],
+        "nominalHz": 10
+      }
+    ],
+    "finalMixedFaultSmoke": {
+      "conditions": {
+        "gps-a": "spoofed",
+        "gps-b": "jammed",
+        "ins": "drift",
+        "alt-pnt": "bad-data",
+        "radar": "bad-data",
+        "clock": "holdover"
+      },
+      "simulatedSeconds": 21.04800000026822,
+      "maxReportedSeparationMetres": 1987.9759392068959,
+      "errors": []
+    },
+    "correlatedGpsSmoke": {
+      "gpsPairSeparationMetres": 7.537268911555417,
+      "maxCrossSourceSeparationMetres": 312.80278881065647,
+      "gnssOnlyStatus": "insufficient"
+    },
+    "animationClockRegression": {
+      "cause": "RAF callback timestamp can precede a Run or control event in the same frame. All motion advances now read performance.now(), rather than mixing event-time samples with queued frame timestamps.",
+      "beforeElapsedSeconds": -9.889340000059455,
+      "beforeErrors": [
+        "Uncaught RangeError: Navigation sources require finite vessel position, heading, nonnegative speed and elapsed time."
+      ],
+      "afterElapsedSeconds": 2.2759999999403955,
+      "afterErrors": [],
+      "reproduction": "In a disposable browser page, wrap requestAnimationFrame so the callback receives timestamp - 1000, press Run, and observe vessel/source time. The old implementation goes negative and throws; the corrected implementation remains nonnegative. Restore requestAnimationFrame and Reset after the check."
+    },
+    "hiddenTabCheck": {
+      "hidden": true,
+      "paused": true,
+      "unchangedWhileHidden": true,
+      "restoredVisible": true,
+      "noCatchup": true
+    },
+    "narrowViewport": {
+      "size": [
+        390,
+        844
+      ],
+      "panelsDoNotOverlap": true,
+      "panelsWithinViewport": true,
+      "noHorizontalOverflow": true
+    },
+    "geometryFix": {
+      "cause": "The water fill accepted river LineString/MultiLineString features and closed them into filled triangles. This was a style bug, not invalid geographic polygons.",
+      "diagnosticBefore": [
+        {
+          "pixel": [
+            1370,
+            70
+          ],
+          "coordinate": {
+            "lng": 56.63484486873449,
+            "lat": 27.22832504640091
+          },
+          "features": [
+            {
+              "layer": "water",
+              "kind": "river",
+              "type": "LineString",
+              "properties": {
+                "name": "رودخانه جلابی",
+                "name:en": "Jalabi River",
+                "sort_rank": 200,
+                "kind": "river",
+                "script": "Arabic",
+                "min_zoom": 10
+              }
+            },
+            {
+              "layer": "earth",
+              "kind": "earth",
+              "type": "MultiPolygon",
+              "properties": {
+                "kind": "earth"
+              }
+            }
+          ]
+        },
+        {
+          "pixel": [
+            645,
+            155
+          ],
+          "coordinate": {
+            "lng": 55.76968973746958,
+            "lat": 27.13809621378678
+          },
+          "features": [
+            {
+              "layer": "water",
+              "kind": "river",
+              "type": "MultiLineString",
+              "properties": {
+                "sort_rank": 200,
+                "kind": "river",
+                "min_zoom": 10
+              }
+            },
+            {
+              "layer": "earth",
+              "kind": "earth",
+              "type": "Polygon",
+              "properties": {
+                "kind": "earth"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnosticAfter": {
+        "waterFillGeometryTypes": [
+          "MultiPolygon",
+          "Polygon"
+        ],
+        "rawRiverLines": 120,
+        "mapError": null
+      },
+      "decodedGeometryCheck": {
+        "tiles": 1375,
+        "earthPolygons": 840,
+        "waterPolygons": 1543,
+        "landusePolygons": 29791,
+        "invalidDecodedPolygons": 0,
+        "tool": "GEOS via Shapely 2.1.2; decoded geometry only, not a raw ring conformance claim"
+      },
+      "settledZoomChecks": [
+        {
+          "requestedCenter": [
+            56.63,
+            27.23
+          ],
+          "requestedZoom": 9,
+          "effectiveCenter": {
+            "lng": 56.25,
+            "lat": 27.230000000000004
+          },
+          "effectiveZoom": 9.202659530029065,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 13,
+          "riverCount": 29,
+          "riverTypes": [
+            "MultiLineString",
+            "LineString"
+          ],
+          "depthContourCount": 13,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.63,
+            27.23
+          ],
+          "requestedZoom": 10,
+          "effectiveCenter": {
+            "lng": 56.629999999999995,
+            "lat": 27.096981791877695
+          },
+          "effectiveZoom": 10,
+          "fillTypes": [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          "waterPolygonCount": 16,
+          "riverCount": 35,
+          "riverTypes": [
+            "MultiLineString",
+            "LineString"
+          ],
+          "depthContourCount": 24,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.63,
+            27.23
+          ],
+          "requestedZoom": 11,
+          "effectiveCenter": {
+            "lng": 56.63,
+            "lat": 27.23
+          },
+          "effectiveZoom": 11,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 11,
+          "riverCount": 21,
+          "riverTypes": [
+            "LineString",
+            "MultiLineString"
+          ],
+          "depthContourCount": 10,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.63,
+            27.23
+          ],
+          "requestedZoom": 12,
+          "effectiveCenter": {
+            "lng": 56.63,
+            "lat": 27.23
+          },
+          "effectiveZoom": 12,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 6,
+          "riverCount": 16,
+          "riverTypes": [
+            "LineString",
+            "MultiLineString"
+          ],
+          "depthContourCount": 0,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.63,
+            27.23
+          ],
+          "requestedZoom": 14,
+          "effectiveCenter": {
+            "lng": 56.63,
+            "lat": 27.23
+          },
+          "effectiveZoom": 14,
+          "fillTypes": [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          "waterPolygonCount": 0,
+          "riverCount": 2,
+          "riverTypes": [
+            "LineString"
+          ],
+          "depthContourCount": 0,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.24,
+            26.04
+          ],
+          "requestedZoom": 9,
+          "effectiveCenter": {
+            "lng": 56.25,
+            "lat": 26.040000000000006
+          },
+          "effectiveZoom": 9.202659530029065,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 13,
+          "riverCount": 235,
+          "riverTypes": [
+            "LineString",
+            "MultiLineString"
+          ],
+          "depthContourCount": 48,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.24,
+            26.04
+          ],
+          "requestedZoom": 10,
+          "effectiveCenter": {
+            "lng": 56.24,
+            "lat": 26.04
+          },
+          "effectiveZoom": 10,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 10,
+          "riverCount": 150,
+          "riverTypes": [
+            "MultiLineString",
+            "LineString"
+          ],
+          "depthContourCount": 40,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.24,
+            26.04
+          ],
+          "requestedZoom": 11,
+          "effectiveCenter": {
+            "lng": 56.24,
+            "lat": 26.04
+          },
+          "effectiveZoom": 11,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 8,
+          "riverCount": 90,
+          "riverTypes": [
+            "LineString",
+            "MultiLineString"
+          ],
+          "depthContourCount": 35,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.24,
+            26.04
+          ],
+          "requestedZoom": 12,
+          "effectiveCenter": {
+            "lng": 56.24,
+            "lat": 26.04
+          },
+          "effectiveZoom": 12,
+          "fillTypes": [
+            "MultiPolygon",
+            "Polygon"
+          ],
+          "waterPolygonCount": 5,
+          "riverCount": 66,
+          "riverTypes": [
+            "LineString",
+            "MultiLineString"
+          ],
+          "depthContourCount": 16,
+          "error": null
+        },
+        {
+          "requestedCenter": [
+            56.24,
+            26.04
+          ],
+          "requestedZoom": 14,
+          "effectiveCenter": {
+            "lng": 56.24,
+            "lat": 26.04
+          },
+          "effectiveZoom": 14,
+          "fillTypes": [
+            "Polygon"
+          ],
+          "waterPolygonCount": 0,
+          "riverCount": 4,
+          "riverTypes": [
+            "MultiLineString",
+            "LineString"
+          ],
+          "depthContourCount": 0,
+          "error": null
+        }
+      ],
+      "archiveUnchanged": true
+    },
+    "marineData": {
+      "provenance": "marine/provenance.json",
+      "dataset": "NOAA NGDC ETOPO1 ice-surface grid-registered (2009)",
+      "bounds": [
+        55,
+        25,
+        57.5,
+        27.5
+      ],
+      "grid": [
+        151,
+        151
+      ],
+      "depthContourLevelsMetres": [
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000
+      ],
+      "buoyRecords": 44,
+      "totalAidRecords": 118,
+      "inspectedRecord": "https://www.openstreetmap.org/node/12087620904",
+      "initialNearestGridNode": {
+        "column": 87,
+        "row": 93,
+        "position": [
+          56.45,
+          26.55
+        ],
+        "elevationMetres": -87,
+        "depthMetres": 87
+      }
+    },
+    "runtimeNetwork": {
+      "origins": [
+        "http://host.docker.internal:8095"
+      ],
+      "distinctRequestUrls": 25,
+      "noRuntimeExternalOrigin": true
+    },
+    "syntaxChecks": {
+      "nodeModules": [
+        {
+          "file": "vessel.mjs",
+          "exit": 0
+        },
+        {
+          "file": "navigation-sources.mjs",
+          "exit": 0
+        },
+        {
+          "file": "source-panel.mjs",
+          "exit": 0
+        },
+        {
+          "file": "navigation.mjs",
+          "exit": 0
+        },
+        {
+          "file": "marine.mjs",
+          "exit": 0
+        }
+      ],
+      "pythonAcquisitionExit": 0
+    },
+    "finalReset": {
+      "paused": true,
+      "elapsedSeconds": 0,
+      "allSourcesNormal": true,
+      "mapError": null,
+      "marineError": null,
+      "pageErrors": []
+    },
+    "screenshot": "hormuz-preview.png",
+    "divergenceScreenshot": "hormuz-source-divergence.png",
+    "spokenSummary": {
+      "engine": "Native browser Web Speech / Microsoft David, en-US",
+      "started": true,
+      "ended": true,
+      "error": null,
+      "dedicatedHyperiaSpeechTool": "Operation aborted; workaround used"
+    },
+    "scope": "Illustrative browser-local observations and fault injection plus real geographic reference data. No real instruments, ASPN transport, shared MCP server, accuracy/integrity assessment, current aid-status verification, surveyed soundings, alert-latency measurement or ECDIS conformance is claimed."
+  },
   "vessel_verification": {
     "recorded_at": "2026-09-10T19:47:24.830Z",
     "surface": "Live Windows-host Hyperia web pane",
@@ -257,5 +845,5 @@
       "height": 1000
     }
   },
-  "scope": "Offline geographic basemap with browser-local illustrative vessel motion and controls. No ASPN sensor streams, composite confidence, MCP server, alert-latency measurement, or ECDIS-conformance claim."
+  "scope": "Illustrative browser-local observations and fault injection plus real geographic reference data. No real instruments, ASPN transport, shared MCP server, accuracy/integrity assessment, current aid-status verification, surveyed soundings, alert-latency measurement or ECDIS conformance is claimed."
 }
