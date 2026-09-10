@@ -74,6 +74,18 @@
       maxBounds: [[cfg.view.bounds[0], cfg.view.bounds[1]], [cfg.view.bounds[2], cfg.view.bounds[3]]],
       attributionControl: { compact: false },
     });
+    // Embedded web panes may initialize at zero size before their tab is shown.
+    const container = map.getContainer();
+    const resizeMap = () => {
+      if (container.clientWidth > 0 && container.clientHeight > 0) map.resize();
+    };
+    const resizeObserver = new ResizeObserver(resizeMap);
+    resizeObserver.observe(container);
+    document.addEventListener('visibilitychange', resizeMap);
+    map.on('remove', () => {
+      resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', resizeMap);
+    });
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
     map.addControl(new maplibregl.ScaleControl({ unit: 'nautical' }), 'bottom-right');
     let error = null;

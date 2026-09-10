@@ -1,4 +1,52 @@
 {
+  "host_resize_verification": {
+    "recorded_at": "2026-09-10T19:13:14.987Z",
+    "surface": "Hyperia native web pane on the Windows host",
+    "url": "http://127.0.0.1:8095/renderer/basemap.html",
+    "cause": "Map initialized while its web tab had zero viewport dimensions; window resize tracking alone did not keep the canvas aligned with the container.",
+    "checks": [
+      {
+        "scenario": "container resized without window resize",
+        "expected": [
+          800,
+          450
+        ],
+        "actual": [
+          800,
+          450
+        ],
+        "pass": true
+      },
+      {
+        "scenario": "hidden container restored to full pane",
+        "expected": [
+          2095,
+          1321
+        ],
+        "actual": [
+          2095,
+          1321
+        ],
+        "pass": true
+      }
+    ],
+    "state": {
+      "zoom": 9.202659530029063,
+      "center": {
+        "lng": 56.25,
+        "lat": 26.5732641153475
+      },
+      "ready": true,
+      "error": null,
+      "sources": [
+        "basemap"
+      ]
+    },
+    "visible": true,
+    "renderedFeatures": 723,
+    "status": "LOCAL TILES · 26.5733°N / 56.2500°E · zoom 9.2",
+    "scope": "Map sizing and hidden-to-visible recovery only; no simulator, sensor-stream, latency, or deployment-security claim."
+  },
   "verified_at": "2026-09-10T18:13:19.491Z",
   "tile_sha256": "40fb1af5b809cc7ca07c65c322a196a0d5533d9d3f98259303ebc811ecb82a09",
   "transport": {
