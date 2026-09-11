@@ -3,12 +3,12 @@ const EARTH_RADIUS_METRES = 6371008.8;
 const RADIANS = Math.PI / 180;
 const KNOTS_TO_METRES_PER_SECOND = 1852 / 3600;
 const COMPARISON_LIMIT_METRES = 100;
-const RADAR_ORIGIN = [56.45, 26.55];
+const RADAR_ORIGIN = [-123.57, 48.18];
 // Deliberately synthetic reference points, not charted objects or navigation aids.
 const RADAR_TARGETS = [
-  { id: 'SYN-1', position: [56.37, 26.58] },
-  { id: 'SYN-2', position: [56.50, 26.63] },
-  { id: 'SYN-3', position: [56.53, 26.48] },
+  { id: 'SYN-1', position: [-123.65, 48.19] },
+  { id: 'SYN-2', position: [-123.50, 48.19] },
+  { id: 'SYN-3', position: [-123.49, 48.14] },
 ];
 const MODE_LABELS = {
   normal: 'Normal', offline: 'Offline', 'bad-data': 'Bad data',
@@ -29,7 +29,7 @@ const DEFINITIONS = [
     description: 'Illustrative eLoran-like fix-level channel only; no transmitters, waveform, propagation or RF diagnosis.',
     modes: ['normal', 'offline', 'bad-data', 'jammed', 'drift'] },
   { id: 'radar', label: 'Radar fix', family: 'radar', hz: 1,
-    description: 'Fix reconstructed from three synthetic range/true-bearing observations. SYN-1: 56.37E, 26.58N; SYN-2: 56.50E, 26.63N; SYN-3: 56.53E, 26.48N. Not charted targets.',
+    description: 'Fix reconstructed from three synthetic range/true-bearing observations. SYN-1: 123.65W, 48.19N; SYN-2: 123.50W, 48.19N; SYN-3: 123.49W, 48.14N. Not charted targets.',
     modes: ['normal', 'offline', 'bad-data'] },
   { id: 'clock', label: 'Clock', family: 'clock', hz: 10,
     description: 'Simulated UTC. Offset is a model diagnostic, not independently measured UTC error. Holdover and drift use illustrative exaggerated rates.',

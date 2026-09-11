@@ -1,0 +1,158 @@
+{
+  "recordedUTC": "2026-09-11",
+  "target": "Hyperia WebPane c323c3d3-0ae2-4f01-94f3-af6fbab9727a",
+  "server": "Costly Chimpanzee node service on host port 8095",
+  "mainPageCheck": {
+    "url": "http://127.0.0.1:8095/renderer/basemap.html",
+    "visibility": "visible",
+    "state": {
+      "ready": true,
+      "error": null,
+      "center": {
+        "lng": -123.584,
+        "lat": 48.171
+      },
+      "zoom": 12.65,
+      "mode": "frozen notional scenario",
+      "source": "NOAA ENC display snapshot",
+      "cells": [
+        "US4WA1IF",
+        "US4WA1IG"
+      ]
+    },
+    "presentationHotkey": true,
+    "escapeRestores": true,
+    "frameWithinViewport": true,
+    "overflows": [],
+    "finalOverflowRecheck": "2026-09-11: isolated 1600x750 iframe loaded final console CSS in the same WebPane without navigating the user away from simulator.html; six matrix rows and zero panel/matrix-wrap overflow. Explicit matrix line-height fixes the prior 3 px legend overflow.",
+    "matrixRows": 6,
+    "matrixCells": 36,
+    "clockNotComparableCells": 10,
+    "sourceRows": 6,
+    "hiddenInjectionControls": true,
+    "scenario": {
+      "time": "22:50Z",
+      "operator": "NAV_ET",
+      "r95Metres": 76,
+      "nominalR95Metres": 12,
+      "scores": {
+        "position": 62,
+        "navigation": 92,
+        "timing": 94,
+        "overall": 61
+      },
+      "clockNanoseconds": 72,
+      "offsets": [
+        [
+          240,
+          8
+        ],
+        [
+          248,
+          8
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          -3
+        ],
+        [
+          -5,
+          3
+        ],
+        null
+      ],
+      "marginMinutes": 18,
+      "marginComputed": false
+    },
+    "requestOrigins": [
+      "http://127.0.0.1:8095"
+    ]
+  },
+  "visualVerification": {
+    "method": "Hyperia window_image of the visible target WebPane, plus exported raster inspection",
+    "checked": [
+      "NOAA chart visible",
+      "Master alert and single master ACKNOWLEDGE affordance",
+      "Six-row roster",
+      "Four scores / R95 76 m / 72 ns / notional 18 min",
+      "Six-source matrix with clock N/C",
+      "Scatter/finding offsets agree",
+      "Representative procedure and three prerequisite states",
+      "Timeline uses NAV_ET and UTC Z timestamps",
+      "Waypoints consecutive in westbound direction of travel",
+      "R95 inset labels magnification and 12 m nominal reference",
+      "North arrow, cell/datum stamp, actual scale bar and disclaimer"
+    ],
+    "corrected": [
+      "MapLibre image source attribution validation error",
+      "Evidence/procedure overflow",
+      "Matrix legend collision",
+      "Waypoint/vector label crowding",
+      "Scale bar/inset overlap",
+      "Figure 2 arrow routing and partition-label overlap"
+    ],
+    "limits": [
+      "No physical print proof or proposal PDF integration performed.",
+      "NOAA performs S-57/S-52 portrayal; client displays a fixed georeferenced service image.",
+      "Scores, assessment, margin, interference and procedure are authored scenario fixtures.",
+      "The older live simulator remains a distinct mode; not an implemented assessment engine."
+    ]
+  },
+  "simulatorSmoke": {
+    "target": "same c323c3d3 pane temporarily navigated to simulator.html, then restored",
+    "initialReady": true,
+    "error": null,
+    "runPause": {
+      "elapsedSeconds": 12.06600000008941,
+      "distanceNm": 0.06033000000044708,
+      "position": [
+        -123.57147926275934,
+        48.18019172885038
+      ]
+    },
+    "dualGPS": {
+      "status": "divergent",
+      "pairSeparationMetres": 5.606607992728769,
+      "maxSeparationMetres": 316.3314588466321
+    },
+    "reset": {
+      "position": [
+        -123.57,
+        48.18
+      ],
+      "paused": true,
+      "elapsedSeconds": 0
+    }
+  },
+  "modelCheck": "PASS: six relocated sources; ten positional pairs; normal separation <20 m; dual-GPS spoofed divergence; reset recovery. Initial probe reset() without required truth argument failed; corrected probe reset(truth) passed.",
+  "syntaxChecks": [
+    "enc-map.mjs",
+    "vessel.mjs",
+    "navigation-sources.mjs",
+    "console.mjs"
+  ],
+  "imageVerification": {
+    "pngSignature": "89504e470d0a1a0a",
+    "bytes": 338770,
+    "width": 1800,
+    "height": 1200,
+    "sha256MatchesProvenance": true
+  },
+  "exports": {
+    "figure1": [
+      3200,
+      1500
+    ],
+    "figure2": [
+      3200,
+      870
+    ],
+    "downloadPage": "renderer/exports.html",
+    "storage": "PNG data URLs in enc/figure-1-png.json and enc/figure-2-png.json; browser download links emit PNG files. Editable HTML/CSS/module sources and SVG exports included."
+  },
+  "recordedBeforePublication": true
+}

@@ -1,0 +1,43 @@
+{
+  "title": "Strait of Juan de Fuca — Freshwater Bay / Port Angeles approaches",
+  "provider": "NOAA Office of Coast Survey",
+  "product": "Official NOAA ENC data portrayed by NOAA ECDIS Display Service",
+  "sourceDocumentation": "https://nauticalcharts.noaa.gov/data/gis-data-and-services.html",
+  "exportURL": "https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/ENCOnline/MapServer/exts/MaritimeChartService/MapServer/export?bbox=-13771000,6120000,-13741000,6140000&size=1800,1200&dpi=96&f=image",
+  "acquiredUTC": "2026-09-10T23:38:18.530Z",
+  "image": {
+    "file": "juan-de-fuca-image.json",
+    "encoding": "PNG as data URL inside JSON; preserves original response bytes",
+    "width": 1800,
+    "height": 1200,
+    "bytes": 338770,
+    "sha256": "79f0bbaab28d1ecb0f5a1757cb6f7c828fb642ac5a2fbadce33e79d4d20c199b"
+  },
+  "spatialReference": "EPSG:3857",
+  "requestBounds": [
+    -13771000,
+    6120000,
+    -13741000,
+    6140000
+  ],
+  "wgs84Bounds": [
+    -123.7069977760993,
+    48.07895380263813,
+    -123.43750319086345,
+    48.19884774466042
+  ],
+  "renderer": "Meridian-derived MapLibre GL 4.7.1 image source. S-57 to S-52 portrayal is performed by NOAA, not by a local S-57 parser.",
+  "depthUnits": "metres (NOAA service display default verified via parameters endpoint)",
+  "cells": ["US4WA1IF", "US4WA1IG"],
+  "visibleCellVerification": "NOAA identifyDatasets with mapextent=-13771000,6120000,-13741000,6140000, insr=102100, imagedisplay=1800,1200,96 returned visible=true for these two cells; harbour and other overlapping cells were visible=false.",
+  "horizontalDatum": "WGS 84",
+  "soundingDatum": "Mean lower low water",
+  "limitations": [
+    "Fixed regional snapshot; zooming does not acquire additional detail.",
+    "No automatic chart updates.",
+    "Outside-image area is explicitly no packaged coverage.",
+    "No certified ECDIS or chart-carriage claim.",
+    "No depth query, safe-water geometry or computed time-to-margin.",
+    "Navigation observations and controls remain illustrative browser-local models."
+  ]
+}

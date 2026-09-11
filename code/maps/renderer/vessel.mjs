@@ -2,7 +2,7 @@
 const METRES_PER_NM = 1852;
 const EARTH_RADIUS_METRES = 6371008.8;
 const RADIANS = Math.PI / 180;
-const INITIAL = { position: [56.45, 26.55], headingDegrees: 281, speedKnots: 18, timeScale: 10 };
+const INITIAL = { position: [-123.57, 48.18], headingDegrees: 281, speedKnots: 18, timeScale: 10 };
 const SOURCE = 'vessel-motion';
 
 function destination(position, headingDegrees, metres) {

@@ -1,198 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SEXTANT — Strait of Hormuz</title>
-<link rel="icon" href="data:,">
-<!-- Meridian layers.html MapLibre + PMTiles pattern, extracted for the Navy
-     demonstrator. Local map data and illustrative navigation-source observations;
-     no Google tiles, runtime CDN or real sensor feeds. Provenance: ../meridian-extraction.manifest.json. -->
-<link rel="stylesheet" href="../vendor/maplibre-gl.css">
-<link rel="stylesheet" href="./source-panel.css">
-<style>
-  :root { color-scheme: dark; --ink: #e2ebef; --muted: #9daeb8; --panel: #0c1922ed; --line: #35505e; }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; color: var(--ink); background: #102b3b; font: 13px system-ui, sans-serif; }
-  #map { position: absolute; inset: 0; }
-  header { position: absolute; top: 20px; left: 20px; z-index: 2; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; pointer-events: none; }
-  .eyebrow { font-size: 10px; letter-spacing: .18em; color: #8ac8dc; text-transform: uppercase; }
-  h1 { margin: 5px 0 4px; font-size: 23px; letter-spacing: -.02em; font-weight: 600; }
-  #status { position: absolute; bottom: 50px; left: 20px; z-index: 2; margin: 0; padding: 8px 12px; background: var(--panel); border: 1px solid var(--line); font: 11px ui-monospace, monospace; }
-  #status.error { color: #ffb4a8; border-color: #ff8978; }
-  #disclaimer { position: absolute; bottom: 16px; left: 20px; z-index: 2; padding: 5px 10px; background: var(--panel); color: #e8bd75; font-size: 10px; letter-spacing: .08em; }
-  .maplibregl-ctrl-attrib { background: #0c1922ed !important; color: var(--muted); font-size: 11px; }
-  .maplibregl-ctrl-attrib a { color: #a9d8e6 !important; }
-  .maplibregl-ctrl-scale { background: #0c1922ed !important; color: var(--ink); border-color: var(--ink); }
-  .vessel-controls { position: absolute; top: 136px; left: 20px; z-index: 3; width: 310px; max-width: calc(100vw - 40px); max-height: calc(100vh - 230px); overflow: auto; color: var(--ink); background: #0c1922f5; border: 1px solid var(--line); border-radius: 5px; box-shadow: 0 8px 28px #0004; }
-  .vessel-controls summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; font-weight: 600; }
-  .vessel-controls summary::-webkit-details-marker { display: none; }
-  .vessel-controls summary > span:first-child { flex: 1; }
-  .vessel-controls summary small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; font-weight: 500; letter-spacing: .12em; }
-  .vessel-controls summary::after { content: ''; width: 6px; height: 6px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); transform: rotate(45deg); }
-  .vessel-controls[open] summary { border-bottom: 1px solid var(--line); }
-  .vessel-controls[open] summary::after { transform: rotate(225deg); }
-  #vessel-mode { padding: 4px 6px; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); font: 9px ui-monospace, monospace; letter-spacing: .06em; }
-  #vessel-mode[data-running="true"] { color: #8ac8dc; border-color: #5bb0cb; }
-  .vessel-controls fieldset { margin: 0; padding: 16px; min-width: 0; border: 0; }
-  .vessel-controls fieldset:disabled { opacity: .5; }
-  .vessel-field { margin-bottom: 18px; }
-  .vessel-field-heading, .vessel-pace { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .vessel-field label { font-size: 12px; font-weight: 500; }
-  .vessel-field label span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 400; }
-  .vessel-controls input[type="number"] { width: 90px; padding: 5px 7px; background: #102434; border: 1px solid var(--line); border-radius: 3px; color: #eaf1f5; font: 23px ui-monospace, monospace; font-variant-numeric: tabular-nums; text-align: right; }
-  .vessel-controls input[type="range"] { display: block; width: 100%; height: 20px; margin: 10px 0 2px; accent-color: #5bb0cb; cursor: pointer; }
-  .vessel-scale { display: flex; justify-content: space-between; color: var(--muted); font: 9px ui-monospace, monospace; }
-  .vessel-pace { margin-bottom: 16px; color: var(--muted); font-size: 11px; }
-  .vessel-controls select { padding: 6px 9px; background: #102434; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; font: 12px ui-monospace, monospace; }
-  .vessel-actions { display: flex; gap: 8px; }
-  .vessel-actions button { flex: 1; min-height: 38px; padding: 7px 9px; background: #102434; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; font: 600 12px system-ui, sans-serif; cursor: pointer; }
-  .vessel-actions #vessel-toggle { background: #5bb0cb; border-color: #5bb0cb; color: #04121a; }
-  .vessel-actions button:hover { filter: brightness(1.15); }
-  .vessel-controls :is(button, input, select, summary):focus-visible { outline: 2px solid #8ac8dc; outline-offset: 3px; }
-  .vessel-readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 17px 0 13px; padding-top: 14px; border-top: 1px solid var(--line); }
-  .vessel-readouts > div:first-child { grid-column: 1 / -1; }
-  .vessel-readouts dt { margin-bottom: 5px; color: var(--muted); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
-  .vessel-readouts dd { margin: 0; font: 11px ui-monospace, monospace; font-variant-numeric: tabular-nums; }
-  .vessel-legend { display: flex; gap: 15px; color: var(--muted); font-size: 10px; }
-  .vessel-legend span::before { content: ''; display: inline-block; width: 20px; margin: 0 6px 3px 0; border-top: 2px solid #8ac8dc; }
-  .vessel-legend span:last-child::before { border-top: 1px dashed #eaf1f5; }
-  .vessel-note { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
-  .marine-controls { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
-  .marine-controls h3 { margin: 0 0 10px; color: var(--muted); font-size: 10px; letter-spacing: .1em; }
-  .marine-options { display: flex; flex-wrap: wrap; gap: 10px 14px; }
-  .marine-options label { display: flex; align-items: center; gap: 5px; font-size: 11px; }
-  .marine-options input { margin: 0; accent-color: #5bb0cb; }
-  .marine-controls p { margin: 9px 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
-  .marine-controls #marine-grid-depth { color: #c3e0eb; font: 11px/1.5 ui-monospace, monospace; }
-  .marine-controls a { color: #8ac8dc; font-size: 10px; }
-  .marine-controls.error #marine-grid-depth { color: #ffb4a8; }
-  .marine-popup .maplibregl-popup-content { padding: 16px; background: #0c1922; color: var(--ink); border: 1px solid var(--line); border-radius: 5px; }
-  .marine-popup .maplibregl-popup-tip { border-top-color: #0c1922; border-bottom-color: #0c1922; }
-  .marine-popup h3 { margin: 0 15px 10px 0; font-size: 14px; }
-  .marine-popup p, .marine-popup dt, .marine-popup dd { font-size: 11px; line-height: 1.5; }
-  .marine-popup p, .marine-popup dt { color: var(--muted); }
-  .marine-popup dd { margin: 0 0 5px; }
-  .marine-popup a { color: #8ac8dc; }
-  .vessel-marker { width: 40px; height: 40px; filter: drop-shadow(0 1px 3px #000b); pointer-events: none; }
-  @media (max-width: 650px) { .vessel-controls { top: 112px; left: 12px; max-width: calc(100vw - 24px); max-height: calc(100vh - 230px); } }
-  @media (max-width: 650px) { header { top: 12px; left: 12px; padding: 10px 14px; } h1 { font-size: 18px; } #status { bottom: 75px; left: 12px; } #disclaimer { bottom: 45px; left: 12px; max-width: 85%; } }
-  @media (max-width: 800px) { .vessel-controls { top: 112px; left: 12px; max-height: calc(50vh - 124px); max-height: calc(50dvh - 124px); } }
-</style>
-</head>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SEXTANT — Strait of Juan de Fuca</title><link rel="icon" href="data:,"><link rel="stylesheet" href="../vendor/maplibre-gl.css"><link rel="stylesheet" href="console.css"></head>
 <body>
-<div id="map" role="region" aria-label="Interactive Strait of Hormuz basemap"></div>
-<header><div class="eyebrow">SEXTANT · geographic context</div><h1>Strait of Hormuz</h1></header>
-<details id="vessel-controls" class="vessel-controls" open>
-  <summary><span>Vessel controls<small>SIMULATED OWN SHIP</small></span><span id="vessel-mode">LOADING</span></summary>
-  <fieldset id="vessel-fields" aria-label="Vessel motion controls" disabled>
-    <div class="vessel-field">
-      <div class="vessel-field-heading"><label for="vessel-heading">Heading<span>degrees true</span></label><input id="vessel-heading" type="number" min="0" max="360" step="1" value="281"></div>
-      <input id="vessel-heading-range" type="range" min="0" max="359" step="1" value="281" aria-label="Adjust true heading">
-      <div class="vessel-scale"><span>000° N</span><span>180° S</span><span>359°</span></div>
-    </div>
-    <div class="vessel-field">
-      <div class="vessel-field-heading"><label for="vessel-speed">Speed<span>knots · no current</span></label><input id="vessel-speed" type="number" min="0" max="40" step="0.5" value="18"></div>
-      <input id="vessel-speed-range" type="range" min="0" max="40" step="0.5" value="18" aria-label="Adjust speed in knots">
-      <div class="vessel-scale"><span>0 kn</span><span>20 kn</span><span>40 kn</span></div>
-    </div>
-    <div class="vessel-pace"><label for="vessel-rate">Simulation pace</label><select id="vessel-rate"><option value="1">1× real time</option><option value="10" selected>10×</option><option value="30">30×</option></select></div>
-    <div class="vessel-actions"><button id="vessel-toggle" type="button" aria-pressed="false">Run</button><button id="vessel-reset" type="button" title="Pause and restore the initial vessel state">Reset</button><button id="vessel-center" type="button" title="Center the map on the vessel">Center</button></div>
-    <dl class="vessel-readouts">
-      <div><dt>Simulated position</dt><dd><output id="vessel-position">Waiting for map</output></dd></div>
-      <div><dt>Simulated time</dt><dd><output id="vessel-elapsed">00:00</output></dd></div>
-      <div><dt>Distance travelled</dt><dd><output id="vessel-distance">0.00 NM</output></dd></div>
-    </dl>
-    <div class="vessel-legend"><span>Recent track</span><span>6 min vector</span></div>
-    <p class="vessel-note">Illustrative motion and simulated sources; no real sensor inputs or confidence assessment. Pauses when this tab is hidden.</p>
-    <section id="marine-controls" aria-label="Regional marine reference layers"></section>
-  </fieldset>
-</details>
-<aside id="source-controls"></aside>
-<p id="status" role="status">Loading local map…</p>
-<div id="disclaimer">DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS</div>
-<script src="../vendor/maplibre-gl.js"></script>
-<script src="../vendor/pmtiles.js"></script>
-<script type="module">
-import { createVesselControls } from './vessel.mjs';
-import { createNavigationControls } from './navigation.mjs';
-import { createMarineLayers } from './marine.mjs';
-(async function () {
-  'use strict';
-  const status = document.getElementById('status');
-  const fail = (error) => { status.className = 'error'; status.textContent = 'Map unavailable: ' + error.message; };
-  try {
-    const response = await fetch('./config.json');
-    if (!response.ok) throw new Error('Map configuration HTTP ' + response.status);
-    const cfg = await response.json();
-    document.getElementById('disclaimer').textContent = cfg.disclaimer;
-    const archive = new URL(cfg.basemap.pmtiles, location.href).href;
-    const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol('pmtiles', protocol.tile);
-    const source = 'basemap';
-    const font = [cfg.labels.font];
-    const english = ['has', 'name:en'];
-    const labelText = ['get', 'name:en'];
-    const style = {
-      version: 8,
-      glyphs: decodeURI(new URL(cfg.labels.glyphs, location.href).href),
-      sources: { basemap: { type: 'vector', url: 'pmtiles://' + archive, attribution: cfg.basemap.attribution, maxzoom: 12 } },
-      layers: [
-        { id: 'ocean', type: 'background', paint: { 'background-color': '#102b3b' } },
-        { id: 'earth', type: 'fill', source, 'source-layer': 'earth', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#28373a', 'fill-outline-color': '#708789' } },
-        { id: 'landuse', type: 'fill', source, 'source-layer': 'landuse', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#354444', 'fill-opacity': .48 } },
-        { id: 'water', type: 'fill', source, 'source-layer': 'water', filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['!=', ['get', 'kind'], 'ocean']], paint: { 'fill-color': '#102b3b' } },
-        { id: 'waterways', type: 'line', source, 'source-layer': 'water', filter: ['==', ['geometry-type'], 'LineString'], minzoom: 9, paint: { 'line-color': '#507f8e', 'line-width': ['interpolate', ['linear'], ['zoom'], 9, 0.7, 14, 1.8], 'line-opacity': 0.6 } },
-        { id: 'coast', type: 'line', source, 'source-layer': 'earth', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'line-color': '#718b8e', 'line-width': .8 } },
-        { id: 'roads', type: 'line', source, 'source-layer': 'roads', minzoom: 8, paint: { 'line-color': '#66706e', 'line-opacity': .65, 'line-width': ['interpolate', ['linear'], ['zoom'], 8, .4, 14, 1.8] } },
-        { id: 'boundaries', type: 'line', source, 'source-layer': 'boundaries', paint: { 'line-color': '#93a2a4', 'line-opacity': .5, 'line-width': 1, 'line-dasharray': [3, 3] } },
-        { id: 'island-labels', type: 'symbol', source, 'source-layer': 'earth', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': 13 }, paint: { 'text-color': '#c6d5d8', 'text-halo-color': '#213237', 'text-halo-width': 1.5 } },
-        { id: 'water-labels', type: 'symbol', source, 'source-layer': 'water', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': 13, 'text-letter-spacing': .12 }, paint: { 'text-color': '#84b6cb', 'text-halo-color': '#102b3b', 'text-halo-width': 1.5 } },
-        { id: 'places', type: 'symbol', source, 'source-layer': 'places', filter: english, layout: { 'text-field': labelText, 'text-font': font, 'text-size': ['interpolate', ['linear'], ['zoom'], 8, 12, 13, 15], 'symbol-sort-key': ['coalesce', ['get', 'min_zoom'], 0] }, paint: { 'text-color': '#e0e7e5', 'text-halo-color': '#24383d', 'text-halo-width': 1.6 } },
-      ],
-    };
-    const map = new maplibregl.Map({
-      container: 'map', style, center: cfg.view.center, zoom: cfg.view.zoom,
-      minZoom: cfg.view.minZoom, maxZoom: cfg.view.maxZoom,
-      maxBounds: [[cfg.view.bounds[0], cfg.view.bounds[1]], [cfg.view.bounds[2], cfg.view.bounds[3]]],
-      attributionControl: { compact: false },
-    });
-    // Embedded web panes may initialize at zero size before their tab is shown.
-    const container = map.getContainer();
-    const resizeMap = () => {
-      if (container.clientWidth > 0 && container.clientHeight > 0) map.resize();
-    };
-    const resizeObserver = new ResizeObserver(resizeMap);
-    resizeObserver.observe(container);
-    document.addEventListener('visibilitychange', resizeMap);
-    map.on('remove', () => {
-      resizeObserver.disconnect();
-      document.removeEventListener('visibilitychange', resizeMap);
-    });
-    map.addControl(new maplibregl.NavigationControl(), 'top-right');
-    map.addControl(new maplibregl.ScaleControl({ unit: 'nautical' }), 'bottom-right');
-    let error = null;
-    map.on('error', (event) => { error = event.error || new Error(String(event)); fail(error); });
-    const showPosition = () => {
-      if (error) return;
-      const center = map.getCenter();
-      status.textContent = 'LOCAL TILES · ' + center.lat.toFixed(4) + '°N / ' + center.lng.toFixed(4) + '°E · zoom ' + map.getZoom().toFixed(1);
-    };
-    map.on('idle', showPosition);
-    const vessel = createVesselControls(map);
-    const sources = createNavigationControls(map, vessel, document.getElementById('source-controls'));
-    const marine = createMarineLayers(map, vessel, document.getElementById('marine-controls'));
-    // Preserve Meridian's browser control convention for subsequent console integration.
-    window.m = {
-      map,
-      vessel,
-      sources,
-      marine,
-      flyTo: (lon, lat, zoom = map.getZoom()) => map.jumpTo({ center: [lon, lat], zoom }),
-      state: () => ({ zoom: map.getZoom(), center: map.getCenter(), ready: map.loaded(), error: error?.message || null, sources: Object.keys(map.getStyle()?.sources || style.sources) }),
-    };
-  } catch (error) { fail(error); }
-})();
-</script>
-</body>
-</html>
+<nav id="workspace-bar"><strong>SEXTANT</strong><span>Proposal presentation · frozen simulated scenario</span><a href="simulator.html">Open live simulator controls</a><a href="exports.html" target="_blank">Figure exports</a><button id="present">Presentation [P]</button></nav>
+<main id="frame" aria-label="SEXTANT notional degraded scenario">
+<div class="masthead"><strong>SEXTANT <span>ASSURED PNT</span></strong><span>STRAIT OF JUAN DE FUCA</span><b>NOTIONAL · SIMULATED · 22:50Z</b></div>
+<div class="master-alert"><strong>⚠ SUSPECTED GNSS DEGRADATION — ACKNOWLEDGE</strong><button aria-disabled="true" title="Notional affordance in a frozen scenario">ACKNOWLEDGE</button></div>
+<section class="scene">
+<div id="map" aria-label="Official NOAA ENC display snapshot in Meridian-derived MapLibre"></div><canvas id="chart-overlay" aria-label="Simulated ownship, track, vector, route, R95 and reported interference"></canvas>
+<aside class="roster panel"><h2>SOURCES <span>AGE</span></h2>
+<div class="source amber"><b>GPS-A</b><span>0.2 s</span><small>SUSPECT</small></div>
+<div class="source amber"><b>GPS-B</b><span>0.5 s</span><small>SUSPECT</small></div>
+<div class="source green"><b>INS</b><span>0.1 s</span><small>NOMINAL</small></div>
+<div class="source green"><b>ALT PNT</b><span>1.0 s</span><small>NOMINAL</small></div>
+<div class="source green"><b>RADAR FIX</b><span>1.0 s</span><small>NOMINAL</small></div>
+<div class="source green"><b>CLOCK</b><span>0.1 s</span><small>NOMINAL</small></div>
+<p class="dependency">GPS-A + GPS-B<br><b>Shared GNSS dependency</b><br>Agreement ≠ independence</p>
+</aside>
+<div class="chart-title"><b>JUAN DE FUCA</b><span>Freshwater Bay / Port Angeles approaches</span></div>
+<div class="north" aria-label="North up">N<br>↑</div>
+<div id="map-status">Loading NOAA chart…</div>
+<div class="chart-stamp panel"><b>NOAA ENC · US4WA1IF / US4WA1IG</b><br>WGS 84 · depths in m, MLLW<br><span id="chart-scale"></span><br><span>Snapshot 10 SEP 2026 · NOAA S-52 portrayal</span></div>
+<div class="chart-note">R95 76 m · nominal reference 12 m<br>Track / route / RF report are simulated overlays</div>
+<aside class="right-stack">
+<div class="tiles">
+<article class="tile degraded"><h2>POSITION <em>DEGRADED</em></h2><strong>62<span>%</span></strong><b>R95 76 m</b></article>
+<article class="tile nominal"><h2>NAVIGATION <em>NOMINAL</em></h2><strong>92<span>%</span></strong><b>on INS + ALT</b></article>
+<article class="tile nominal"><h2>TIMING <em>NOMINAL</em></h2><strong>94<span>%</span></strong><b>72 ns</b></article>
+<article class="tile degraded"><h2>OVERALL <em>DEGRADED</em></h2><strong>61<span>%</span></strong><b>GNSS excluded</b></article>
+</div>
+<div class="margin"><b>TIME TO MARGIN</b> ≈ 18 MIN · R95 vs 10 m contour <small>notional</small></div>
+<section class="evidence panel"><h2>EVIDENCE <span>22:50Z · POSITION RESIDUALS</span></h2>
+<div class="plots"><div class="scatter"><svg viewBox="0 0 238 170" role="img" aria-label="GPS-A 240 metres east and GPS-B 248 metres east; INS ALT and RADAR near the DR display origin">
+<path d="M36 14V132H222 M36 84H222 M96 14V132 M156 14V132 M216 14V132" fill="none" stroke="#bdcbd0" stroke-width="1"/>
+<text x="7" y="22">N</text><text x="4" y="89">0</text><text x="34" y="150">0</text><text x="85" y="150">100</text><text x="145" y="150">200</text><text x="186" y="166">E (m)</text>
+<circle cx="36" cy="84" r="7" fill="none" stroke="#087459" stroke-width="2"/><circle cx="39" cy="86" r="3" fill="#087459"/><path d="M30 78l5 0l0 5l-5 0Z" fill="#225f82"/>
+<text x="10" y="115">INS / ALT / RADAR</text><text x="9" y="130">at DR origin</text>
+<circle cx="180" cy="79" r="7" fill="#e69728" fill-opacity=".35" stroke="#8b4d00" stroke-width="2"/><circle cx="185" cy="79" r="7" fill="#e69728" fill-opacity=".35" stroke="#8b4d00" stroke-width="2"/>
+<text x="151" y="45">GPS-A / B</text><text x="150" y="62">+240 / +248 m</text></svg></div>
+<div class="matrix-wrap"><table class="matrix" aria-label="Six-source agreement matrix. Position criterion 100 metres. Clock position not comparable."><thead><tr><th></th><th>A</th><th>B</th><th>INS</th><th>ALT</th><th>RAD</th><th>CLK</th></tr></thead><tbody id="matrix-body"></tbody></table><p>✓ ≤100 m &nbsp; × &gt;100 m &nbsp; N/C no position<br>A/B: GPS-A/B · RAD: radar fix · CLK: clock</p></div></div>
+<p class="finding"><b>FINDING</b> GPS-A/B agree within 8 m, but sit 240–248 m east of DR. INS, ALT and radar agree within 11 m. Shared GNSS dependency remains.</p>
+<p class="verdict"><b>ASSESSMENT: SPOOFING LIKELY</b><br>jamming unlikely (C/N0 nominal) · fault unlikely (receivers agree)</p>
+</section>
+<section class="procedure panel"><h2>SUSPECT GNSS — §4.2 <span>(representative)</span></h2><ol><li><b>✓ met</b> Cross-check INS + ALT against radar.</li><li><b>✓ met</b> Confirm GNSS exclusion; maintain alternate navigation.</li><li><b>○ ready</b> Notify bridge; log evidence and monitor R95.</li></ol><div><span>Informational · NAV_ET</span><button aria-disabled="true">Acknowledge / Mark done</button></div></section>
+</aside></section>
+<footer><div class="timeline"><span><i></i>onset <b>22:41Z</b></span><span><i></i>NAV_ET ack <b>22:47Z</b></span><span><i></i>GNSS excluded <b>22:49Z</b></span><strong>▾ LIVE <b>22:50Z</b></strong></div><div class="footer-note"><b>DEMONSTRATOR · NOT FOR NAVIGATION</b><span>Frozen notional scores, assessment, RF report, procedure and margin · not measured performance</span></div></footer>
+</main>
+<script src="../vendor/maplibre-gl.js"></script><script type="module" src="console.mjs"></script></body></html>

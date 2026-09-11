@@ -1,0 +1,68 @@
+{
+  "url": "https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/ENCOnline/MapServer/exts/MaritimeChartService/MapServer/queryDatasets?f=json&geometry=%7B%22xmin%22%3A-123.707%2C%22ymin%22%3A48.079%2C%22xmax%22%3A-123.4375%2C%22ymax%22%3A48.199%7D&geometrytype=esriGeometryEnvelope&insr=4326&returngeometry=false",
+  "charts": [
+    {
+      "name": "US4WA1IF.000",
+      "edition": "1",
+      "update": "1",
+      "issueDate": "20260504",
+      "scale": 90000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US3WA1EE.000",
+      "edition": "1",
+      "update": "2",
+      "issueDate": "20260519",
+      "scale": 350000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US1GLBDD.000",
+      "edition": "1",
+      "update": "4",
+      "issueDate": "20260529",
+      "scale": 3500000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US4WA1IG.000",
+      "edition": "1",
+      "update": "1",
+      "issueDate": "20260519",
+      "scale": 45000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US5WA1BE.000",
+      "edition": "1",
+      "update": "0",
+      "issueDate": "20260304",
+      "scale": 12000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US5WA1BF.000",
+      "edition": "1",
+      "update": "0",
+      "issueDate": "20260304",
+      "scale": 12000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    },
+    {
+      "name": "US3WA1EF.000",
+      "edition": "1",
+      "update": "5",
+      "issueDate": "20260831",
+      "scale": 180000,
+      "horizontalDatum": "WGS 84",
+      "soundingDatum": "Mean lower low water"
+    }
+  ]
+}

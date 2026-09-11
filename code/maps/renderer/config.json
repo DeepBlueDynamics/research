@@ -1,26 +1,26 @@
 {
   "view": {
     "center": [
-      56.25,
-      26.6
+      -123.57,
+      48.175
     ],
-    "zoom": 9,
-    "minZoom": 7,
-    "maxZoom": 14,
+    "zoom": 12,
+    "minZoom": 11,
+    "maxZoom": 15,
     "bounds": [
-      55,
-      25,
-      57.5,
-      27.5
+      -123.7069977760993,
+      48.07895380263813,
+      -123.43750319086345,
+      48.19884774466042
     ]
   },
   "basemap": {
-    "pmtiles": "../hormuz.pmtiles",
-    "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap contributors</a> · Protomaps"
+    "image": "../enc/juan-de-fuca-image.json",
+    "attribution": "<a href=\"https://nauticalcharts.noaa.gov/data/gis-data-and-services.html\">NOAA ENC® · ECDIS Display Service</a> · local snapshot"
   },
   "labels": {
     "font": "Noto Sans Regular",
     "glyphs": "../vendor/fonts/{fontstack}/{range}.pbf"
   },
-  "disclaimer": "DEMONSTRATOR · NOT FOR NAVIGATION · NOT AN ECDIS"
+  "disclaimer": "DEMONSTRATOR · NOT FOR NAVIGATION · NOAA ENC SNAPSHOT · NOT AN ECDIS"
 }
